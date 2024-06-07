@@ -1,0 +1,7 @@
+{
+   "name":"edge",
+   "api":true,
+   "description":"http://localhost:54002/login.jsp",
+   "fullname":"http://localhost:4444/wd/hub",
+   "country":false
+}
