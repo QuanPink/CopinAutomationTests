@@ -13,5 +13,5 @@ public class Config {
     private String baseUrl;
     private String remoteHub;
     private boolean remote;
-    private String [] browserOptions;
+    private String[] browserOptions;
 }

@@ -6,9 +6,12 @@ import java.util.Map;
 public class ProtocolData {
     public interface ApiConfig {
         String getUrl();
+
         String getMethod();
+
         Map<String, String> getHeaders();
-        String getBody(); // Thêm trường body
+
+        String getBody();
     }
 
     public static class GMXApiConfig implements ApiConfig {

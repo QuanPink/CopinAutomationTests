@@ -1,5 +1,7 @@
 package asia.decentralab.copin.utils;
 
+import asia.decentralab.copin.data.enumdata.ApiType;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -9,7 +11,7 @@ import java.util.Map;
 
 public class APIUtils {
 
-    public String callApi(String url, String method, Map<String, String> headers, String body) throws IOException, InterruptedException {
+    public String callApi(String url, ApiType method, Map<String, String> headers, String body) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                 .uri(URI.create(url));
@@ -18,11 +20,11 @@ public class APIUtils {
             headers.forEach(requestBuilder::header);
         }
 
-        switch (method.toUpperCase()) {
-            case "GET":
+        switch (method) {
+            case GET:
                 requestBuilder.GET();
                 break;
-            case "POST":
+            case POST:
                 requestBuilder.POST(HttpRequest.BodyPublishers.ofString(body));
                 break;
             default:
