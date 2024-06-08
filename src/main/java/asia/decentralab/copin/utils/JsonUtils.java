@@ -13,7 +13,6 @@ public class JsonUtils {
         try (FileReader reader = new FileReader(filePath)){
             return gson.fromJson(reader, clazz);
         }catch (IOException e){
-            e.printStackTrace();
             throw new RuntimeException("Failed to read JSON from file", e);
         }
     }

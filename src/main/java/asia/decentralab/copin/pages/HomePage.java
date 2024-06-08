@@ -44,7 +44,5 @@ public class HomePage extends BasePage {
         if (source != null) {
             switchProtocol(source.getValue());
         }
-        //waitForPageLoad();
     }
-
 }
