@@ -12,6 +12,4 @@ public class Config {
     private boolean headless;
     private String baseUrl;
     private String remoteHub;
-    private boolean remote;
-    private String[] browserOptions;
 }

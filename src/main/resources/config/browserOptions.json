@@ -1,0 +1,14 @@
+{
+  "chromeOptions": [
+    "--start-maximized",
+    "--disable-extensions"
+  ],
+  "firefoxOptions": [
+    "--start-maximized",
+    "--disable-extensions"
+  ],
+  "edgeOptions": [
+    "--start-maximized",
+    "--disable-extensions"
+  ]
+}

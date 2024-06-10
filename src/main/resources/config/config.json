@@ -3,9 +3,5 @@
   "headless": false,
   "baseUrl": "http://app.copin.io",
   "remoteHub": "http://localhost:4444/wd/hub",
-  "remote": false,
-  "browserOptions": [
-    "--start-maximized",
-    "--disable-extensions"
-  ]
+  "remote": false
 }

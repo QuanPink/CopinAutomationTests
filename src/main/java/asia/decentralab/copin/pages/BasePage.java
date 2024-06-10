@@ -1,7 +1,7 @@
 package asia.decentralab.copin.pages;
 
 import asia.decentralab.copin.data.ProtocolData;
-import asia.decentralab.copin.data.enumdata.ApiType;
+import asia.decentralab.copin.data.enumdata.ApiMethod;
 import asia.decentralab.copin.element.Element;
 import asia.decentralab.copin.utils.APIUtils;
 import org.openqa.selenium.By;
@@ -18,7 +18,7 @@ public class BasePage {
         ProtocolData.ApiConfig gmxApiConfig = new ProtocolData.GMXApiConfig();
         try {
             // Convert method from string to ApiType
-            ApiType methodType = ApiType.valueOf(gmxApiConfig.getMethod().toUpperCase());
+            ApiMethod methodType = ApiMethod.valueOf(gmxApiConfig.getMethod().toUpperCase());
 
             String response = apiUtils.callApi(
                     gmxApiConfig.getUrl(),

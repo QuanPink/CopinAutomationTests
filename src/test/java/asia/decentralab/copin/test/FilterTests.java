@@ -13,6 +13,5 @@ public class FilterTests extends BaseTest {
     public void tcIDShortSummary(){
         HomePage homePage = new HomePage();
         homePage.filterTraderStatistic(StatisticValue.PNL, TimeValue.DAYS_7, SourceValue.GMX_V2);
-        System.out.println(homePage.callApi());
     }
 }

@@ -1,6 +1,6 @@
 package asia.decentralab.copin.utils;
 
-import asia.decentralab.copin.data.enumdata.ApiType;
+import asia.decentralab.copin.data.enumdata.ApiMethod;
 
 import java.io.IOException;
 import java.net.URI;
@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class APIUtils {
 
-    public String callApi(String url, ApiType method, Map<String, String> headers, String body) throws IOException, InterruptedException {
+    public String callApi(String url, ApiMethod method, Map<String, String> headers, String body) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                 .uri(URI.create(url));
@@ -19,7 +19,6 @@ public class APIUtils {
         if (headers != null) {
             headers.forEach(requestBuilder::header);
         }
-
         switch (method) {
             case GET:
                 requestBuilder.GET();
@@ -27,14 +26,17 @@ public class APIUtils {
             case POST:
                 requestBuilder.POST(HttpRequest.BodyPublishers.ofString(body));
                 break;
+            case PUT:
+                requestBuilder.PUT(HttpRequest.BodyPublishers.ofString(body));
+                break;
+            case DELETE:
+                requestBuilder.method("DELETE", HttpRequest.BodyPublishers.ofString(body));
+                break;
             default:
                 throw new IllegalArgumentException("Unsupported method: " + method);
         }
-
         HttpRequest request = requestBuilder.build();
-
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
         if (response.statusCode() < 200 || response.statusCode() >= 300) {
             throw new RuntimeException("API call failed with status code: " + response.statusCode() + " " + response.body());
         }

@@ -21,19 +21,28 @@ public class Driver {
             case CHROME:
                 WebDriverManager.chromedriver().setup();
                 ChromeOptions chromeOptions = new ChromeOptions();
-                addBrowserOptions(chromeOptions, config.getBrowserOptions());
+                if (config.isHeadless()) {
+                    chromeOptions.addArguments("--headless");
+                }
+                BrowserOptionsHelper.setBrowserOptions(chromeOptions);
                 driverInstance = new ChromeDriver(chromeOptions);
                 break;
             case EDGE:
                 WebDriverManager.edgedriver().setup();
                 EdgeOptions edgeOptions = new EdgeOptions();
-                addBrowserOptions(edgeOptions, config.getBrowserOptions());
+                if (config.isHeadless()) {
+                    edgeOptions.addArguments("--headless");
+                }
+                BrowserOptionsHelper.setBrowserOptions(edgeOptions);
                 driverInstance = new EdgeDriver(edgeOptions);
                 break;
             case FIREFOX:
                 WebDriverManager.firefoxdriver().setup();
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
-                addBrowserOptions(firefoxOptions, config.getBrowserOptions());
+                if (config.isHeadless()) {
+                    firefoxOptions.addArguments("--headless");
+                }
+                BrowserOptionsHelper.setBrowserOptions(firefoxOptions);
                 driverInstance = new FirefoxDriver(firefoxOptions);
                 break;
             default:
@@ -42,29 +51,8 @@ public class Driver {
         driver.set(driverInstance);
     }
 
-    private static void addBrowserOptions(Object options, String[] browserOptions) {
-        if (options instanceof ChromeOptions) {
-            ChromeOptions chromeOptions = (ChromeOptions) options;
-            for (String option : browserOptions) {
-                chromeOptions.addArguments(option);
-            }
-        } else if (options instanceof EdgeOptions) {
-            EdgeOptions edgeOptions = (EdgeOptions) options;
-            for (String option : browserOptions) {
-                edgeOptions.addArguments(option);
-            }
-        } else if (options instanceof FirefoxOptions) {
-            FirefoxOptions firefoxOptions = (FirefoxOptions) options;
-            for (String option : browserOptions) {
-                firefoxOptions.addArguments(option);
-            }
-        } else {
-            throw new IllegalArgumentException("Unsupported browser options type");
-        }
-    }
-
-    public static void navigation(Config config) {
-        getDriver().get(config.getBaseUrl());
+    public static void navigate(String path) {
+        getDriver().get(path);
     }
 
     public static String getTitle() {
