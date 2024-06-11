@@ -1,6 +1,6 @@
 package asia.decentralab.copin.utils;
 
-import asia.decentralab.copin.data.enumdata.ApiMethod;
+import asia.decentralab.copin.data.enumdata.HttpMethod;
 
 import java.io.IOException;
 import java.net.URI;
@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class APIUtils {
 
-    public String callApi(String url, ApiMethod method, Map<String, String> headers, String body) throws IOException, InterruptedException {
+    public String sendRequest(String url, HttpMethod method, Map<String, String> headers, String body) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                 .uri(URI.create(url));
@@ -24,13 +24,23 @@ public class APIUtils {
                 requestBuilder.GET();
                 break;
             case POST:
+                if (body == null || body.isEmpty()) {
+                    throw new IllegalArgumentException("Body cannot be null or empty for POST request");
+                }
                 requestBuilder.POST(HttpRequest.BodyPublishers.ofString(body));
                 break;
             case PUT:
+                if (body == null || body.isEmpty()) {
+                    throw new IllegalArgumentException("Body cannot be null or empty for PUT request");
+                }
                 requestBuilder.PUT(HttpRequest.BodyPublishers.ofString(body));
                 break;
             case DELETE:
-                requestBuilder.method("DELETE", HttpRequest.BodyPublishers.ofString(body));
+                if (body == null || body.isEmpty()) {
+                    requestBuilder.DELETE();
+                } else {
+                    requestBuilder.method("DELETE", HttpRequest.BodyPublishers.ofString(body));
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported method: " + method);
