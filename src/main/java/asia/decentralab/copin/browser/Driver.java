@@ -1,6 +1,5 @@
 package asia.decentralab.copin.browser;
 
-import asia.decentralab.copin.config.BrowserOptionsConfig;
 import asia.decentralab.copin.config.Config;
 import asia.decentralab.copin.data.enumdata.BrowserType;
 import io.github.bonigarcia.wdm.WebDriverManager;
