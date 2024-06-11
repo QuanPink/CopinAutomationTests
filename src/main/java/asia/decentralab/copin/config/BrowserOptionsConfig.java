@@ -11,4 +11,5 @@ public class BrowserOptionsConfig {
     private String[] chromeOptions;
     private String[] firefoxOptions;
     private String[] edgeOptions;
+    private String headless;
 }

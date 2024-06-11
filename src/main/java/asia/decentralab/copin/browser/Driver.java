@@ -21,28 +21,19 @@ public class Driver {
             case CHROME:
                 WebDriverManager.chromedriver().setup();
                 ChromeOptions chromeOptions = new ChromeOptions();
-                if (config.isHeadless()) {
-                    chromeOptions.addArguments("--headless");
-                }
-                BrowserOptionsHelper.setBrowserOptions(chromeOptions);
+                BrowserOptionsHelper.setBrowserOptions(chromeOptions, config);
                 driverInstance = new ChromeDriver(chromeOptions);
                 break;
             case EDGE:
                 WebDriverManager.edgedriver().setup();
                 EdgeOptions edgeOptions = new EdgeOptions();
-                if (config.isHeadless()) {
-                    edgeOptions.addArguments("--headless");
-                }
-                BrowserOptionsHelper.setBrowserOptions(edgeOptions);
+                BrowserOptionsHelper.setBrowserOptions(edgeOptions, config);
                 driverInstance = new EdgeDriver(edgeOptions);
                 break;
             case FIREFOX:
                 WebDriverManager.firefoxdriver().setup();
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
-                if (config.isHeadless()) {
-                    firefoxOptions.addArguments("--headless");
-                }
-                BrowserOptionsHelper.setBrowserOptions(firefoxOptions);
+                BrowserOptionsHelper.setBrowserOptions(firefoxOptions, config);
                 driverInstance = new FirefoxDriver(firefoxOptions);
                 break;
             default:

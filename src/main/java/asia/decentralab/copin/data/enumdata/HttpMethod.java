@@ -1,5 +1,5 @@
 package asia.decentralab.copin.data.enumdata;
 
-public enum ApiMethod {
+public enum HttpMethod {
     GET, POST, PUT, DELETE
 }

@@ -10,5 +10,6 @@
   "edgeOptions": [
     "--start-maximized",
     "--disable-extensions"
-  ]
+  ],
+  "headless": "--headless"
 }
