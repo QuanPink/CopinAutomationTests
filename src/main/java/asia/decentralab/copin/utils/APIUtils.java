@@ -52,7 +52,6 @@ public class APIUtils {
         if (response.statusCode() < 200 || response.statusCode() >= 300) {
             throw new RuntimeException("API call failed with status code: " + response.statusCode() + " " + response.body());
         }
-
         return response.body();
     }
 }

@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class JsonUtils {
-
     private static final Gson gson = new Gson();
 
     public static <T> T readJsonFile(String filePath, Class<T> clazz) {
