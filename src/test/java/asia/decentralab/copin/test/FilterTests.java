@@ -1,6 +1,5 @@
 package asia.decentralab.copin.test;
 
-import asia.decentralab.copin.BaseTest;
 import asia.decentralab.copin.data.enumdata.SourceValue;
 import asia.decentralab.copin.data.enumdata.StatisticValue;
 import asia.decentralab.copin.data.enumdata.TimeValue;

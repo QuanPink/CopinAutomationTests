@@ -50,6 +50,10 @@ public class Driver {
         return getDriver().getTitle();
     }
 
+    public static void refreshPage(){
+        getDriver().navigate().refresh();
+    }
+
     public static void closeBrowser() {
         if (getDriver() != null) {
             getDriver().quit();

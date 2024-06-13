@@ -13,8 +13,7 @@ public class APIUtils {
 
     public String sendRequest(String url, HttpMethod method, Map<String, String> headers, String body) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
-        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
-                .uri(URI.create(url));
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(URI.create(url));
 
         if (headers != null) {
             headers.forEach(requestBuilder::header);
@@ -26,14 +25,16 @@ public class APIUtils {
             case POST:
                 if (body == null || body.isEmpty()) {
                     throw new IllegalArgumentException("Body cannot be null or empty for POST request");
+                } else {
+                    requestBuilder.POST(HttpRequest.BodyPublishers.ofString(body));
                 }
-                requestBuilder.POST(HttpRequest.BodyPublishers.ofString(body));
                 break;
             case PUT:
                 if (body == null || body.isEmpty()) {
                     throw new IllegalArgumentException("Body cannot be null or empty for PUT request");
+                } else {
+                    requestBuilder.PUT(HttpRequest.BodyPublishers.ofString(body));
                 }
-                requestBuilder.PUT(HttpRequest.BodyPublishers.ofString(body));
                 break;
             case DELETE:
                 if (body == null || body.isEmpty()) {

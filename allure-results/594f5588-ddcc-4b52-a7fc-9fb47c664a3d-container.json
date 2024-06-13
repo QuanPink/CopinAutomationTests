@@ -1,0 +1,1 @@
+{"uuid":"594f5588-ddcc-4b52-a7fc-9fb47c664a3d","name":"Copin Smoke Test Suite","children":["bbc18302-b13f-4f4e-ab77-4f80f3f49b0f"],"befores":[],"afters":[{"name":"tearDown","status":"passed","stage":"finished","description":"","steps":[],"attachments":[],"parameters":[],"start":1718252645395,"stop":1718252645395}],"start":1718252631452,"stop":1718252645395}
