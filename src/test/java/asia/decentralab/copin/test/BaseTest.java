@@ -3,6 +3,7 @@ package asia.decentralab.copin.test;
 import asia.decentralab.copin.config.Config;
 import asia.decentralab.copin.config.Constant;
 import asia.decentralab.copin.utils.JsonUtils;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeSuite;
 
@@ -22,7 +23,7 @@ public class BaseTest {
         navigate(config.getBaseUrl());
     }
 
-    @BeforeClass
+    @AfterClass
     public void tearDown() {
         closeBrowser();
     }
