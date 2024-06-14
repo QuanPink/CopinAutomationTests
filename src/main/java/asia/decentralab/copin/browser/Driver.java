@@ -21,7 +21,7 @@ public class Driver {
             case CHROME:
                 WebDriverManager.chromedriver().setup();
                 ChromeOptions chromeOptions = BrowserOptionsHelper.setChromeOptions();
-                if (config.isHeadless()){
+                if (config.isHeadless()) {
                     chromeOptions.addArguments("--headless");
                 }
                 driverInstance = new ChromeDriver(chromeOptions);
@@ -29,7 +29,7 @@ public class Driver {
             case EDGE:
                 WebDriverManager.edgedriver().setup();
                 EdgeOptions edgeOptions = BrowserOptionsHelper.setEdgeOptions();
-                if (config.isHeadless()){
+                if (config.isHeadless()) {
                     edgeOptions.addArguments("--headless");
                 }
                 driverInstance = new EdgeDriver(edgeOptions);
@@ -37,7 +37,7 @@ public class Driver {
             case FIREFOX:
                 WebDriverManager.firefoxdriver().setup();
                 FirefoxOptions firefoxOptions = BrowserOptionsHelper.setFirefoxOptions();
-                if (config.isHeadless()){
+                if (config.isHeadless()) {
                     firefoxOptions.addArguments("--headless");
                 }
                 driverInstance = new FirefoxDriver(firefoxOptions);
@@ -56,7 +56,15 @@ public class Driver {
         return getDriver().getTitle();
     }
 
-    public static void refreshPage(){
+    public static String getCurrentUrl() {
+        return getDriver().getCurrentUrl();
+    }
+
+    public static void backToPreviousPage() {
+        getDriver().navigate().back();
+    }
+
+    public static void refreshPage() {
         getDriver().navigate().refresh();
     }
 

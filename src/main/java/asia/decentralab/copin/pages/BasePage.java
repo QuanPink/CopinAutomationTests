@@ -10,12 +10,13 @@ import java.util.List;
 import java.util.Set;
 
 public class BasePage {
-    private final Element homeBtn = new Element(By.xpath("//header//a[@class='navlink-default']//span[normalize-space()='Home']"));
+    private final Element homeBtn = new Element(By.xpath("//header//a[contains(@class, 'navlink-default')]//span[normalize-space()='Home']"));
     private final Element traderExplorerBtn = new Element(By.xpath("//header//a[@class='navlink-default']//span[normalize-space()='Traders Explorer']"));
     private final Element openInterestBtn = new Element(By.xpath("//header//a[@class='navlink-default']//span[normalize-space()='Open Interest']"));
     private final Element searchTextbox = new Element(By.xpath("//header//div/input[@placeholder='Search for wallets or transactions']"));
-    private final String dynamicResultSearchTrader = "//header//div[contains(@class, 'SearchResult')]//button[@type='button']//a";
-    private final String dynamicResultSearchTxHash = "//header//div[contains(@class, 'styled__SearchResult')]//button[not(div[contains(@class, 'base__TextWrapper')])]";
+    private final Element searchResultBtn = new Element(By.xpath("//header//div[contains(@class, 'styled__SearchResult')]//button[div[contains(text(), 'View All')]]"));
+    private final String resultSearchItem = "//header//div[contains(@class, 'SearchResult')]//button[@type='button']//a";
+    private final String resultSearchTxHashItemDetail = "//div[contains(@class, 'base__Box')]//button[div[contains(@class, 'base__Flex')]]";
     private final Element resultMessageSearchTrader = new Element(By.xpath("//header//div[contains(@class,'styled__SearchResult')]//div[contains(text(),'No Trader Found')]"));
     private final Element resultMessageSearchTxHash = new Element(By.xpath("//header//div[contains(@class,'styled__SearchResult')]//div[contains(text(),'No Transaction Found')]"));
 
@@ -35,10 +36,28 @@ public class BasePage {
         searchTextbox.enter(value);
     }
 
-    public boolean isSearchResultValid(String value) {
-        Element resultsElement = new Element(By.xpath(dynamicResultSearchTrader));
-        List<WebElement> results = resultsElement.findElements();
+    public void clearValueSearch() {
+        searchTextbox.clearValue();
+    }
 
+    public void viewAllResultSearch() {
+        searchResultBtn.click();
+    }
+
+    public boolean isNumberSearchResult() {
+        Element resultsElement = new Element(By.xpath(resultSearchItem));
+        int resultsSize = resultsElement.findElements().size();
+        String resultsCount = String.valueOf(resultsSize);
+        String resultNumber = searchResultBtn.getText();
+        if (!resultNumber.contains(resultsCount)) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isSearchResultValid(String value) {
+        Element resultsElement = new Element(By.xpath(resultSearchItem));
+        List<WebElement> results = resultsElement.findElements();
         if (results == null || results.isEmpty()) {
             return false;
         }
@@ -54,7 +73,7 @@ public class BasePage {
     }
 
     public boolean isSearchResultTxHash(String value) {
-        Element resultElement = new Element(By.xpath(dynamicResultSearchTxHash));
+        Element resultElement = new Element(By.xpath(resultSearchTxHashItemDetail));
         List<WebElement> results = resultElement.findElements();
 
         if (results == null || results.isEmpty()) {
@@ -64,10 +83,11 @@ public class BasePage {
         Set<String> uniqueResults = new HashSet<>();
         for (WebElement result : results) {
             result.click();
-            String resultValue = Driver.getDriver().getCurrentUrl();
+            String resultValue = Driver.getCurrentUrl();
             if (!resultValue.contains(value) || !uniqueResults.add(resultValue)) {
                 return false;
             }
+            Driver.backToPreviousPage();
         }
         return true;
     }

@@ -2,10 +2,7 @@ package asia.decentralab.copin.element;
 
 import asia.decentralab.copin.browser.Driver;
 import asia.decentralab.copin.config.Constant;
-import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -51,6 +48,10 @@ public class Element {
 
     public void enter(String value) {
         findElement().sendKeys(value);
+    }
+
+    public void clearValue() {
+        findElement().clear();
     }
 
     public boolean isEnable() {
