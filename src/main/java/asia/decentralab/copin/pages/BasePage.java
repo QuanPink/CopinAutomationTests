@@ -55,7 +55,7 @@ public class BasePage {
         return true;
     }
 
-    public boolean isSearchResultValid(String value) {
+    public boolean isSearchResultValid(String traderAddress) {
         Element resultsElement = new Element(By.xpath(resultSearchItem));
         List<WebElement> results = resultsElement.findElements();
         if (results == null || results.isEmpty()) {
@@ -65,14 +65,14 @@ public class BasePage {
         Set<String> uniqueResults = new HashSet<>();
         for (WebElement result : results) {
             String resultValue = result.getAttribute("href");
-            if (!resultValue.contains(value) || !uniqueResults.add(resultValue)) {
+            if (!resultValue.contains(traderAddress) || !uniqueResults.add(resultValue)) {
                 return false;
             }
         }
         return true;
     }
 
-    public boolean isSearchResultTxHash(String value) {
+    public boolean isSearchResultTxHash(String txHashPosition) {
         Element resultElement = new Element(By.xpath(resultSearchTxHashItemDetail));
         List<WebElement> results = resultElement.findElements();
 
@@ -84,7 +84,7 @@ public class BasePage {
         for (WebElement result : results) {
             result.click();
             String resultValue = Driver.getCurrentUrl();
-            if (!resultValue.contains(value) || !uniqueResults.add(resultValue)) {
+            if (!resultValue.contains(txHashPosition) || !uniqueResults.add(resultValue)) {
                 return false;
             }
             Driver.backToPreviousPage();
