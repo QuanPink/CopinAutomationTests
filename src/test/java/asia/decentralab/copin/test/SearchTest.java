@@ -21,7 +21,7 @@ public class SearchTest extends BaseTest {
     }
 
     @AfterMethod
-    public void afterEachTest() throws InterruptedException {
+    public void afterEachTest() {
         homePage.goToHomePage();
         homePage.clearValueSearch();
     }

@@ -12,7 +12,7 @@ public class BaseTest {
     private Config config;
 
     @BeforeSuite
-    public void initConfig(){
+    public void initConfig() {
         config = JsonUtils.readJsonFile(Constant.CONFIG_BROWSER_FILE_PATH, Config.class);
     }
 
