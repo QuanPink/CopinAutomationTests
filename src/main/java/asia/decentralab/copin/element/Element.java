@@ -2,13 +2,12 @@ package asia.decentralab.copin.element;
 
 import asia.decentralab.copin.browser.Driver;
 import asia.decentralab.copin.config.Constant;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 public class Element {
     private final By locator;
@@ -20,7 +19,19 @@ public class Element {
     }
 
     private WebElement findElement() {
-        return wait.until(ExpectedConditions.elementToBeClickable(locator));
+        try {
+            return wait.until(ExpectedConditions.elementToBeClickable(locator));
+        } catch (TimeoutException e) {
+            throw new RuntimeException("Element not found: " + locator, e);
+        }
+    }
+
+    public List<WebElement> findElements() {
+        try {
+            return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
+        } catch (TimeoutException e) {
+            throw new RuntimeException("Elements not found: " + locator, e);
+        }
     }
 
     public String getText() {
@@ -37,6 +48,10 @@ public class Element {
 
     public void enter(String value) {
         findElement().sendKeys(value);
+    }
+
+    public void clearValue() {
+        findElement().clear();
     }
 
     public boolean isEnable() {

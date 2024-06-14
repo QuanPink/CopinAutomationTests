@@ -1,6 +1,6 @@
 package asia.decentralab.copin.browser;
 
-import asia.decentralab.copin.config.Constant;
+import asia.decentralab.copin.config.Config;
 import asia.decentralab.copin.data.enumdata.BrowserType;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
@@ -11,42 +11,61 @@ import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
-import java.util.concurrent.TimeUnit;
-
 public class Driver {
     private static final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 
-    public static void openBrowser(BrowserType type, String version) {
+    public static void openBrowser(Config config) {
+        BrowserType browserType = BrowserType.valueOf(config.getBrowser().toUpperCase());
         WebDriver driverInstance;
-        switch (type) {
+        switch (browserType) {
             case CHROME:
-                WebDriverManager.chromedriver().browserVersion(version).setup();
-                ChromeOptions chromeOptions = new ChromeOptions();
+                WebDriverManager.chromedriver().setup();
+                ChromeOptions chromeOptions = BrowserOptionsHelper.setChromeOptions();
+                if (config.isHeadless()) {
+                    chromeOptions.addArguments("--headless");
+                }
                 driverInstance = new ChromeDriver(chromeOptions);
                 break;
             case EDGE:
-                WebDriverManager.edgedriver().browserVersion(version).setup();
-                EdgeOptions edgeOptions = new EdgeOptions();
+                WebDriverManager.edgedriver().setup();
+                EdgeOptions edgeOptions = BrowserOptionsHelper.setEdgeOptions();
+                if (config.isHeadless()) {
+                    edgeOptions.addArguments("--headless");
+                }
                 driverInstance = new EdgeDriver(edgeOptions);
                 break;
             case FIREFOX:
-                WebDriverManager.firefoxdriver().browserVersion(version).setup();
-                FirefoxOptions firefoxOptions = new FirefoxOptions();
+                WebDriverManager.firefoxdriver().setup();
+                FirefoxOptions firefoxOptions = BrowserOptionsHelper.setFirefoxOptions();
+                if (config.isHeadless()) {
+                    firefoxOptions.addArguments("--headless");
+                }
                 driverInstance = new FirefoxDriver(firefoxOptions);
                 break;
             default:
-                throw new IllegalArgumentException("Unsupported browser or version: " + type + " " + version);
+                throw new IllegalArgumentException("Unsupported browser: " + browserType);
         }
         driver.set(driverInstance);
     }
 
-    public static void navigation(String url) {
-        getDriver().get(url);
-        getDriver().manage().window().maximize();
+    public static void navigate(String path) {
+        getDriver().get(path);
     }
 
     public static String getTitle() {
         return getDriver().getTitle();
+    }
+
+    public static String getCurrentUrl() {
+        return getDriver().getCurrentUrl();
+    }
+
+    public static void backToPreviousPage() {
+        getDriver().navigate().back();
+    }
+
+    public static void refreshPage() {
+        getDriver().navigate().refresh();
     }
 
     public static void closeBrowser() {

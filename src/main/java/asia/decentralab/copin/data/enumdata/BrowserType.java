@@ -1,5 +1,5 @@
-    package asia.decentralab.copin.data.enumdata;
+package asia.decentralab.copin.data.enumdata;
 
-    public enum BrowserType {
-        CHROME, EDGE, FIREFOX;
-    }
+public enum BrowserType {
+    CHROME, EDGE, FIREFOX;
+}

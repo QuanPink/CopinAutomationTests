@@ -1,7 +1,7 @@
 {
-  "browser":"edge",
-  "headless":true,
-  "baseUrl":"http://localhost:54002/login.jsp",
-  "remoteHub":"http://localhost:4444/wd/hub",
-  "remote":false
+  "browser": "chrome",
+  "headless": false,
+  "baseUrl": "http://app.copin.io",
+  "remoteHub": "http://localhost:4444/wd/hub",
+  "remote": false
 }

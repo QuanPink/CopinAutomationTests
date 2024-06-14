@@ -4,7 +4,7 @@
     <test name="Chrome Tests">
         <parameter name="browser" value="chrome"/>
         <classes>
-            <class name="asia.decentralab.copin.test.FilterTests"/>
+            <class name="asia.decentralab.copin.test.SearchTest"/>
         </classes>
     </test>
 </suite>

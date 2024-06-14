@@ -7,7 +7,6 @@ import asia.decentralab.copin.element.Element;
 import org.openqa.selenium.By;
 
 public class HomePage extends BasePage {
-
     private final Element topDropdownButton = new Element(By.xpath("//div[div[text()='Top']]//button"));
     private final Element inDropdownButton = new Element(By.xpath("//div[div[text()='In']]//button"));
     private final Element sourceDropdownButton = new Element(By.xpath("//div[div[text()='Source']]//button"));
@@ -44,7 +43,5 @@ public class HomePage extends BasePage {
         if (source != null) {
             switchProtocol(source.getValue());
         }
-        //waitForPageLoad();
     }
-
 }
