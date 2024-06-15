@@ -2,6 +2,7 @@ package asia.decentralab.copin.pages;
 
 import asia.decentralab.copin.browser.Driver;
 import asia.decentralab.copin.element.Element;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -20,6 +21,7 @@ public class BasePage {
     private final Element resultMessageSearchTrader = new Element(By.xpath("//header//div[contains(@class,'styled__SearchResult')]//div[contains(text(),'No Trader Found')]"));
     private final Element resultMessageSearchTxHash = new Element(By.xpath("//header//div[contains(@class,'styled__SearchResult')]//div[contains(text(),'No Transaction Found')]"));
 
+    @Step("Go to Home page")
     public void goToHomePage() {
         homeBtn.click();
     }
@@ -32,14 +34,17 @@ public class BasePage {
         openInterestBtn.click();
     }
 
+    @Step("Search trader")
     public void searchTrader(String value) {
         searchTextbox.enter(value);
     }
 
+    @Step("Clear search keyword")
     public void clearValueSearch() {
         searchTextbox.clearValue();
     }
 
+    @Step("View all search result")
     public void viewAllResultSearch() {
         searchResultBtn.click();
     }
