@@ -1,5 +1,5 @@
 {
-  "browser": "chrome",
+  "browser": "edge",
   "headless": false,
   "baseUrl": "http://app.copin.io",
   "remoteHub": "http://localhost:4444/wd/hub",
