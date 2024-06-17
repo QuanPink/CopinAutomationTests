@@ -6,4 +6,6 @@ public class Constant {
     public static final String BROWSER_OPTIONS_FILE_PATH = "src/main/resources/config/browserOptions.json";
     public static final String TRADER_FILE_PATH = "src/test/resources/testData/trader.json";
     public static final String GMX_DATA_FILE_PATH = "src/test/resources/testData/GMXData.json";
+    public static final String TRADERS_FILE_PATH = "src/test/resources/testData/trader.json";
+    public static final String POSITIONS_FILE_PATH = "src/test/resources/testData/position.json";
 }
