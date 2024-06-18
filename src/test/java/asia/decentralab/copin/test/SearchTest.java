@@ -13,7 +13,8 @@ import org.testng.annotations.Test;
 public class SearchTest extends BaseTest {
     private HomePage homePage;
     private Traders traders;
-    private Positions positions;
+    Positions positions;
+    private Positions.Position closedPosition;
 
     @BeforeClass
     public void setup() {
@@ -21,6 +22,7 @@ public class SearchTest extends BaseTest {
         homePage = new HomePage();
         traders = JsonUtils.readJsonFile(Constant.TRADERS_FILE_PATH, Traders.class);
         positions = JsonUtils.readJsonFile(Constant.POSITIONS_FILE_PATH, Positions.class);
+        closedPosition = positions.getClosePosition();
     }
 
     @AfterMethod
@@ -44,15 +46,15 @@ public class SearchTest extends BaseTest {
 
     @Test(description = "Search valid txHash")
     public void tc003SearchValidTxHash() {
-        homePage.searchTrader(positions.getPositions().getClosePosition().getValidTxHash());
+        homePage.searchTrader(closedPosition.getTxHash());
         Assert.assertTrue(homePage.isNumberSearchResult());
         homePage.viewAllResultSearch();
-        Assert.assertTrue(homePage.isSearchResultTxHash(positions.getPositions().getClosePosition().getValidTxHash()));
+        Assert.assertTrue(homePage.isSearchResultTxHash(closedPosition.getTxHash()));
     }
 
     @Test(description = "Search inValid txHash")
     public void tc004SearchInvalidTxHash() {
-        homePage.searchTrader(positions.getPositions().getClosePosition().getUpperCaseTxHash());
+        homePage.searchTrader(closedPosition.getInvalidTxHash());
         Assert.assertTrue(homePage.isNoResultsMessageTxHashDisplayed());
     }
 }
