@@ -19,7 +19,7 @@ public class SearchTest extends BaseTest {
     public void setup() {
         super.setup();
         homePage = new HomePage();
-        traders = JsonUtils.readJsonFile(Constant.TRADER_FILE_PATH, Traders.class);
+        traders = JsonUtils.readJsonFile(Constant.TRADERS_FILE_PATH, Traders.class);
         positions = JsonUtils.readJsonFile(Constant.POSITIONS_FILE_PATH, Positions.class);
     }
 
