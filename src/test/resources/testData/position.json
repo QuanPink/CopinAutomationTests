@@ -1,6 +1,16 @@
 {
   "positions": {
-    "validTxHash": "0xccfb7e2c0d53c1a061d6a1aadc9663852dac59940fe5be3b1e2f0b6aca2ecaff",
-    "inValidTxHash": "0xccfb7e2c0d53c1a061d6a1aadc1111111dac59940fe5be3b1e2f0b6aca2ecaff"
+    "openPosition": {
+      "validTxHash": "",
+      "upperCaseTxHash": ""
+    },
+    "closePosition": {
+      "validTxHash": "0xccfb7e2c0d53c1a061d6a1aadc9663852dac59940fe5be3b1e2f0b6aca2ecaff",
+      "upperCaseTxHash": "0XCCFB7E2C0D53C1A061D6A1AADC9663852DAC59940FE5BE3B1E2F0B6ACA2ECAFF"
+    },
+    "liquidatePosition": {
+      "validTxHash": "0x5d9bf2e3f9716991306de86368baa002adee69748082fbe2f260784e686f5e47",
+      "upperCaseTxHash": "0X5D9BF2E3F9716991306DE86368BAA002ADEE69748082FBE2F260784E686F5E47"
+    }
   }
 }

@@ -1,6 +1,8 @@
 {
   "traders": {
-    "validAddress": "0x4415aF1941Df328B5ADa8F93a7141ABAec8296DF",
-    "inValidAddress": "0x4415aF1941DF328b5111222337141abAec8296dF"
+    "address": {
+      "validAddress": "0x4415aF1941Df328B5ADa8F93a7141ABAec8296DF",
+      "upperCaseAddress": "0X4415AF1941DF328B5111222337141ABAEC8296DF"
+    }
   }
 }

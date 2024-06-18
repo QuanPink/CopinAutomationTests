@@ -8,13 +8,22 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Positions {
-    private PositionsTxHash positions;
+    private PositionDetails positions;
 
     @Getter
     @Setter
     @ToString
-    public static class PositionsTxHash {
+    public static class PositionDetails {
+        private TxHash openPosition;
+        private TxHash closePosition;
+        private TxHash liquidatePosition;
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    public static class TxHash {
         private String validTxHash;
-        private String inValidTxHash;
+        private String upperCaseTxHash;
     }
 }

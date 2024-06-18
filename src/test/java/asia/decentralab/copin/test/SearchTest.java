@@ -31,28 +31,28 @@ public class SearchTest extends BaseTest {
 
     @Test(description = "Search valid trader")
     public void tc001SearchValidTrader() {
-        homePage.searchTrader(traders.getTraders().getValidAddress());
+        homePage.searchTrader(traders.getTraders().getAddress().getValidAddress());
         Assert.assertTrue(homePage.isNumberSearchResult());
-        Assert.assertTrue(homePage.isSearchResultValid(traders.getTraders().getValidAddress()));
+        Assert.assertTrue(homePage.isSearchResultValid(traders.getTraders().getAddress().getValidAddress()));
     }
 
     @Test(description = "Search inValid trader")
     public void tc002SearchInvalidTrader() {
-        homePage.searchTrader(traders.getTraders().getInValidAddress());
+        homePage.searchTrader(traders.getTraders().getAddress().getUpperCaseAddress());
         Assert.assertTrue(homePage.isNoResultsMessageTraderDisplayed());
     }
 
     @Test(description = "Search valid txHash")
     public void tc003SearchValidTxHash() {
-        homePage.searchTrader(positions.getPositions().getValidTxHash());
+        homePage.searchTrader(positions.getPositions().getClosePosition().getValidTxHash());
         Assert.assertTrue(homePage.isNumberSearchResult());
         homePage.viewAllResultSearch();
-        Assert.assertTrue(homePage.isSearchResultTxHash(positions.getPositions().getValidTxHash()));
+        Assert.assertTrue(homePage.isSearchResultTxHash(positions.getPositions().getClosePosition().getValidTxHash()));
     }
 
     @Test(description = "Search inValid txHash")
     public void tc004SearchInvalidTxHash() {
-        homePage.searchTrader(positions.getPositions().getInValidTxHash());
+        homePage.searchTrader(positions.getPositions().getClosePosition().getUpperCaseTxHash());
         Assert.assertTrue(homePage.isNoResultsMessageTxHashDisplayed());
     }
 }
