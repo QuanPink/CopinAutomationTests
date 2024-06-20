@@ -1,6 +1,5 @@
 package asia.decentralab.copin.pages;
 
-import asia.decentralab.copin.browser.Driver;
 import asia.decentralab.copin.element.Element;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
@@ -17,7 +16,6 @@ public class BasePage {
     private final Element searchTextbox = new Element(By.xpath("//header//div/input[@placeholder='Search for wallets or transactions']"));
     private final Element searchResultBtn = new Element(By.xpath("//header//div[contains(@class, 'styled__SearchResult')]//button[div[contains(text(), 'View All')]]"));
     private final Element resultSearchItem = new Element(By.xpath("//header//div[contains(@class, 'SearchResult')]//button[@type='button']//a"));
-    private final Element resultSearchTxHashItemDetail = new Element(By.xpath("//div[contains(@class, 'base__Box')]//button[div[contains(@class, 'base__Flex')]]"));
     private final Element resultMessageSearchTrader = new Element(By.xpath("//header//div[contains(@class,'styled__SearchResult')]//div[contains(text(),'No Trader Found')]"));
     private final Element resultMessageSearchTxHash = new Element(By.xpath("//header//div[contains(@class,'styled__SearchResult')]//div[contains(text(),'No Transaction Found')]"));
 
@@ -51,16 +49,16 @@ public class BasePage {
         searchResultBtn.click();
     }
 
-    @Step("Check number result search")
-    public boolean isNumberSearchResult() {
+    @Step("Check the number search results are correct")
+    public boolean isNumberSearchResultsCorrect() {
         int resultsSize = resultSearchItem.findElements().size();
         String resultsCount = String.valueOf(resultsSize);
         String resultNumber = searchResultBtn.getText();
         return resultNumber.contains(resultsCount);
     }
 
-    @Step("Check result search trader")
-    public boolean isSearchResultValid(String traderAddress) {
+    @Step("Check the trader search results are correct")
+    public boolean isTraderSearchResultsCorrect(String traderAddress) {
         List<WebElement> results = resultSearchItem.findElements();
         if (results == null || results.isEmpty()) {
             return false;
@@ -76,32 +74,13 @@ public class BasePage {
         return true;
     }
 
-    @Step("Check result search txHash")
-    public boolean isSearchResultTxHash(String txHashPosition) {
-        List<WebElement> results = resultSearchTxHashItemDetail.findElements();
-        if (results == null || results.isEmpty()) {
-            return false;
-        }
-
-        Set<String> uniqueResults = new HashSet<>();
-        for (WebElement result : results) {
-            result.click();
-            String resultValue = Driver.getCurrentUrl();
-            if (!resultValue.contains(txHashPosition) || !uniqueResults.add(resultValue)) {
-                return false;
-            }
-            Driver.backToPreviousPage();
-        }
-        return true;
-    }
-
-    @Step("Check message search trader")
-    public boolean isNoResultsMessageTraderDisplayed() {
+    @Step("Check the message not find trader displayed")
+    public boolean isMessageTraderNotFoundDisplay() {
         return resultMessageSearchTrader.isDisplayed();
     }
 
-    @Step("Check message search txHash")
-    public boolean isNoResultsMessageTxHashDisplayed() {
+    @Step("Check the message not find txHash displayed")
+    public boolean isMessageTxHashNotFoundDisplay() {
         return resultMessageSearchTxHash.isDisplayed();
     }
 }

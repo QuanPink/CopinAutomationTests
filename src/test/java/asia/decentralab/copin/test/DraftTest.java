@@ -20,16 +20,16 @@ public class DraftTest {
 //        }
 //    }
 
-    @DataProvider(name = "listOfTrader")
-    public Object[][] dpMethod(){
-        Positions positions = JsonUtils.readJsonFile(Constant.POSITIONS_FILE_PATH, Positions.class);
-        Positions.Position closedPosition = positions.getClosePosition();
-        Positions.Position liquidatePosition = positions.getLiquidatePosition();
-        return new Object[][] {{closedPosition}, {liquidatePosition}};
-    }
-
-    @Test (dataProvider = "listOfTrader")
-    public void myTest (Positions.Position position) {
-        System.out.println("Tx Hash of the position : " + position.getTxHash());
-    }
+//    @DataProvider(name = "listOfTrader")
+//    public Object[][] dpMethod(){
+//        Positions positions = JsonUtils.readJsonFile(Constant.POSITIONS_FILE_PATH, Positions.class);
+//        Positions.Position closedPosition = positions.getClosePosition();
+//        Positions.Position liquidatePosition = positions.getLiquidatePosition();
+//        return new Object[][] {{closedPosition}, {liquidatePosition}};
+//    }
+//
+//    @Test (dataProvider = "listOfTrader")
+//    public void myTest (Positions.Position position) {
+//        System.out.println("Tx Hash of the position : " + position.getTxHash());
+//    }
 }

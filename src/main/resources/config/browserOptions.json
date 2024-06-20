@@ -1,14 +1,11 @@
 {
   "chromeOptions": [
-    "--start-maximized",
-    "--disable-extensions"
+    "window-size=1920x1080"
   ],
   "firefoxOptions": [
-    "--start-maximized",
-    "--disable-extensions"
+    "window-size=1920x1080"
   ],
   "edgeOptions": [
-    "--start-maximized",
-    "--disable-extensions"
+    "window-size=1920x1080"
   ]
 }

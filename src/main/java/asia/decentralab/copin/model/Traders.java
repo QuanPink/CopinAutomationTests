@@ -8,20 +8,15 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Traders {
-    private TraderDetails traders;
+    private Trader gmxTrader;
+    private Trader gnsTrader;
+    private Trader kwentaTrader;
+    private Trader invalidTrader;
 
     @Getter
     @Setter
     @ToString
-    public static class TraderDetails {
-        private Address address;
-    }
-
-    @Getter
-    @Setter
-    @ToString
-    public static class Address {
-        private String validAddress;
-        private String upperCaseAddress;
+    public static class Trader {
+        private String address;
     }
 }
