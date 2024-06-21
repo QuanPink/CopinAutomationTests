@@ -10,6 +10,7 @@ import lombok.ToString;
 public class Config {
     private String browser;
     private boolean headless;
+    private boolean extensions;
     private String baseUrl;
     private String remoteHub;
 }

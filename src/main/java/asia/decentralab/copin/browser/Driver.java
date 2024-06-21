@@ -2,6 +2,7 @@ package asia.decentralab.copin.browser;
 
 import asia.decentralab.copin.config.Config;
 import asia.decentralab.copin.data.enumdata.BrowserType;
+import asia.decentralab.copin.utils.WaitUtils;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -10,6 +11,7 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class Driver {
     private static final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
@@ -24,6 +26,7 @@ public class Driver {
                 if (config.isHeadless()) {
                     chromeOptions.addArguments("--headless");
                 }
+                ExtensionHelper.addChromeExtensions(chromeOptions);
                 driverInstance = new ChromeDriver(chromeOptions);
                 break;
             case EDGE:
@@ -32,6 +35,7 @@ public class Driver {
                 if (config.isHeadless()) {
                     edgeOptions.addArguments("--headless");
                 }
+                ExtensionHelper.addEdgeExtensions(edgeOptions);
                 driverInstance = new EdgeDriver(edgeOptions);
                 break;
             case FIREFOX:
@@ -40,6 +44,7 @@ public class Driver {
                 if (config.isHeadless()) {
                     firefoxOptions.addArguments("--headless");
                 }
+                ExtensionHelper.addFireFoxExtensions(firefoxOptions);
                 driverInstance = new FirefoxDriver(firefoxOptions);
                 break;
             default:
@@ -71,6 +76,13 @@ public class Driver {
     public static void closeBrowser() {
         if (getDriver() != null) {
             getDriver().quit();
+        }
+    }
+
+    public void switchToWindow(int number) {
+        WaitUtils.waiting().until(ExpectedConditions.numberOfWindowsToBe(number));
+        for (String windowHandle : getDriver().getWindowHandles()) {
+            getDriver().switchTo().window(windowHandle);
         }
     }
 

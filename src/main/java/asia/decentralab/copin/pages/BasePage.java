@@ -1,6 +1,5 @@
 package asia.decentralab.copin.pages;
 
-import asia.decentralab.copin.browser.Driver;
 import asia.decentralab.copin.element.Element;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
@@ -16,8 +15,7 @@ public class BasePage {
     private final Element openInterestBtn = new Element(By.xpath("//header//a[@class='navlink-default']//span[normalize-space()='Open Interest']"));
     private final Element searchTextbox = new Element(By.xpath("//header//div/input[@placeholder='Search for wallets or transactions']"));
     private final Element searchResultBtn = new Element(By.xpath("//header//div[contains(@class, 'styled__SearchResult')]//button[div[contains(text(), 'View All')]]"));
-    private final String resultSearchItem = "//header//div[contains(@class, 'SearchResult')]//button[@type='button']//a";
-    private final String resultSearchTxHashItemDetail = "//div[contains(@class, 'base__Box')]//button[div[contains(@class, 'base__Flex')]]";
+    private final Element resultSearchItem = new Element(By.xpath("//header//div[contains(@class, 'SearchResult')]//button[@type='button']//a"));
     private final Element resultMessageSearchTrader = new Element(By.xpath("//header//div[contains(@class,'styled__SearchResult')]//div[contains(text(),'No Trader Found')]"));
     private final Element resultMessageSearchTxHash = new Element(By.xpath("//header//div[contains(@class,'styled__SearchResult')]//div[contains(text(),'No Transaction Found')]"));
 
@@ -26,10 +24,12 @@ public class BasePage {
         homeBtn.click();
     }
 
+    @Step("Go to Trader Explorer page")
     public void goToTraderExplorerPage() {
         traderExplorerBtn.click();
     }
 
+    @Step("Go to Open Interest page")
     public void goToOpenInterestPage() {
         openInterestBtn.click();
     }
@@ -49,20 +49,17 @@ public class BasePage {
         searchResultBtn.click();
     }
 
-    public boolean isNumberSearchResult() {
-        Element resultsElement = new Element(By.xpath(resultSearchItem));
-        int resultsSize = resultsElement.findElements().size();
+    @Step("Check the number search results are correct")
+    public boolean isNumberSearchResultsCorrect() {
+        int resultsSize = resultSearchItem.findElements().size();
         String resultsCount = String.valueOf(resultsSize);
         String resultNumber = searchResultBtn.getText();
-        if (!resultNumber.contains(resultsCount)) {
-            return false;
-        }
-        return true;
+        return resultNumber.contains(resultsCount);
     }
 
-    public boolean isSearchResultValid(String traderAddress) {
-        Element resultsElement = new Element(By.xpath(resultSearchItem));
-        List<WebElement> results = resultsElement.findElements();
+    @Step("Check the trader search results are correct")
+    public boolean isTraderSearchResultsCorrect(String traderAddress) {
+        List<WebElement> results = resultSearchItem.findElements();
         if (results == null || results.isEmpty()) {
             return false;
         }
@@ -77,31 +74,13 @@ public class BasePage {
         return true;
     }
 
-    public boolean isSearchResultTxHash(String txHashPosition) {
-        Element resultElement = new Element(By.xpath(resultSearchTxHashItemDetail));
-        List<WebElement> results = resultElement.findElements();
-
-        if (results == null || results.isEmpty()) {
-            return false;
-        }
-
-        Set<String> uniqueResults = new HashSet<>();
-        for (WebElement result : results) {
-            result.click();
-            String resultValue = Driver.getCurrentUrl();
-            if (!resultValue.contains(txHashPosition) || !uniqueResults.add(resultValue)) {
-                return false;
-            }
-            Driver.backToPreviousPage();
-        }
-        return true;
-    }
-
-    public boolean isNoResultsMessageTraderDisplayed() {
+    @Step("Check the message not find trader displayed")
+    public boolean isMessageTraderNotFoundDisplay() {
         return resultMessageSearchTrader.isDisplayed();
     }
 
-    public boolean isNoResultsMessageTxHashDisplayed() {
+    @Step("Check the message not find txHash displayed")
+    public boolean isMessageTxHashNotFoundDisplay() {
         return resultMessageSearchTxHash.isDisplayed();
     }
 }

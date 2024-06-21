@@ -1,0 +1,14 @@
+{
+  "gmxTrader": {
+    "address": "0x4415aF1941Df328B5ADa8F93a7141ABAec8296DF"
+  },
+  "gnsTrader": {
+    "address": "0x4415aF1941Df328B5ADa8F93a7141ABAec8296DF"
+  },
+  "kwentaTrader": {
+    "address": "0x4415aF1941Df328B5ADa8F93a7141ABAec8296DF"
+  },
+  "invalidTrader": {
+    "address": "0x1111111111111111111111111111111111111111"
+  }
+}
