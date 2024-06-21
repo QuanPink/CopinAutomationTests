@@ -1,18 +1,15 @@
 package asia.decentralab.copin.element;
 
-import asia.decentralab.copin.browser.Driver;
-import asia.decentralab.copin.config.Constant;
+import asia.decentralab.copin.utils.WaitUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
 import java.util.List;
 
 public class Element {
     private final By locator;
-    private final WebDriver driver = Driver.getDriver();
-    private final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(Constant.WAIT_TIMEOUT_SECONDS));
+    private final WebDriverWait wait = WaitUtils.waiting();
 
     public Element(By locator) {
         this.locator = locator;

@@ -65,5 +65,6 @@ public class SearchTest extends BaseTest {
     public void tc004SearchInvalidTxHash() {
         homePage.searchTrader(invalidPosition.getTxHash());
         Assert.assertTrue(homePage.isMessageTxHashNotFoundDisplay());
+        Assert.assertTrue(false);
     }
 }
