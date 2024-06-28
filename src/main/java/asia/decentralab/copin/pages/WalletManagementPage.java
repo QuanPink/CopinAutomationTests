@@ -20,7 +20,7 @@ public class WalletManagementPage extends BasePage {
         new Element(By.xpath(String.format(dynamicCreateWalletButton, wallet.getValue()))).click();
     }
 
-    @Step("Expand Wallet Detail")
+    @Step("Expand Wallet detail")
     public void expandWalletDetail(WalletType wallet) {
         new Element(By.xpath(String.format(dynamicGroupNameLabel, wallet.getValue()))).click();
     }

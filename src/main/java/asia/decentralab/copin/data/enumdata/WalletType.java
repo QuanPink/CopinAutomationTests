@@ -4,8 +4,8 @@ public enum WalletType {
     BINGX("BingX Exchange"),
     BITGET("Bitget Exchange"),
     OKX("OKX Exchange"),
-    GATE("Copy Position"),
-    BYBIT("Gate Exchange");
+    GATE("Gate Exchange"),
+    BYBIT("Bybit Exchange");
 
     private String walletName;
 

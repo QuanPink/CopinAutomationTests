@@ -14,6 +14,11 @@ public class Wallets {
     private Wallet bybitExchange;
     private Wallet okxExchange;
     private Wallet gateExchange;
+    private Wallet invalidBingXExchange;
+    private Wallet invalidBitgetExchange;
+    private Wallet invalidBybitExchange;
+    private Wallet invalidOkxExchange;
+    private Wallet invalidGateExchange;
 
 
     @Getter
@@ -30,3 +35,4 @@ public class Wallets {
         }
     }
 }
+

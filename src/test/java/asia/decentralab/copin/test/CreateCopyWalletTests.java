@@ -12,11 +12,14 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.Console;
+
 public class CreateCopyWalletTests extends BaseTest {
     private HomePage homePage;
     private WalletManagementPage walletManagementPage;
     private CreateWalletPage createWalletPage;
     private Wallets.Wallet bingXExchange;
+    private Wallets.Wallet invalidBingXExchange;
 
     @BeforeClass
     public void setup() {
@@ -27,11 +30,23 @@ public class CreateCopyWalletTests extends BaseTest {
 
         Wallets wallets = JsonUtils.readJsonFile(Constant.WALLETS_FILE_PATH, Wallets.class);
         bingXExchange = wallets.getBingXExchange();
+        invalidBingXExchange = wallets.getInvalidBingXExchange();
     }
 
     @AfterMethod
     public void afterEachTest() {
         homePage.goToHomePage();
+    }
+
+    @Test(description = "Check user is not able to import BingX wallet with invalid API key")
+    public void wmg02CreateInvalidBingXWallet() {
+        //login
+        homePage.goToWalletManagement();
+        walletManagementPage.goToCreateWalletPage(WalletType.BINGX);
+        createWalletPage.createWallet(invalidBingXExchange);
+        createWalletPage.closeCreateWalletPopup();
+        Assert.assertTrue(createWalletPage.isErrorMessageDisplayed());
+        createWalletPage.closeCreateWalletPopup();
     }
 
     @Test(description = "Check user is able to create BingX wallet with valid API key")
