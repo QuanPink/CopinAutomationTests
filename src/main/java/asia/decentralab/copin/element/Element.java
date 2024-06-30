@@ -26,8 +26,8 @@ public class Element {
     public List<WebElement> findElements() {
         try {
             return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
-        } catch (TimeoutException e) {
-            throw new RuntimeException("Elements not found: " + locator, e);
+        } catch(TimeoutException e) {
+            throw new TimeoutException("Elements not found: " + locator);
         }
     }
 

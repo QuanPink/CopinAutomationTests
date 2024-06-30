@@ -1,0 +1,26 @@
+[12903:259:0624/170717.134268:WARNING:chrome_main_delegate.cc(742)] This is Chrome version 126.0.6478.115 (not a warning)
+[12903:259:0624/170717.515865:ERROR:chrome_browser_main.cc(1123)] The use of Rosetta to run the x64 version of Chromium on Arm is neither tested nor maintained, and unexpected behavior will likely result. Please check that all tools that spawn Chromium are Arm-native.
+[12903:259:0624/170720.600389:INFO:chrome_browser_cloud_management_controller.cc(196)] No machine level policy manager exists.
+[12903:259:0624/170720.756082:WARNING:browser_management_service.cc(128)] EnterpriseLogoUrl fetch failed with error code -1 and MIME type 
+[12903:259:0624/170720.767434:ERROR:dock.mm(173)] persistent_apps is not an NSArray
+[12903:259:0624/170721.186372:ERROR:dock.mm(173)] persistent_apps is not an NSArray
+[12903:259:0624/170738.675580:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:5158
+[12903:259:0624/170738.882198:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:265059
+[12903:259:0624/170739.012154:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:883094
+[12903:259:0624/170739.241021:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:2200227
+[12903:259:0624/170739.271779:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:45187
+[12903:259:0624/170739.696902:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:2747170
+[12903:259:0624/170740.767127:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:3844
+[12903:259:0624/170741.078786:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:1463571
+[12903:259:0624/170741.668369:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:4680
+[12903:259:0624/170744.588306:INFO:CONSOLE(198)] "Ignoring unsupported server response {"status":"error","error":"Rate limit exceeded"}.", source: https://app.copin.io/assets/index-c3c6dc37.js (198)
+[12903:259:0624/170744.594931:INFO:CONSOLE(198)] "Connection closed unexpectedly or because of timeout. Reconnecting after 200ms.", source: https://app.copin.io/assets/index-c3c6dc37.js (198)
+[12903:259:0624/170753.169995:INFO:CONSOLE(198)] "Ignoring unsupported server response {"status":"error","error":"Rate limit exceeded"}.", source: https://app.copin.io/assets/index-c3c6dc37.js (198)
+[12903:259:0624/170753.170083:INFO:CONSOLE(198)] "Connection closed unexpectedly or because of timeout. Reconnecting after 200ms.", source: https://app.copin.io/assets/index-c3c6dc37.js (198)
+[12903:259:0624/171104.546934:INFO:CONSOLE(198)] "Ignoring unsupported server response {"status":"error","error":"Rate limit exceeded"}.", source: https://app.copin.io/assets/index-c3c6dc37.js (198)
+[12903:259:0624/171104.547341:INFO:CONSOLE(198)] "Connection closed unexpectedly or because of timeout. Reconnecting after 200ms.", source: https://app.copin.io/assets/index-c3c6dc37.js (198)
+[12903:259:0624/171213.994661:INFO:CONSOLE(198)] "Ignoring unsupported server response {"status":"error","error":"Rate limit exceeded"}.", source: https://app.copin.io/assets/index-c3c6dc37.js (198)
+[12903:259:0624/171213.994765:INFO:CONSOLE(198)] "Connection closed unexpectedly or because of timeout. Reconnecting after 200ms.", source: https://app.copin.io/assets/index-c3c6dc37.js (198)
+[12903:259:0624/171221.592526:INFO:CONSOLE(198)] "Ignoring unsupported server response {"status":"error","error":"Rate limit exceeded"}.", source: https://app.copin.io/assets/index-c3c6dc37.js (198)
+[12903:259:0624/171221.744290:INFO:CONSOLE(198)] "Connection closed unexpectedly or because of timeout. Reconnecting after 200ms.", source: https://app.copin.io/assets/index-c3c6dc37.js (198)
+[12903:259:0624/171258.604049:WARNING:pref_notifier_impl.cc(41)] Pref observer for media_router.cast_allow_all_ips found at shutdown.

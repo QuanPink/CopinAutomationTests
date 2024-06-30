@@ -19,7 +19,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>4.21.0</version>
+            <version>4.22.0</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/io.github.bonigarcia/webdrivermanager -->
@@ -56,6 +56,13 @@
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-testng</artifactId>
             <version>2.27.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.github.sukgu/automation -->
+        <dependency>
+            <groupId>io.github.sukgu</groupId>
+            <artifactId>automation</artifactId>
+            <version>0.1.5</version>
         </dependency>
     </dependencies>
 

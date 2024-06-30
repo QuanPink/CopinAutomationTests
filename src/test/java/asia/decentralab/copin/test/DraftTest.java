@@ -1,14 +1,39 @@
 package asia.decentralab.copin.test;
 
+import asia.decentralab.copin.browser.Driver;
 import asia.decentralab.copin.config.Constant;
-import asia.decentralab.copin.data.ProtocolData;
-import asia.decentralab.copin.model.Positions;
-import asia.decentralab.copin.utils.APIUtils;
+import asia.decentralab.copin.config.DeFiWallets;
+import asia.decentralab.copin.pages.LoginPage;
 import asia.decentralab.copin.utils.JsonUtils;
-import org.testng.annotations.DataProvider;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class DraftTest {
+public class DraftTest extends BaseTest {
+
+    @BeforeClass
+    public void setup() throws InterruptedException {
+        super.setup();
+        LoginPage loginPage = new LoginPage();
+
+        DeFiWallets deFiWallets = JsonUtils.readJsonFile(Constant.DE_FI_WALLETS_FILE_PATH, DeFiWallets.class);
+        DeFiWallets.Wallet metamask = deFiWallets.getMetamask();
+
+        Driver.openNewWindow();
+        Driver.switchToWindow(2);
+        Driver.navigate("chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html");
+        loginPage.setupMetamaskAccount(metamask.getSecretRecoveryPhrase(), metamask.getPassword());
+        Driver.closeWindow();
+        Driver.switchToWindow(1);
+
+        Driver.refreshPage();
+        loginPage.connectWallet();
+    }
+
+    @Test
+    public void createInvalidWallet() {
+
+    }
+
 //    @Test(description = "Test Call API")
 //    public void callApi(){
 //        ProtocolData protocolData = JsonUtils.readJsonFile(Constant.GMX_DATA_FILE_PATH, ProtocolData.class);

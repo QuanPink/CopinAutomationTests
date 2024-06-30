@@ -10,28 +10,28 @@ import java.util.List;
 import java.util.Set;
 
 public class BasePage {
-    private final Element homeBtn = new Element(By.xpath("//header//a[contains(@class, 'navlink-default')]//span[normalize-space()='Home']"));
-    private final Element traderExplorerBtn = new Element(By.xpath("//header//a[@class='navlink-default']//span[normalize-space()='Traders Explorer']"));
-    private final Element openInterestBtn = new Element(By.xpath("//header//a[@class='navlink-default']//span[normalize-space()='Open Interest']"));
+    private final Element homeButton = new Element(By.xpath("//header//a[contains(@class, 'navlink-default')]//span[normalize-space()='Home']"));
+    private final Element traderExplorerButton = new Element(By.xpath("//header//a[@class='navlink-default']//span[normalize-space()='Traders Explorer']"));
+    private final Element openInterestButton = new Element(By.xpath("//header//a[@class='navlink-default']//span[normalize-space()='Open Interest']"));
     private final Element searchTextbox = new Element(By.xpath("//header//div/input[@placeholder='Search for wallets or transactions']"));
-    private final Element searchResultBtn = new Element(By.xpath("//header//div[contains(@class, 'styled__SearchResult')]//button[div[contains(text(), 'View All')]]"));
-    private final Element resultSearchItem = new Element(By.xpath("//header//div[contains(@class, 'SearchResult')]//button[@type='button']//a"));
-    private final Element resultMessageSearchTrader = new Element(By.xpath("//header//div[contains(@class,'styled__SearchResult')]//div[contains(text(),'No Trader Found')]"));
-    private final Element resultMessageSearchTxHash = new Element(By.xpath("//header//div[contains(@class,'styled__SearchResult')]//div[contains(text(),'No Transaction Found')]"));
+    private final Element searchResultButton = new Element(By.xpath("//header//div[contains(@class, 'styled__SearchResult')]//button[div[contains(text(), 'View All')]]"));
+    private final Element searchResultItem = new Element(By.xpath("//header//div[contains(@class, 'SearchResult')]//button[@type='button']//a"));
+    private final Element traderSearchResultMessage = new Element(By.xpath("//header//div[contains(@class,'styled__SearchResult')]//div[contains(text(),'No Trader Found')]"));
+    private final Element txHashSearchResultMessage = new Element(By.xpath("//header//div[contains(@class,'styled__SearchResult')]//div[contains(text(),'No Transaction Found')]"));
 
     @Step("Go to Home page")
     public void goToHomePage() {
-        homeBtn.click();
+        homeButton.click();
     }
 
     @Step("Go to Trader Explorer page")
     public void goToTraderExplorerPage() {
-        traderExplorerBtn.click();
+        traderExplorerButton.click();
     }
 
     @Step("Go to Open Interest page")
     public void goToOpenInterestPage() {
-        openInterestBtn.click();
+        openInterestButton.click();
     }
 
     @Step("Search trader")
@@ -46,20 +46,20 @@ public class BasePage {
 
     @Step("View all search result")
     public void viewAllResultSearch() {
-        searchResultBtn.click();
+        searchResultButton.click();
     }
 
     @Step("Check the number search results are correct")
     public boolean isNumberSearchResultsCorrect() {
-        int resultsSize = resultSearchItem.findElements().size();
+        int resultsSize = searchResultItem.findElements().size();
         String resultsCount = String.valueOf(resultsSize);
-        String resultNumber = searchResultBtn.getText();
+        String resultNumber = searchResultButton.getText();
         return resultNumber.contains(resultsCount);
     }
 
     @Step("Check the trader search results are correct")
     public boolean isTraderSearchResultsCorrect(String traderAddress) {
-        List<WebElement> results = resultSearchItem.findElements();
+        List<WebElement> results = searchResultItem.findElements();
         if (results == null || results.isEmpty()) {
             return false;
         }
@@ -76,11 +76,11 @@ public class BasePage {
 
     @Step("Check the message not find trader displayed")
     public boolean isMessageTraderNotFoundDisplay() {
-        return resultMessageSearchTrader.isDisplayed();
+        return traderSearchResultMessage.isDisplayed();
     }
 
     @Step("Check the message not find txHash displayed")
     public boolean isMessageTxHashNotFoundDisplay() {
-        return resultMessageSearchTxHash.isDisplayed();
+        return txHashSearchResultMessage.isDisplayed();
     }
 }

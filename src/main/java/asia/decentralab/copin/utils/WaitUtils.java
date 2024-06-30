@@ -11,6 +11,6 @@ public class WaitUtils {
     private static final WebDriver driver = Driver.getDriver();
 
     public static WebDriverWait waiting() {
-        return new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(Constant.WAIT_TIMEOUT_SECONDS));
+        return new WebDriverWait(driver, Duration.ofSeconds(Constant.WAIT_TIMEOUT_SECONDS));
     }
 }

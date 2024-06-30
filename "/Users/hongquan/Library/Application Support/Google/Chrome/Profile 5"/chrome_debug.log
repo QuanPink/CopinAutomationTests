@@ -1,0 +1,22 @@
+[11974:259:0624/161915.497919:WARNING:chrome_main_delegate.cc(742)] This is Chrome version 126.0.6478.115 (not a warning)
+[11974:259:0624/161915.668070:ERROR:chrome_browser_main.cc(1123)] The use of Rosetta to run the x64 version of Chromium on Arm is neither tested nor maintained, and unexpected behavior will likely result. Please check that all tools that spawn Chromium are Arm-native.
+[11974:259:0624/161918.718994:INFO:chrome_browser_cloud_management_controller.cc(196)] No machine level policy manager exists.
+[11974:259:0624/161918.766892:WARNING:browser_management_service.cc(128)] EnterpriseLogoUrl fetch failed with error code -1 and MIME type 
+[11974:259:0624/161918.771784:ERROR:dock.mm(173)] persistent_apps is not an NSArray
+[11974:259:0624/161919.064437:ERROR:dock.mm(173)] persistent_apps is not an NSArray
+[11974:259:0624/162025.807206:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:883094
+[11974:259:0624/162026.026271:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:2200227
+[11974:259:0624/162026.142584:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:45187
+[11974:259:0624/162026.361376:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:4680
+[11974:259:0624/162026.785891:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:2747170
+[11974:259:0624/162027.677341:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:1463571
+[11974:259:0624/162028.081018:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:265059
+[11974:259:0624/162028.222761:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:3844
+[11974:259:0624/162028.477997:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:883094
+[11974:259:0624/162028.742591:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:45187
+[11974:259:0624/162028.908250:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:2200227
+[11974:259:0624/162029.095206:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:4680
+[11974:259:0624/162029.283267:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:3844
+[11974:259:0624/162029.302491:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:2747170
+[11974:259:0624/162030.306683:WARNING:controller_impl.cc(1192)] Background download complete, client: 6, completion type: 0, file size:1463571
+[11974:259:0624/162045.099484:WARNING:pref_notifier_impl.cc(41)] Pref observer for media_router.cast_allow_all_ips found at shutdown.

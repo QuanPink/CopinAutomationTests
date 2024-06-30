@@ -1,9 +1,9 @@
 {
   "chromeOptions": [
-    "--start-maximized"
+    "window-size=1920x1080"
   ],
   "firefoxOptions": [
-    "--start-maximized"
+    "window-size=1920x1080"
   ],
   "edgeOptions": [
     "window-size=1920x1080"

@@ -4,6 +4,7 @@ import asia.decentralab.copin.config.Config;
 import asia.decentralab.copin.data.enumdata.BrowserType;
 import asia.decentralab.copin.utils.WaitUtils;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -12,6 +13,8 @@ import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+
+import java.util.Set;
 
 public class Driver {
     private static final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
@@ -55,6 +58,7 @@ public class Driver {
 
     public static void navigate(String path) {
         getDriver().get(path);
+        getDriver().manage().window().maximize();
     }
 
     public static String getTitle() {
@@ -73,16 +77,38 @@ public class Driver {
         getDriver().navigate().refresh();
     }
 
+    public static void closeWindow() {
+        if (getDriver() != null) {
+            getDriver().close();
+        }
+    }
+
     public static void closeBrowser() {
         if (getDriver() != null) {
             getDriver().quit();
         }
     }
 
-    public void switchToWindow(int number) {
-        WaitUtils.waiting().until(ExpectedConditions.numberOfWindowsToBe(number));
+    public static void openNewWindow(){
+        ((JavascriptExecutor) getDriver()).executeScript("window.open()");
+    }
+
+    public static void switchToWindow(int windowNumber) {
+        WaitUtils.waiting().until(ExpectedConditions.numberOfWindowsToBe(windowNumber));
         for (String windowHandle : getDriver().getWindowHandles()) {
             getDriver().switchTo().window(windowHandle);
+        }
+    }
+
+    public static void closeMetamaskWindow(int windowNumber) {
+        WaitUtils.waiting().until(ExpectedConditions.numberOfWindowsToBe(windowNumber));
+        Set<String> windows = getDriver().getWindowHandles();
+
+        for (String window : windows) {
+            getDriver().switchTo().window(window);
+            if (getDriver().getWindowHandles().size() > 1) {
+                getDriver().close();
+            }
         }
     }
 
