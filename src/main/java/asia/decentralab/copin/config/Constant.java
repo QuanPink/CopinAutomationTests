@@ -1,7 +1,7 @@
 package asia.decentralab.copin.config;
 
 public class Constant {
-    public static final int WAIT_TIMEOUT_SECONDS = 120;
+    public static final int WAIT_TIMEOUT_SECONDS = 30;
     public static final String CONFIG_BROWSER_FILE_PATH = "src/main/resources/config/config.json";
     public static final String BROWSER_OPTIONS_FILE_PATH = "src/main/resources/config/browserOptions.json";
     public static final String METAMASK_EXTENSION_FILE_PATH = "src/main/resources/extensions/MetaMask.crx";

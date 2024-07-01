@@ -54,7 +54,7 @@ public class Element {
     public boolean isEnable() {
         try {
             return findElement().isEnabled();
-        } catch (org.openqa.selenium.NoSuchElementException | org.openqa.selenium.StaleElementReferenceException e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -62,7 +62,7 @@ public class Element {
     public boolean isDisplayed() {
         try {
             return findElement().isDisplayed();
-        } catch (org.openqa.selenium.NoSuchElementException | org.openqa.selenium.StaleElementReferenceException e) {
+        } catch (Exception e) {
             return false;
         }
     }

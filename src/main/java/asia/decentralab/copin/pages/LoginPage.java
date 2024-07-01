@@ -70,6 +70,8 @@ public class LoginPage {
     public void connectWallet() throws InterruptedException {
         connectWalletButton.click();
 
+        System.out.println(Driver.getDriver().getWindowHandles());
+
         Shadow shadow = new Shadow(Driver.getDriver());
         WaitUtils.waiting().until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("onboard-v2")));
         List<WebElement> elements = shadow.findElements("section .wallet-button-container .name");
@@ -95,22 +97,23 @@ public class LoginPage {
     }
 
     public void confirmLoginMetaMask() throws InterruptedException {
-        try {
-            if (inputPasswordTextbox.isDisplayed()) {
-                inputPasswordTextbox.enter("123123123");
-                unLockButton.click();
-                nextButton.click();
-                confirmButton.click();
-                Thread.sleep(20000);
-                signButton.click();
-                Driver.switchToWindow(2);
-                Driver.closeWindow();
-                Driver.switchToWindow(1);
-            }
-        } catch (NoSuchElementException e) {
+        System.out.println(Driver.getDriver().getWindowHandles());
+        if (inputPasswordTextbox.isDisplayed()) {
+            inputPasswordTextbox.enter("123123123");
+            unLockButton.click();
             nextButton.click();
             confirmButton.click();
             Thread.sleep(20000);
+            signButton.click();
+            Driver.switchToWindow(2);
+            Driver.closeWindow();
+            Driver.switchToWindow(1);
+        } else {
+            nextButton.click();
+            System.out.println(Driver.getDriver().getWindowHandles());
+            confirmButton.click();
+            Thread.sleep(20000);
+            System.out.println(Driver.getDriver().getWindowHandles());
             signButton.click();
             Driver.switchToWindow(1);
         }
