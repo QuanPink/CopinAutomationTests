@@ -14,6 +14,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class Driver {
@@ -95,8 +97,14 @@ public class Driver {
 
     public static void switchToWindow(int windowNumber) {
         WaitUtils.waiting().until(ExpectedConditions.numberOfWindowsToBe(windowNumber));
-        for (String windowHandle : getDriver().getWindowHandles()) {
-            getDriver().switchTo().window(windowHandle);
+        Set<String> windows = getDriver().getWindowHandles();
+
+        List<String> windowList = new ArrayList<>(windows);
+
+        if (!windowList.isEmpty()) {
+            getDriver().switchTo().window(windowList.get(windowList.size() - 1));
+        } else {
+            throw new IllegalStateException("No windows available to switch to.");
         }
     }
 
@@ -104,10 +112,13 @@ public class Driver {
         WaitUtils.waiting().until(ExpectedConditions.numberOfWindowsToBe(windowNumber));
         Set<String> windows = getDriver().getWindowHandles();
 
-        for (String window : windows) {
+        List<String> windowList = new ArrayList<>(windows);
+
+        for (int i = windowList.size() - 1; i >= 0; i--) {
+            String window = windowList.get(i);
             getDriver().switchTo().window(window);
             if (getDriver().getWindowHandles().size() > 1) {
-                getDriver().close();
+                closeWindow();
             }
         }
     }

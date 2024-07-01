@@ -79,7 +79,10 @@ public class LoginPage {
                 break;
             }
         }
+        confirmLoginMetaMask();
+    }
 
+    public void confirmLoginMetaMask() throws InterruptedException {
         Thread.sleep(5000);
         Set<String> windowHandles = Driver.getDriver().getWindowHandles();
 
@@ -91,24 +94,18 @@ public class LoginPage {
             print();
             System.out.println(Driver.getDriver().getCurrentUrl() + " " + Driver.getDriver().getTitle());
         }
-        Thread.sleep(10000);
-        confirmLoginMetaMask();
-    }
-
-    public void confirmLoginMetaMask() throws InterruptedException {
         System.out.println(Driver.getDriver().getCurrentUrl() + " " + Driver.getDriver().getTitle());
 //        if (!nextButton.isDisplayed()) {
 //            unlockPasswordTextbox.enter("123123123");
 //            unLockButton.click();
 //        }
 
-        WebElement nextButtonssss = Driver.getDriver().findElement(By.xpath("//button[@data-testid='page-container-footer-next']"));
+//        WebElement nextButtonssss = Driver.getDriver().findElement(By.xpath("//button[@data-testid='page-container-footer-next']"));
+//
+//        JavascriptExecutor javascriptExecutor = (JavascriptExecutor) Driver.getDriver();
+//        javascriptExecutor.executeScript("arguments[0].click();", nextButtonssss);
 
-        JavascriptExecutor javascriptExecutor = (JavascriptExecutor) Driver.getDriver();
-        javascriptExecutor.executeScript("arguments[0].click();", nextButtonssss);
-
-
-//        nextButton.click();
+        nextButton.click();
         confirmButton.click();
         Thread.sleep(10000);
         signButton.click();
