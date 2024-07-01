@@ -89,7 +89,7 @@ public class Driver {
         }
     }
 
-    public static void openNewWindow(){
+    public static void openNewWindow() {
         ((JavascriptExecutor) getDriver()).executeScript("window.open()");
     }
 

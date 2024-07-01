@@ -5,16 +5,16 @@ import asia.decentralab.copin.element.Element;
 import asia.decentralab.copin.utils.WaitUtils;
 import io.github.sukgu.Shadow;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 public class LoginPage {
     //setup metamask
-    private final Element termsOfUseCheckbox = new Element(By.id("onboarding__terms-checkbox"));
+    private final Element termsOfUseCheckbox = new Element(By.xpath("//input[@id='onboarding__terms-checkbox']"));
     private final Element importWalletButton = new Element(By.xpath("//button[@data-testid='onboarding-import-wallet']"));
     private final Element iAgreeButton = new Element(By.xpath("//button[@data-testid='metametrics-i-agree']"));
     private final Element secretRecoveryPhraseTextbox = new Element(By.xpath("//input[@type='password']"));
@@ -30,18 +30,18 @@ public class LoginPage {
 
     //login site
     private final Element connectWalletButton = new Element(By.id("login_button__id"));
-    private final Element inputPasswordTextbox = new Element(By.xpath("//input[@id='password']"));
-    private final Element unLockButton = new Element(By.xpath("//button[contains(text(),'Unlock')]"));
-    private final Element nextButton = new Element(By.xpath("//button[contains(text(),'Next')]"));
+    private final Element unlockPasswordTextbox = new Element(By.xpath("//input[@data-testid='unlock-password']"));
+    private final Element unLockButton = new Element(By.xpath("//button[@data-testid='unlock-submit']"));
+    private final Element nextButton = new Element(By.xpath("//button[@data-testid='page-container-footer-next']"));
     private final Element confirmButton = new Element(By.xpath("//button[contains(text(),'Confirm')]"));
     private final Element signButton = new Element(By.xpath("//button[contains(text(),'Sign')]"));
     private final Element confirmLoginButton = new Element(By.xpath("//button[contains(text(),'Confirm')]"));
 
     public void setupMetamaskAccount(String secretRecoveryPhrase, String password) throws InterruptedException {
         Thread.sleep(5000);
-        Set<String> windows = Driver.getDriver().getWindowHandles();
+        Set<String> windowHandles = Driver.getDriver().getWindowHandles();
 
-        if (windows.size() > 2) {
+        if (windowHandles.size() > 2) {
             Driver.switchToWindow(3);
         } else {
             Driver.switchToWindow(2);
@@ -70,8 +70,6 @@ public class LoginPage {
     public void connectWallet() throws InterruptedException {
         connectWalletButton.click();
 
-        System.out.println(Driver.getDriver().getWindowHandles());
-
         Shadow shadow = new Shadow(Driver.getDriver());
         WaitUtils.waiting().until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("onboard-v2")));
         List<WebElement> elements = shadow.findElements("section .wallet-button-container .name");
@@ -83,39 +81,51 @@ public class LoginPage {
         }
 
         Thread.sleep(5000);
-        Set<String> windows = Driver.getDriver().getWindowHandles();
+        Set<String> windowHandles = Driver.getDriver().getWindowHandles();
 
-        if (windows.size() > 2) {
+        if (windowHandles.size() > 2) {
             Driver.switchToWindow(3);
-            Thread.sleep(20000);
-            confirmLoginMetaMask();
+            print();
         } else {
             Driver.switchToWindow(2);
-            Thread.sleep(20000);
-            confirmLoginMetaMask();
+            print();
+            System.out.println(Driver.getDriver().getCurrentUrl() + " " + Driver.getDriver().getTitle());
         }
+        Thread.sleep(10000);
+        confirmLoginMetaMask();
     }
 
     public void confirmLoginMetaMask() throws InterruptedException {
-        System.out.println(Driver.getDriver().getWindowHandles());
-        if (inputPasswordTextbox.isDisplayed()) {
-            inputPasswordTextbox.enter("123123123");
-            unLockButton.click();
-            nextButton.click();
-            confirmButton.click();
-            Thread.sleep(20000);
-            signButton.click();
-            Driver.switchToWindow(2);
-            Driver.closeWindow();
-            Driver.switchToWindow(1);
-        } else {
-            nextButton.click();
-            System.out.println(Driver.getDriver().getWindowHandles());
-            confirmButton.click();
-            Thread.sleep(20000);
-            System.out.println(Driver.getDriver().getWindowHandles());
-            signButton.click();
-            Driver.switchToWindow(1);
+        System.out.println(Driver.getDriver().getCurrentUrl() + " " + Driver.getDriver().getTitle());
+//        if (!nextButton.isDisplayed()) {
+//            unlockPasswordTextbox.enter("123123123");
+//            unLockButton.click();
+//        }
+
+        WebElement nextButtonssss = Driver.getDriver().findElement(By.xpath("//button[@data-testid='page-container-footer-next']"));
+
+        JavascriptExecutor javascriptExecutor = (JavascriptExecutor) Driver.getDriver();
+        javascriptExecutor.executeScript("arguments[0].click();", nextButtonssss);
+
+
+//        nextButton.click();
+        confirmButton.click();
+        Thread.sleep(10000);
+        signButton.click();
+        Driver.switchToWindow(1);
+    }
+
+    public void print() {
+        Set<String> windowHandles = Driver.getDriver().getWindowHandles();
+        for (String handle : windowHandles) {
+            Driver.getDriver().switchTo().window(handle);
+
+            String url = Driver.getDriver().getCurrentUrl();
+            String title = Driver.getDriver().getTitle();
+
+            System.out.println("Window Handle: " + handle);
+            System.out.println("Title: " + title);
+            System.out.println("URL: " + url);
         }
     }
 }
