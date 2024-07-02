@@ -41,21 +41,21 @@ public class Element {
         }
     }
 
-    public WebElement findShadowElement(String cssSelector) {
+    public WebElement findShadowElement(String xpath) {
         try {
             wait.until(ExpectedConditions.presenceOfElementLocated(locator));
-            return shadow.findElement(cssSelector);
+            return shadow.findElementByXPath(xpath);
         } catch (TimeoutException e) {
-            throw new RuntimeException("Shadow element not found: " + cssSelector, e);
+            throw new RuntimeException("Shadow element not found: " + xpath, e);
         }
     }
 
-    public List<WebElement> findShadowElements(String cssSelector) {
+    public List<WebElement> findShadowElements(String xpath) {
         try {
             wait.until(ExpectedConditions.presenceOfElementLocated(locator));
-            return shadow.findElements(cssSelector);
+            return shadow.findElementsByXPath(xpath);
         } catch (TimeoutException e) {
-            throw new TimeoutException("Shadow elements not found: " + cssSelector);
+            throw new TimeoutException("Shadow elements not found: " + xpath, e);
         }
     }
 

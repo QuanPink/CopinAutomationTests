@@ -1,5 +1,6 @@
 package asia.decentralab.copin.pages;
 
+import asia.decentralab.copin.browser.Driver;
 import asia.decentralab.copin.element.Element;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
@@ -19,6 +20,16 @@ public class BasePage {
     private final Element traderSearchResultMessage = new Element(By.xpath("//header//div[contains(@class,'styled__SearchResult')]//div[contains(text(),'No Trader Found')]"));
     private final Element txHashSearchResultMessage = new Element(By.xpath("//header//div[contains(@class,'styled__SearchResult')]//div[contains(text(),'No Transaction Found')]"));
 
+    private final Element connectWalletButton = new Element(By.id("login_button__id"));
+    private final Element importWalletButton = new Element(By.xpath("//div[@role='button']//p[contains(text(),'Import or recover wallet')]"));
+    private final Element passwordTextbox = new Element(By.xpath("//div[contains(p,'New password')]//input[@type = 'password']"));
+    private final Element confirmPasswordTextbox = new Element(By.xpath("//div[contains(p,'Confirm new password')]//input[@type = 'password']"));
+    private final Element termsOfUseCheckbox = new Element(By.xpath("//input[@type='checkbox']"));
+    private final Element submitButton = new Element(By.xpath("//button[@type='submit']"));
+    private final Element secretPhraseTextbox = new Element(By.xpath("//input[@type='password']"));
+    private final Element nextButton = new Element(By.xpath("//button[@type='submit']"));
+    private final Element noThanksButton = new Element(By.xpath("//button[@type='button']/p[text()='No thanks']"));
+
     @Step("Go to Home page")
     public void goToHomePage() {
         homeButton.click();
@@ -32,6 +43,11 @@ public class BasePage {
     @Step("Go to Open Interest page")
     public void goToOpenInterestPage() {
         openInterestButton.click();
+    }
+
+    @Step("Go to Open Interest page")
+    public void goToConnectWalletPage() {
+        connectWalletButton.click();
     }
 
     @Step("Search trader")
@@ -82,5 +98,27 @@ public class BasePage {
     @Step("Check the message not find txHash displayed")
     public boolean isMessageTxHashNotFoundDisplay() {
         return txHashSearchResultMessage.isDisplayed();
+    }
+
+    public void setupTrustWallet(String secretRecoveryPhrase, String password) {
+        Driver.openNewWindow();
+        Driver.switchToWindow(2);
+        Driver.navigate("chrome-extension://egjidjbpglichdcondbcbdnbeeppgdph/home.html#/onboarding/");
+        importWalletButton.click();
+        passwordTextbox.enter(password);
+        confirmPasswordTextbox.enter(password);
+        termsOfUseCheckbox.click();
+        submitButton.click();
+
+        String[] words = secretRecoveryPhrase.split(" ");
+        List<WebElement> secretPhraseElements = secretPhraseTextbox.findElements();
+        for (int i = 0; i < secretPhraseElements.size(); i++) {
+            secretPhraseElements.get(i).sendKeys(words[i]);
+        }
+
+        nextButton.click();
+        noThanksButton.click();
+        Driver.closeWindow();
+        Driver.switchToWindow(1);
     }
 }
