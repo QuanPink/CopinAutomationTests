@@ -108,7 +108,7 @@ public class Driver {
         }
     }
 
-    public static void closeMetamaskWindow(int windowNumber) {
+    public static void closeWindowExtensions(int windowNumber) {
         WaitUtils.waiting().until(ExpectedConditions.numberOfWindowsToBe(windowNumber));
         Set<String> windows = getDriver().getWindowHandles();
 

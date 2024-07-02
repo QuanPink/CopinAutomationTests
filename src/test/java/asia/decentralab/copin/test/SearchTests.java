@@ -20,7 +20,7 @@ public class SearchTests extends BaseTest {
     private Positions.Position invalidPosition;
 
     @BeforeClass
-    public void setup() throws InterruptedException {
+    public void setup() {
         super.setup();
         homePage = new HomePage();
         positionListPage = new PositionListPage();

@@ -9,6 +9,7 @@ import lombok.ToString;
 @ToString
 public class DeFiWallets {
     private Wallet metamask;
+    private Wallet trustWallet;
 
     @Getter
     @Setter

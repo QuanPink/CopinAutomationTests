@@ -1,6 +1,5 @@
 package asia.decentralab.copin.test;
 
-import asia.decentralab.copin.browser.Driver;
 import asia.decentralab.copin.config.Constant;
 import asia.decentralab.copin.config.DeFiWallets;
 import asia.decentralab.copin.pages.LoginPage;
@@ -11,22 +10,14 @@ import org.testng.annotations.Test;
 public class DraftTest extends BaseTest {
 
     @BeforeClass
-    public void setup() throws InterruptedException {
+    public void setup() {
         super.setup();
         LoginPage loginPage = new LoginPage();
 
         DeFiWallets deFiWallets = JsonUtils.readJsonFile(Constant.DE_FI_WALLETS_FILE_PATH, DeFiWallets.class);
-        DeFiWallets.Wallet metamask = deFiWallets.getMetamask();
+        DeFiWallets.Wallet trustWallet = deFiWallets.getTrustWallet();
 
-        Driver.openNewWindow();
-        Driver.switchToWindow(2);
-        Driver.navigate("chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html");
-        loginPage.setupMetamaskAccount(metamask.getSecretRecoveryPhrase(), metamask.getPassword());
-        Driver.closeWindow();
-        Driver.switchToWindow(1);
-
-        Driver.refreshPage();
-        loginPage.connectWallet();
+        loginPage.connectWallet(trustWallet.getSecretRecoveryPhrase(), trustWallet.getPassword());
     }
 
     @Test

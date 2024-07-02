@@ -18,9 +18,9 @@ public class BaseTest {
     }
 
     @BeforeClass
-    public void setup() throws InterruptedException {
+    public void setup() {
         openBrowser(config);
-        closeMetamaskWindow(3);
+        closeWindowExtensions(2);
         navigate(config.getBaseUrl());
     }
 

@@ -2,6 +2,7 @@ package asia.decentralab.copin.element;
 
 import asia.decentralab.copin.browser.Driver;
 import asia.decentralab.copin.utils.WaitUtils;
+import io.github.sukgu.Shadow;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
@@ -15,18 +16,18 @@ public class Element {
     private final By locator;
     private final WebDriverWait wait;
     private final Actions actions;
+    private final Shadow shadow;
 
     public Element(By locator) {
         this.locator = locator;
         this.wait = WaitUtils.waiting();
         this.actions = new Actions(Driver.getDriver());
+        this.shadow = new Shadow(Driver.getDriver());
     }
 
     private WebElement findElement() {
         try {
-            WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
-            actions.moveToElement(element).perform();
-            return element;
+            return wait.until(ExpectedConditions.elementToBeClickable(locator));
         } catch (TimeoutException e) {
             throw new RuntimeException("Element not found: " + locator, e);
         }
@@ -40,6 +41,24 @@ public class Element {
         }
     }
 
+    public WebElement findShadowElement(String cssSelector) {
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+            return shadow.findElement(cssSelector);
+        } catch (TimeoutException e) {
+            throw new RuntimeException("Shadow element not found: " + cssSelector, e);
+        }
+    }
+
+    public List<WebElement> findShadowElements(String cssSelector) {
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+            return shadow.findElements(cssSelector);
+        } catch (TimeoutException e) {
+            throw new TimeoutException("Shadow elements not found: " + cssSelector);
+        }
+    }
+
     public String getText() {
         return findElement().getText();
     }
@@ -49,7 +68,9 @@ public class Element {
     }
 
     public void click() {
-        findElement().click();
+        WebElement element = findElement();
+        actions.moveToElement(element).perform();
+        element.click();
     }
 
     public void enter(String value) {
