@@ -1,5 +1,8 @@
 package asia.decentralab.copin.data.enumdata;
 
+import lombok.Getter;
+
+@Getter
 public enum SourceValue {
     GMX("GMX"),
     KWENTA("Kwenta"),
@@ -12,9 +15,5 @@ public enum SourceValue {
 
     SourceValue(String value) {
         this.value = value;
-    }
-
-    public String getValue() {
-        return value;
     }
 }

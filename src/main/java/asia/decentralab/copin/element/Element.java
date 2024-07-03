@@ -1,7 +1,11 @@
 package asia.decentralab.copin.element;
 
-import asia.decentralab.copin.utils.WaitUtils;
-import org.openqa.selenium.*;
+import asia.decentralab.copin.browser.Driver;
+import io.github.sukgu.Shadow;
+import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -9,10 +13,13 @@ import java.util.List;
 
 public class Element {
     private final By locator;
-    private final WebDriverWait wait = WaitUtils.waiting();
+    private final WebDriverWait wait;
+    private final Actions actions = new Actions(Driver.getDriver());
+    private final Shadow shadow = new Shadow(Driver.getDriver());
 
     public Element(By locator) {
         this.locator = locator;
+        this.wait = Driver.waiting();
     }
 
     private WebElement findElement() {
@@ -27,7 +34,25 @@ public class Element {
         try {
             return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
         } catch (TimeoutException e) {
-            throw new RuntimeException("Elements not found: " + locator, e);
+            throw new TimeoutException("Elements not found: " + locator);
+        }
+    }
+
+    public WebElement findShadowElement(String xpath) {
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+            return shadow.findElementByXPath(xpath);
+        } catch (TimeoutException e) {
+            throw new RuntimeException("Shadow element not found: " + xpath, e);
+        }
+    }
+
+    public List<WebElement> findShadowElements(String xpath) {
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+            return shadow.findElementsByXPath(xpath);
+        } catch (TimeoutException e) {
+            throw new TimeoutException("Shadow elements not found: " + xpath, e);
         }
     }
 
@@ -40,7 +65,9 @@ public class Element {
     }
 
     public void click() {
-        findElement().click();
+        WebElement element = findElement();
+        actions.moveToElement(element).perform();
+        element.click();
     }
 
     public void enter(String value) {
@@ -54,7 +81,7 @@ public class Element {
     public boolean isEnable() {
         try {
             return findElement().isEnabled();
-        } catch (org.openqa.selenium.NoSuchElementException | org.openqa.selenium.StaleElementReferenceException e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -62,7 +89,7 @@ public class Element {
     public boolean isDisplayed() {
         try {
             return findElement().isDisplayed();
-        } catch (org.openqa.selenium.NoSuchElementException | org.openqa.selenium.StaleElementReferenceException e) {
+        } catch (Exception e) {
             return false;
         }
     }

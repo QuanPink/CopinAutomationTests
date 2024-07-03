@@ -1,5 +1,8 @@
 package asia.decentralab.copin.data.enumdata;
 
+import lombok.Getter;
+
+@Getter
 public enum StatisticValue {
     PNL("PnL"),
     AVG_ROI("Avg ROI"),
@@ -9,9 +12,5 @@ public enum StatisticValue {
 
     StatisticValue(String value) {
         this.value = value;
-    }
-
-    public String getValue() {
-        return value;
     }
 }

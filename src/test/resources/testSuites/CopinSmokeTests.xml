@@ -4,15 +4,9 @@
     <listeners>
         <listener class-name="asia.decentralab.copin.listener.AllureListener"/>
     </listeners>
-    <test name="Chrome Tests1">
+    <test name="Chrome Tests">
         <classes>
-            <class name="asia.decentralab.copin.test.SearchTest"/>
+            <class name="asia.decentralab.copin.test.SearchTests"/>
         </classes>
     </test>
-
-<!--    <test name="Chrome Tests2">-->
-<!--        <classes>-->
-<!--            <class name="asia.decentralab.copin.test.FilterTests"/>-->
-<!--        </classes>-->
-<!--    </test>-->
 </suite>
