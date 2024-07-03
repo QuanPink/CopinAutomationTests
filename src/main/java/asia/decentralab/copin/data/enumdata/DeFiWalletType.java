@@ -3,7 +3,7 @@ package asia.decentralab.copin.data.enumdata;
 import lombok.Getter;
 
 @Getter
-public enum WalletType {
+public enum DeFiWalletType {
     WALLET_CONNECT("WalletConnect"),
     METAMASK("MetaMask"),
     BRAVE_WALLET("Brave Wallet"),
@@ -13,7 +13,7 @@ public enum WalletType {
 
     private final String value;
 
-    WalletType(String value) {
+    DeFiWalletType(String value) {
         this.value = value;
     }
 }

@@ -15,14 +15,12 @@ import java.util.List;
 public class Element {
     private final By locator;
     private final WebDriverWait wait;
-    private final Actions actions;
-    private final Shadow shadow;
+    private final Actions actions = new Actions(Driver.getDriver());
+    private final Shadow shadow = new Shadow(Driver.getDriver());
 
     public Element(By locator) {
         this.locator = locator;
         this.wait = WaitUtils.waiting();
-        this.actions = new Actions(Driver.getDriver());
-        this.shadow = new Shadow(Driver.getDriver());
     }
 
     private WebElement findElement() {

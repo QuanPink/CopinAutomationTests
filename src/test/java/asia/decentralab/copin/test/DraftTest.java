@@ -3,15 +3,11 @@ package asia.decentralab.copin.test;
 import asia.decentralab.copin.browser.Driver;
 import asia.decentralab.copin.config.Constant;
 import asia.decentralab.copin.config.DeFiWallets;
-import asia.decentralab.copin.data.ProtocolData;
-import asia.decentralab.copin.data.enumdata.WalletType;
-import asia.decentralab.copin.model.Positions;
+import asia.decentralab.copin.data.enumdata.DeFiWalletType;
 import asia.decentralab.copin.pages.BasePage;
 import asia.decentralab.copin.pages.ConnectWalletPage;
-import asia.decentralab.copin.utils.APIUtils;
 import asia.decentralab.copin.utils.JsonUtils;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class DraftTest extends BaseTest {
@@ -28,7 +24,7 @@ public class DraftTest extends BaseTest {
         basePage.setupTrustWallet(trustWallet.getSecretRecoveryPhrase(), trustWallet.getPassword());
         Driver.refreshPage();
         basePage.goToConnectWalletPage();
-        loginPage.connectWallet(WalletType.TRUST_WALLET);
+        loginPage.connectWallet(DeFiWalletType.TRUST_WALLET);
     }
 
     @Test
