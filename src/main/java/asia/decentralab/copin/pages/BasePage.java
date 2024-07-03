@@ -1,11 +1,11 @@
 package asia.decentralab.copin.pages;
 
 import asia.decentralab.copin.browser.Driver;
+import asia.decentralab.copin.data.enumdata.UserDropdownItem;
 import asia.decentralab.copin.element.Element;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +29,19 @@ public class BasePage {
     private final Element secretPhraseTextbox = new Element(By.xpath("//input[@type='password']"));
     private final Element nextButton = new Element(By.xpath("//button[@type='submit']"));
     private final Element noThanksButton = new Element(By.xpath("//button[@type='button']/p[text()='No thanks']"));
+    private final Element userAddressBtn = new Element(By.xpath("//header//button[contains(@class, 'ToggleButton')]"));
+
+    private final String dynamicUserDropdownItem = "//div[contains(@class,'dropdown-placement')]//div[text()='%s']";
+
+    public void selectUserDropdownMenu(UserDropdownItem item) {
+        userAddressBtn.click();
+        new Element(By.xpath(String.format(dynamicUserDropdownItem, item.getValue()))).click();
+    }
+
+    @Step("Go to Wallet Management")
+    public void goToWalletManagement() {
+        selectUserDropdownMenu(UserDropdownItem.WALLET_MANAGEMENT);
+    }
 
     @Step("Go to Home page")
     public void goToHomePage() {

@@ -9,4 +9,5 @@ public class Constant {
     public static final String GMX_DATA_FILE_PATH = "src/test/resources/testData/GMXData.json";
     public static final String TRADERS_FILE_PATH = "src/test/resources/testData/traders.json";
     public static final String POSITIONS_FILE_PATH = "src/test/resources/testData/positions.json";
+    public static final String WALLETS_FILE_PATH = "src/test/resources/testData/wallets.json";
 }

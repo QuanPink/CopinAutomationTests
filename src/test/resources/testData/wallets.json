@@ -1,0 +1,62 @@
+{
+  "bingXExchange": {
+    "apiKey": "0ksjghksg",
+    "secretKey": "hfskgh",
+    "passPhrase": "",
+    "walletName": "BingX_"
+  },
+  "bitgetExchange": {
+    "apiKey": "aeretts",
+    "secretKey": "oauoiuo",
+    "passPhrase": "dfhhfhdt",
+    "walletName": "Bitget"
+  },
+  "bybitExchange": {
+    "apiKey": "2466g",
+    "secretKey": "fdsfyius",
+    "passPhrase": "",
+    "walletName": "Bybit"
+  },
+  "okxExchange": {
+    "apiKey": "3744",
+    "secretKey": "346567",
+    "passPhrase": "3264643",
+    "walletName": "OKX"
+  },
+  "gateExchange": {
+    "apiKey": "93679846",
+    "secretKey": "sjkhjk",
+    "passPhrase": "266676",
+    "walletName": "Gate"
+  },
+  "invalidBingXExchange": {
+    "apiKey": "0ksjghksg",
+    "secretKey": "hfskgh",
+    "passPhrase": "",
+    "walletName": "BingX_"
+  },
+  "invalidBitgetExchange": {
+    "apiKey": "aeretts",
+    "secretKey": "oauoiuo",
+    "passPhrase": "dfhhfhdt",
+    "walletName": "Bitget"
+  },
+  "invalidBybitExchange": {
+    "apiKey": "2466g",
+    "secretKey": "fdsfyius",
+    "passPhrase": "",
+    "walletName": "Bybit"
+  },
+  "invalidOkxExchange": {
+    "apiKey": "3744",
+    "secretKey": "346567",
+    "passPhrase": "3264643",
+    "walletName": "OKX"
+  },
+  "invalidGateExchange": {
+    "apiKey": "93679846",
+    "secretKey": "sjkhjk",
+    "passPhrase": "266676",
+    "walletName": "Gate"
+  }
+}
