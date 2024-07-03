@@ -1,8 +1,8 @@
 package asia.decentralab.copin.browser;
 
 import asia.decentralab.copin.config.Config;
+import asia.decentralab.copin.config.Constant;
 import asia.decentralab.copin.data.enumdata.BrowserType;
-import asia.decentralab.copin.utils.WaitUtils;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -13,7 +13,9 @@ import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -91,12 +93,16 @@ public class Driver {
         }
     }
 
+    public static WebDriverWait waiting() {
+        return new WebDriverWait(getDriver(), Duration.ofSeconds(Constant.WAIT_TIMEOUT_SECONDS));
+    }
+
     public static void openNewWindow() {
         ((JavascriptExecutor) getDriver()).executeScript("window.open()");
     }
 
     public static void switchToWindow(int windowNumber) {
-        WaitUtils.waiting().until(ExpectedConditions.numberOfWindowsToBe(windowNumber));
+        waiting().until(ExpectedConditions.numberOfWindowsToBe(windowNumber));
         Set<String> windows = getDriver().getWindowHandles();
 
         List<String> windowList = new ArrayList<>(windows);
@@ -109,7 +115,7 @@ public class Driver {
     }
 
     public static void closeWindowExtensions(int windowNumber) {
-        WaitUtils.waiting().until(ExpectedConditions.numberOfWindowsToBe(windowNumber));
+        waiting().until(ExpectedConditions.numberOfWindowsToBe(windowNumber));
         Set<String> windows = getDriver().getWindowHandles();
 
         List<String> windowList = new ArrayList<>(windows);

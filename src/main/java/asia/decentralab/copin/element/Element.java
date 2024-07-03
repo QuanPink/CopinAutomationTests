@@ -1,7 +1,6 @@
 package asia.decentralab.copin.element;
 
 import asia.decentralab.copin.browser.Driver;
-import asia.decentralab.copin.utils.WaitUtils;
 import io.github.sukgu.Shadow;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
@@ -20,7 +19,7 @@ public class Element {
 
     public Element(By locator) {
         this.locator = locator;
-        this.wait = WaitUtils.waiting();
+        this.wait = Driver.waiting();
     }
 
     private WebElement findElement() {
