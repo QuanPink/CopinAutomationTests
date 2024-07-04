@@ -11,6 +11,7 @@ public class HomePage extends BasePage {
     private final Element inDropdownButton = new Element(By.xpath("//div[div[text()='In']]//button"));
     private final Element sourceDropdownButton = new Element(By.xpath("//div[div[text()='Source']]//button"));
     private final Element protocolLabel = new Element(By.xpath("//div[@id='home__header__wrapper']//button//span"));
+
     private final String dynamicProtocolItem = "//div[contains(@class, 'Dropdown__Menu')]//button[span[text()='%s']]";
     private final String dynamicFilterDropdownItem = "//button[contains(@class,'Dropdown__DropdownItem')][div[text()='%s']]";
 

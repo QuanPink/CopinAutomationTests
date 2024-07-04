@@ -1,9 +1,10 @@
 package asia.decentralab.copin.browser;
 
 import asia.decentralab.copin.config.Config;
+import asia.decentralab.copin.config.Constant;
 import asia.decentralab.copin.data.enumdata.BrowserType;
-import asia.decentralab.copin.utils.WaitUtils;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -12,6 +13,12 @@ import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class Driver {
     private static final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
@@ -55,6 +62,7 @@ public class Driver {
 
     public static void navigate(String path) {
         getDriver().get(path);
+        getDriver().manage().window().maximize();
     }
 
     public static String getTitle() {
@@ -73,16 +81,51 @@ public class Driver {
         getDriver().navigate().refresh();
     }
 
+    public static void closeWindow() {
+        if (getDriver() != null) {
+            getDriver().close();
+        }
+    }
+
     public static void closeBrowser() {
         if (getDriver() != null) {
             getDriver().quit();
         }
     }
 
-    public void switchToWindow(int number) {
-        WaitUtils.waiting().until(ExpectedConditions.numberOfWindowsToBe(number));
-        for (String windowHandle : getDriver().getWindowHandles()) {
-            getDriver().switchTo().window(windowHandle);
+    public static WebDriverWait waiting() {
+        return new WebDriverWait(getDriver(), Duration.ofSeconds(Constant.WAIT_TIMEOUT_SECONDS));
+    }
+
+    public static void openNewWindow() {
+        ((JavascriptExecutor) getDriver()).executeScript("window.open()");
+    }
+
+    public static void switchToWindow(int windowNumber) {
+        waiting().until(ExpectedConditions.numberOfWindowsToBe(windowNumber));
+        Set<String> windows = getDriver().getWindowHandles();
+
+        List<String> windowList = new ArrayList<>(windows);
+
+        if (!windowList.isEmpty()) {
+            getDriver().switchTo().window(windowList.get(windowList.size() - 1));
+        } else {
+            throw new IllegalStateException("No windows available to switch to.");
+        }
+    }
+
+    public static void closeWindowExtensions(int windowNumber) {
+        waiting().until(ExpectedConditions.numberOfWindowsToBe(windowNumber));
+        Set<String> windows = getDriver().getWindowHandles();
+
+        List<String> windowList = new ArrayList<>(windows);
+
+        for (int i = windowList.size() - 1; i >= 0; i--) {
+            String window = windowList.get(i);
+            getDriver().switchTo().window(window);
+            if (getDriver().getWindowHandles().size() > 1) {
+                closeWindow();
+            }
         }
     }
 

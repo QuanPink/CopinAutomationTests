@@ -20,6 +20,7 @@ public class BaseTest {
     @BeforeClass
     public void setup() {
         openBrowser(config);
+        closeWindowExtensions(2);
         navigate(config.getBaseUrl());
     }
 
