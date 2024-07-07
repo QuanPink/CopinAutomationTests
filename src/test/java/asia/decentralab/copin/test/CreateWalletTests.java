@@ -68,7 +68,7 @@ public class CreateWalletTests extends BaseTest {
         walletManagementPage.goToCreateWalletPage(bingXWallet);
         createWalletPage.createWallet(bingXExchange);
         walletManagementPage.expandWalletDetail(bingXWallet);
-        Assert.assertTrue(walletManagementPage.isWalletInformationCorrect(WalletType.BINGX, bingXExchange));
+        Assert.assertTrue(walletManagementPage.isWalletInformationCorrect(bingXWallet, bingXExchange));
         walletManagementPage.deleteWallet(bingXWallet, bingXExchange);
     }
 }

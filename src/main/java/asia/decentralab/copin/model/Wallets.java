@@ -20,6 +20,10 @@ public class Wallets {
     private Wallet invalidOkxExchange;
     private Wallet invalidGateExchange;
 
+    public Wallet getBingXExchange() {
+        bingXExchange.walletName = bingXExchange.walletName + StringUtils.generateRandomString();
+        return this.bingXExchange;
+    }
 
     @Getter
     @Setter
@@ -29,10 +33,6 @@ public class Wallets {
         private String secretKey;
         private String passPhrase;
         private String walletName;
-
-        public String getWalletName() {
-            return walletName + StringUtils.generateRandomString();
-        }
     }
 }
 

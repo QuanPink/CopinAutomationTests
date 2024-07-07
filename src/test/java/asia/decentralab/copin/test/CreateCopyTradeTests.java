@@ -12,7 +12,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class CreateCopytradeTests extends BaseTest {
+public class CreateCopyTradeTests extends BaseTest {
 
     private HomePage homePage;
     private WalletManagementPage walletManagementPage;

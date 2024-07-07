@@ -29,12 +29,17 @@ public class WalletManagementPage extends BasePage {
 
     @Step("Verify wallet information is correct")
     public boolean isWalletInformationCorrect(WalletType walletType, Wallets.Wallet wallet) {
-        return new Element(By.xpath(String.format(dynamicWalletItemName, walletType.getWalletName(), wallet.getWalletName()))).isDisplayed();
+        return new Element(By.xpath(String.format(dynamicWalletItemName,
+                walletType.getWalletName(), wallet.getWalletName()))).isDisplayed();
     }
 
     @Step("Delete Wallet")
     public void deleteWallet(WalletType type, Wallets.Wallet wallet) {
-        new Element(By.xpath(String.format(dynamicDeleteWalletButton, type.getWalletName(), wallet.getWalletName()))).click();
+        waitForWalletNotificationMessageNotExist();
+        new Element(By.xpath(String.format(dynamicDeleteWalletButton,
+                type.getWalletName(), wallet.getWalletName()))).click();
         confirmDeleteButton.click();
+        confirmDeleteButton.waitForNotDisplay();
+        waitForWalletNotificationMessageNotExist();
     }
 }
