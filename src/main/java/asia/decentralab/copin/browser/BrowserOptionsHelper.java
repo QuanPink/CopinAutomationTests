@@ -8,7 +8,8 @@ import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
 public class BrowserOptionsHelper {
-    private static final BrowserOptionsConfig browserOptionsConfig = JsonUtils.readJsonFile(Constant.BROWSER_OPTIONS_FILE_PATH, BrowserOptionsConfig.class);
+    private static final BrowserOptionsConfig browserOptionsConfig = JsonUtils.readJsonFile(
+            Constant.BROWSER_OPTIONS_FILE_PATH, BrowserOptionsConfig.class);
 
     public static ChromeOptions setChromeOptions() {
         ChromeOptions chromeOptions = new ChromeOptions();

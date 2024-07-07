@@ -9,6 +9,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.List;
 
 public class Element {
@@ -19,14 +20,18 @@ public class Element {
 
     public Element(By locator) {
         this.locator = locator;
-        this.wait = Driver.waiting();
+        this.wait = Driver.getWait();
+    }
+
+    public WebDriverWait getCustomWait(int timeoutInSeconds) {
+        return new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(timeoutInSeconds));
     }
 
     private WebElement findElement() {
         try {
             return wait.until(ExpectedConditions.elementToBeClickable(locator));
         } catch (TimeoutException e) {
-            throw new RuntimeException("Element not found: " + locator, e);
+            throw new RuntimeException("Element not found: " + locator);
         }
     }
 
@@ -34,7 +39,7 @@ public class Element {
         try {
             return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
         } catch (TimeoutException e) {
-            throw new TimeoutException("Elements not found: " + locator);
+            throw new RuntimeException("Elements not found: " + locator);
         }
     }
 
@@ -43,7 +48,7 @@ public class Element {
             wait.until(ExpectedConditions.presenceOfElementLocated(locator));
             return shadow.findElementByXPath(xpath);
         } catch (TimeoutException e) {
-            throw new RuntimeException("Shadow element not found: " + xpath, e);
+            throw new RuntimeException("Shadow element not found: " + xpath);
         }
     }
 
@@ -52,7 +57,7 @@ public class Element {
             wait.until(ExpectedConditions.presenceOfElementLocated(locator));
             return shadow.findElementsByXPath(xpath);
         } catch (TimeoutException e) {
-            throw new TimeoutException("Shadow elements not found: " + xpath, e);
+            throw new RuntimeException("Shadow elements not found: " + xpath);
         }
     }
 
@@ -86,9 +91,27 @@ public class Element {
         }
     }
 
+    public boolean isEnable(int timeoutInSeconds) {
+        WebDriverWait customWait = getCustomWait(timeoutInSeconds);
+        try {
+            return findElement().isEnabled();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public boolean isDisplayed() {
         try {
             return findElement().isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean isDisplayed(int timeoutInSeconds) {
+        WebDriverWait customWait = getCustomWait(timeoutInSeconds);
+        try {
+            return customWait.until(ExpectedConditions.visibilityOfElementLocated(locator)).isDisplayed();
         } catch (Exception e) {
             return false;
         }

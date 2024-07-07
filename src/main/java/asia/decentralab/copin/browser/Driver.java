@@ -57,6 +57,7 @@ public class Driver {
             default:
                 throw new IllegalArgumentException("Unsupported browser: " + browserType);
         }
+        driverInstance.manage().deleteAllCookies();
         driver.set(driverInstance);
     }
 
@@ -93,7 +94,7 @@ public class Driver {
         }
     }
 
-    public static WebDriverWait waiting() {
+    public static WebDriverWait getWait() {
         return new WebDriverWait(getDriver(), Duration.ofSeconds(Constant.WAIT_TIMEOUT_SECONDS));
     }
 
@@ -102,7 +103,7 @@ public class Driver {
     }
 
     public static void switchToWindow(int windowNumber) {
-        waiting().until(ExpectedConditions.numberOfWindowsToBe(windowNumber));
+        getWait().until(ExpectedConditions.numberOfWindowsToBe(windowNumber));
         Set<String> windows = getDriver().getWindowHandles();
 
         List<String> windowList = new ArrayList<>(windows);
@@ -114,8 +115,8 @@ public class Driver {
         }
     }
 
-    public static void closeWindowExtensions(int windowNumber) {
-        waiting().until(ExpectedConditions.numberOfWindowsToBe(windowNumber));
+    public static void closeAdditionalWindows(int windowNumber) {
+        getWait().until(ExpectedConditions.numberOfWindowsToBe(windowNumber));
         Set<String> windows = getDriver().getWindowHandles();
 
         List<String> windowList = new ArrayList<>(windows);

@@ -1,10 +1,9 @@
 {
-  "url": "https://api.copin.io/GMX/position/statistic/filter",
+  "url": "https://api.copin.io/public/KWENTA/position/statistic/filter",
   "method": "POST",
   "header": {
     "accept": "application/json, text/plain, */*",
     "content-type": "application/json",
-    "origin": "https://vip.copin.io",
     "priority": "u=1, i",
     "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0"
   },
