@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 public class Driver {
-    private static final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+    public static final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 
     public static void openBrowser(Config config) {
         BrowserType browserType = BrowserType.valueOf(config.getBrowser().toUpperCase());
@@ -61,6 +61,7 @@ public class Driver {
     }
 
     public static void navigate(String path) {
+        getDriver().manage().deleteAllCookies();
         getDriver().get(path);
         getDriver().manage().window().maximize();
     }

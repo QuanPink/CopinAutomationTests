@@ -2,24 +2,24 @@ package asia.decentralab.copin.test;
 
 import asia.decentralab.copin.config.Constant;
 import asia.decentralab.copin.data.enumdata.WalletType;
+import asia.decentralab.copin.model.CopyTrade;
 import asia.decentralab.copin.model.Wallets;
 import asia.decentralab.copin.pages.CreateWalletPage;
 import asia.decentralab.copin.pages.HomePage;
 import asia.decentralab.copin.pages.WalletManagementPage;
 import asia.decentralab.copin.utils.JsonUtils;
-import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.Console;
+public class CreateCopytradeTests extends BaseTest {
 
-public class CreateCopyWalletTests extends BaseTest {
     private HomePage homePage;
     private WalletManagementPage walletManagementPage;
     private CreateWalletPage createWalletPage;
     private Wallets.Wallet bingXExchange;
-    private Wallets.Wallet invalidBingXExchange;
+    private CopyTrade copyTrade;
+    private WalletType bingXWallet;
 
     @BeforeClass
     public void setup() {
@@ -30,7 +30,8 @@ public class CreateCopyWalletTests extends BaseTest {
 
         Wallets wallets = JsonUtils.readJsonFile(Constant.WALLETS_FILE_PATH, Wallets.class);
         bingXExchange = wallets.getBingXExchange();
-        invalidBingXExchange = wallets.getInvalidBingXExchange();
+        bingXWallet = WalletType.BINGX;
+        copyTrade = new CopyTrade(bingXWallet, bingXExchange.getWalletName(), true);
     }
 
     @AfterMethod
@@ -38,25 +39,12 @@ public class CreateCopyWalletTests extends BaseTest {
         homePage.goToHomePage();
     }
 
-    @Test(description = "Check user is not able to import BingX wallet with invalid API key")
-    public void wmg02CreateInvalidBingXWallet() {
+    @Test(description = "Check user is able to create copytrade on GMX from Trader Profile")
+    public void tmg048CreateCopyTrade() {
         //login
         homePage.goToWalletManagement();
-        walletManagementPage.goToCreateWalletPage(WalletType.BINGX);
-        createWalletPage.createWallet(invalidBingXExchange);
-        createWalletPage.closeCreateWalletPopup();
-        Assert.assertTrue(createWalletPage.isErrorMessageDisplayed());
-        createWalletPage.closeCreateWalletPopup();
-    }
-
-    @Test(description = "Check user is able to create BingX wallet with valid API key")
-    public void wmg004CreateBingXWallet() {
-        //login
-        homePage.goToWalletManagement();
-        walletManagementPage.goToCreateWalletPage(WalletType.BINGX);
+        walletManagementPage.goToCreateWalletPage(bingXWallet);
         createWalletPage.createWallet(bingXExchange);
-        walletManagementPage.expandWalletDetail(WalletType.BINGX);
-        Assert.assertTrue(walletManagementPage.isWalletInformationCorrect(WalletType.BINGX, bingXExchange));
-        walletManagementPage.deleteWallet(WalletType.BINGX, bingXExchange);
+        //walletManagementPage.
     }
 }

@@ -30,17 +30,17 @@ public class BasePage {
     private final Element secretPhraseTextbox = new Element(By.xpath("//input[@type='password']"));
     private final Element nextButton = new Element(By.xpath("//button[@type='submit']"));
     private final Element noThanksButton = new Element(By.xpath("//button[@type='button']/p[text()='No thanks']"));
-    private final Element userAddressBtn = new Element(By.xpath("//header//button[contains(@class, 'ToggleButton')]"));
+    private final Element userAddressBtn = new Element(By.xpath("//button[contains(@class,'Dropdown__ToggleButton')]//div[contains(text(),'0x')]"));
 
-    private final String dynamicUserDropdownItem = "//div[contains(@class,'dropdown-placement')]//div[text()='%s']";
+    private final String dynamicUserDropdownItem = "//button[contains(@class,'Dropdown__DropdownItem')]//div[text()='%s']";
 
-    public void selectUserDropdownMenu(UserDropdownItem item) {
-        userAddressBtn.click();
-        new Element(By.xpath(String.format(dynamicUserDropdownItem, item.getValue()))).click();
+    public void selectUserDropdownMenu(UserDropdownItem menuText) {
+        new Element(By.xpath(String.format(dynamicUserDropdownItem, menuText.getValue()))).click();
     }
 
     @Step("Go to Wallet Management")
     public void goToWalletManagement() {
+        userAddressBtn.click();
         selectUserDropdownMenu(UserDropdownItem.WALLET_MANAGEMENT);
     }
 

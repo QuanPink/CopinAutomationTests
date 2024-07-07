@@ -1,19 +1,25 @@
 package asia.decentralab.copin.data.enumdata;
 
 public enum WalletType {
-    BINGX("BingX Exchange"),
-    BITGET("Bitget Exchange"),
-    OKX("OKX Exchange"),
-    GATE("Gate Exchange"),
-    BYBIT("Bybit Exchange");
+    BINGX("BingX Exchange", "BingX"),
+    BITGET("Bitget Exchange", "Bitget"),
+    OKX("OKX Exchange", "OKX"),
+    GATE("Gate Exchange", "Gate"),
+    BYBIT("Bybit Exchange", "Bybit");
 
     private String walletName;
+    private String shortName;
 
-    WalletType(String walletName) {
+    WalletType(String walletName, String shortName) {
         this.walletName = walletName;
+        this.shortName = shortName;
     }
 
-    public String getValue() {
+    public String getWalletName() {
         return walletName;
+    }
+
+    public String getShortName() {
+        return shortName;
     }
 }
