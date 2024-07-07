@@ -1,6 +1,7 @@
 package asia.decentralab.copin.pages;
 
 import asia.decentralab.copin.browser.Driver;
+import asia.decentralab.copin.data.enumdata.UserDropdownItem;
 import asia.decentralab.copin.element.Element;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
@@ -19,7 +20,6 @@ public class BasePage {
     private final Element searchResultItem = new Element(By.xpath("//header//div[contains(@class, 'SearchResult')]//button[@type='button']//a"));
     private final Element traderSearchResultMessage = new Element(By.xpath("//header//div[contains(@class,'styled__SearchResult')]//div[contains(text(),'No Trader Found')]"));
     private final Element txHashSearchResultMessage = new Element(By.xpath("//header//div[contains(@class,'styled__SearchResult')]//div[contains(text(),'No Transaction Found')]"));
-
     private final Element connectWalletButton = new Element(By.id("login_button__id"));
     private final Element importWalletButton = new Element(By.xpath("//div[@role='button']//p[contains(text(),'Import or recover wallet')]"));
     private final Element passwordTextbox = new Element(By.xpath("//div[contains(p,'New password')]//input[@type = 'password']"));
@@ -29,6 +29,21 @@ public class BasePage {
     private final Element secretPhraseTextbox = new Element(By.xpath("//input[@type='password']"));
     private final Element nextButton = new Element(By.xpath("//button[@type='submit']"));
     private final Element noThanksButton = new Element(By.xpath("//button[@type='button']/p[text()='No thanks']"));
+    private final Element userAddressBtn = new Element(By.xpath("//button[contains(@class,'Dropdown__ToggleButton')]//div[contains(text(),'0x')]"));
+    private final Element walletNotificationMessage = new Element(By.xpath(
+            "//div[@class='Toastify']//div[@class = 'Toastify__toast-body']//div[@display='inline-block']"));
+
+    private final String dynamicUserDropdownItem = "//button[contains(@class,'Dropdown__DropdownItem')]//div[text()='%s']";
+
+    public void selectUserDropdownMenu(UserDropdownItem menuText) {
+        new Element(By.xpath(String.format(dynamicUserDropdownItem, menuText.getValue()))).click();
+    }
+
+    @Step("Go to Wallet Management")
+    public void goToWalletManagement() {
+        userAddressBtn.click();
+        selectUserDropdownMenu(UserDropdownItem.WALLET_MANAGEMENT);
+    }
 
     @Step("Go to Home page")
     public void goToHomePage() {
@@ -120,5 +135,17 @@ public class BasePage {
         noThanksButton.click();
         Driver.closeWindow();
         Driver.switchToWindow(1);
+    }
+
+    public void waitForWalletNotificationMessageExist() {
+        walletNotificationMessage.waitForDisplay();
+    }
+
+    public void waitForWalletNotificationMessageNotExist() {
+        walletNotificationMessage.waitForNotDisplay();
+    }
+
+    public String getWalletNotificationMessageContent() {
+        return walletNotificationMessage.getText();
     }
 }
