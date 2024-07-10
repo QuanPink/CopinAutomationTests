@@ -98,6 +98,10 @@ public class Driver {
         return new WebDriverWait(getDriver(), Duration.ofSeconds(Constant.WAIT_TIMEOUT_SECONDS));
     }
 
+    public static WebDriverWait getWait(int second) {
+        return new WebDriverWait(getDriver(), Duration.ofSeconds(second));
+    }
+
     public static void openNewWindow() {
         ((JavascriptExecutor) getDriver()).executeScript("window.open()");
     }

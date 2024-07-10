@@ -8,10 +8,8 @@ import org.openqa.selenium.By;
 public class ConnectWalletPage {
     /* Login Elements */
     private final Element shadowRootElement = new Element(By.cssSelector("onboard-v2"));
-    private final Element connectButton = new Element(By.xpath(
-            "//div[@data-tooltip-id='button-tooltip-3']/button[@type='button']"));
-    private final Element confirmButton = new Element(By.xpath(
-            "//div[@data-tooltip-id='button-tooltip-2']/button[@type='button']"));
+    private final Element connectButton = new Element(By.xpath("//button[text()='Connect']"));
+    private final Element confirmButton = new Element(By.xpath("//button[text()='Confirm']"));
 
     /* Dynamic Elements */
     private final String dynamicWalletName = "//div[contains(@class,'wallets-container')]//div[contains(text(),'%s')]";

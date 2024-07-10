@@ -6,7 +6,8 @@
     </listeners>
     <test name="Chrome Tests">
         <classes>
-            <class name="asia.decentralab.copin.test.StatisticTraderTests"/>
+            <class name="asia.decentralab.copin.test.SearchTests"/>
+            <class name="asia.decentralab.copin.test.CreateWalletTests"/>
         </classes>
     </test>
 </suite>
