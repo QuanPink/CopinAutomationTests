@@ -89,7 +89,8 @@ public class Driver {
     }
 
     public static void closeBrowser() {
-        if (getDriver() != null) {
+        WebDriver currentDriver = getDriver();
+        if (currentDriver != null) {
             getDriver().quit();
         }
     }
@@ -122,7 +123,6 @@ public class Driver {
     public static void closeAdditionalWindows(int windowNumber) {
         getWait().until(ExpectedConditions.numberOfWindowsToBe(windowNumber));
         Set<String> windows = getDriver().getWindowHandles();
-
         List<String> windowList = new ArrayList<>(windows);
 
         for (int i = windowList.size() - 1; i >= 0; i--) {

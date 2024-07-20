@@ -9,13 +9,13 @@
   },
   "body": {
     "pagination": {
-      "limit": 20,
+      "limit": 1000,
       "offset": 0
     },
     "queries": [
       {
         "fieldName": "type",
-        "value": "D7"
+        "value": "D30"
       }
     ],
     "ranges": [

@@ -41,20 +41,20 @@ public class SearchTests extends BaseTest {
     }
 
     @Test(description = "Check search results are correct when user search with valid address")
-    public void tc001SearchValidTrader() {
+    public void sch001SearchValidTrader() {
         homePage.searchTrader(gmxTrader.getAddress());
         Assert.assertTrue(homePage.isNumberSearchResultsCorrect());
         Assert.assertTrue(homePage.isTraderSearchResultsCorrect(gmxTrader.getAddress()));
     }
 
     @Test(description = "Check message displayed are correct when user search with invalid address")
-    public void tc002SearchInvalidTrader() {
+    public void sch002SearchInvalidTrader() {
         homePage.searchTrader(invalidTrader.getAddress());
         Assert.assertTrue(homePage.isMessageTraderNotFoundDisplay());
     }
 
     @Test(description = "Check search results are correct when user search with valid txHash")
-    public void tc003SearchValidTxHash() {
+    public void sch003SearchValidTxHash() {
         homePage.searchTrader(closedPosition.getTxHash());
         Assert.assertTrue(homePage.isNumberSearchResultsCorrect());
         homePage.viewAllResultSearch();
@@ -62,7 +62,7 @@ public class SearchTests extends BaseTest {
     }
 
     @Test(description = "Check message displayed are correct when user search with invalid txHash")
-    public void tc004SearchInvalidTxHash() {
+    public void sch004SearchInvalidTxHash() {
         homePage.searchTrader(invalidPosition.getTxHash());
         Assert.assertTrue(homePage.isMessageTxHashNotFoundDisplay());
     }

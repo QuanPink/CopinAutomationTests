@@ -21,7 +21,7 @@ public class Element {
 
     private WebElement findElement() {
         try {
-            return Driver.getWait().until(ExpectedConditions.elementToBeClickable(locator));
+            return Driver.getWait().until(ExpectedConditions.presenceOfElementLocated(locator));
         } catch (TimeoutException e) {
             throw new RuntimeException("Element not found: " + locator, e);
         }
@@ -29,7 +29,7 @@ public class Element {
 
     private WebElement findElement(int second) {
         try {
-            return Driver.getWait(second).until(ExpectedConditions.elementToBeClickable(locator));
+            return Driver.getWait(second).until(ExpectedConditions.presenceOfElementLocated(locator));
         } catch (TimeoutException e) {
             throw new RuntimeException("Element not found: " + locator, e);
         }
@@ -54,7 +54,7 @@ public class Element {
 
     public List<WebElement> findShadowElements(String xpath) {
         try {
-            Driver.getWait().until(ExpectedConditions.presenceOfElementLocated(locator));
+            Driver.getWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
             return shadow.findElementsByXPath(xpath);
         } catch (TimeoutException e) {
             throw new RuntimeException("Shadow elements not found: " + xpath);
@@ -65,8 +65,8 @@ public class Element {
         return findElement().getText();
     }
 
-    public String getValue(String value) {
-        return findElement().getAttribute(value);
+    public String getValue(String attributeName) {
+        return findElement().getAttribute(attributeName);
     }
 
     public void click() {
@@ -113,5 +113,10 @@ public class Element {
 
     public void waitForNotDisplay() {
         Driver.getWait().until(ExpectedConditions.invisibilityOfElementLocated(locator));
+    }
+
+    public void moveToElement() {
+        WebElement element = findElement();
+        actions.moveToElement(element).perform();
     }
 }

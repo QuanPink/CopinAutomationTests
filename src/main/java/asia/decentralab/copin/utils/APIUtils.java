@@ -3,6 +3,7 @@ package asia.decentralab.copin.utils;
 import asia.decentralab.copin.data.ProtocolData;
 import asia.decentralab.copin.data.enumdata.HttpMethod;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -52,6 +53,8 @@ public class APIUtils {
                 throw new RuntimeException("API call failed with status code: " + response.statusCode() + " " + response.body());
             }
             return response.body();
+        } catch (JsonSyntaxException e) {
+            throw new RuntimeException("Invalid JSON data", e);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

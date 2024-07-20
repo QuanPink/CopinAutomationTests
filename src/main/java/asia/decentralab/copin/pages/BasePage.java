@@ -17,9 +17,9 @@ public class BasePage {
     private final Element homeButton = new Element(By.xpath(
             "//header//a[contains(@class, 'navlink-default')]//span[normalize-space()='Home']"));
     private final Element traderExplorerButton = new Element(By.xpath(
-            "//header//a[@class='navlink-default']//span[normalize-space()='Traders Explorer']"));
+            "//header//a[contains(@class, 'navlink-default')]//span[normalize-space()='Traders Explorer']"));
     private final Element openInterestButton = new Element(By.xpath(
-            "//header//a[@class='navlink-default']//span[normalize-space()='Open Interest']"));
+            "//header//a[contains(@class, 'navlink-default')]//span[normalize-space()='Open Interest']"));
 
     /* Search elements */
     private final Element searchTextbox = new Element(By.xpath(
