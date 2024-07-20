@@ -35,8 +35,8 @@ public class StatisticTraderTests extends BaseTest {
         homePage.goToTraderExplorerPage();
     }
 
-    @Test
-    public void testStatisticTrader() {
+    @Test(description = "Check trader's statistical information is correct on the Trader Explorer screen")
+    public void pmg016TraderStatisticIsCorrectOnTheTraderExplorerScreen() {
         traderExplorerPage.displayAllStatisticsFields();
         Assert.assertTrue(traderExplorerPage.isStatisticTraderDisplayCorrect(protocol));
         ;
