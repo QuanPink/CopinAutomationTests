@@ -120,7 +120,8 @@ public class Element {
         actions.moveToElement(element).perform();
     }
 
-    public void setCheckBoxValue(WebElement element, boolean desiredValue) {
+    public void setCheckBoxValue(boolean desiredValue) {
+        WebElement element = findElement();
         if (element.isSelected() != desiredValue) {
             element.click();
         }
