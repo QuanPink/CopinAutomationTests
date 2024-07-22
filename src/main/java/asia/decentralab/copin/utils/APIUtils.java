@@ -1,6 +1,6 @@
 package asia.decentralab.copin.utils;
 
-import asia.decentralab.copin.data.ProtocolData;
+import asia.decentralab.copin.data.ApiRequestData;
 import asia.decentralab.copin.data.enumdata.HttpMethod;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -13,7 +13,7 @@ import java.net.http.HttpResponse;
 public class APIUtils {
     private static final Gson gson = new Gson();
 
-    public static String sendRequest(ProtocolData protocolData) {
+    public static String sendRequest(ApiRequestData protocolData) {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(URI.create(protocolData.getUrl()));

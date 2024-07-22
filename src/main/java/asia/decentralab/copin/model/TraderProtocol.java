@@ -9,13 +9,13 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class Protocol {
-    private List<Data> data;
+public class TraderProtocol {
+    private List<TraderStatistic> traderStatistics;
 
     @Getter
     @Setter
     @ToString
-    public static class Data {
+    public static class TraderStatistic {
         private String id;
         private String account;
         private int totalTrade;

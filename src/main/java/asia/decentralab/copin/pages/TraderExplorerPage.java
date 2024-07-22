@@ -2,7 +2,7 @@ package asia.decentralab.copin.pages;
 
 import asia.decentralab.copin.data.enumdata.StatisticValue;
 import asia.decentralab.copin.element.Element;
-import asia.decentralab.copin.model.Protocol;
+import asia.decentralab.copin.model.TraderProtocol;
 import asia.decentralab.copin.utils.NumberFormatter;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
@@ -17,6 +17,7 @@ public class TraderExplorerPage extends BasePage {
     private final Element statisticFieldCheckbox = new Element(By.xpath(
             "//div[contains(@class,'Dropdown__Menu')]//input[@type='checkbox']"));
     private final Element pageButton = new Element(By.xpath("(//div[contains(@class, 'ListTradersSection__TabletWrapper')]//button)[3]"));
+    private final Element loadingIcon = new Element(By.xpath("//div[@id='trader-table']//div[contains(@class,'Loading-sc')]"));
 
     /* Dynamic element*/
     private final String pageLimitButton = "";
@@ -30,8 +31,7 @@ public class TraderExplorerPage extends BasePage {
         customizeColumnButton.click();
         List<WebElement> statisticFields = statisticFieldCheckbox.findElements();
         for (WebElement statisticField : statisticFields) {
-            boolean isSelected = statisticField.isSelected();
-            if (!isSelected) {
+            if (!statisticField.isSelected()) {
                 statisticField.click();
             }
         }
@@ -39,12 +39,13 @@ public class TraderExplorerPage extends BasePage {
     }
 
     @Step("Verify all statistics are accurate")
-    public boolean isStatisticTraderDisplayCorrect(Protocol protocol) {
+    public boolean isStatisticTraderDisplayCorrect(TraderProtocol protocol) {
         int numberTrader = 0;
-        for (Protocol.Data data : protocol.getData()) {
+        for (TraderProtocol.TraderStatistic data : protocol.getTraderStatistics()) {
             if (numberTrader == 20) {
                 pageButton.click();
                 numberTrader = 0;
+                loadingIcon.waitForNotDisplay();
             }
 
             for (StatisticValue statisticValue : StatisticValue.values()) {
@@ -69,7 +70,7 @@ public class TraderExplorerPage extends BasePage {
                 }
 
                 String expectedTextValue;
-                if (isDurationStatistic(statisticValue)) {
+                if (isDurationStatisticCorrect(statisticValue)) {
                     expectedTextValue = (String) getExpectedStatisticValue(data, statisticValue);
                 } else {
                     Number numberValue = statisticValue == StatisticValue.L_S_RATE
@@ -92,7 +93,7 @@ public class TraderExplorerPage extends BasePage {
         return true;
     }
 
-    private Object getExpectedStatisticValue(Protocol.Data data, StatisticValue statisticValue) {
+    private Object getExpectedStatisticValue(TraderProtocol.TraderStatistic data, StatisticValue statisticValue) {
         switch (statisticValue) {
             case RUNTIME_ALL:
                 return data.getRunTimeDays();
@@ -161,7 +162,7 @@ public class TraderExplorerPage extends BasePage {
         }
     }
 
-    private String getStatisticValue(Protocol.Data data, StatisticValue statisticValue) {
+    private String getStatisticValue(TraderProtocol.TraderStatistic data, StatisticValue statisticValue) {
         String currentStatistic = statisticValue.getValue();
         Element element = new Element(By.xpath(String.format(dynamicStatisticItem, currentStatistic)));
         element.moveToElement();
@@ -180,7 +181,7 @@ public class TraderExplorerPage extends BasePage {
         return NumberFormatter.roundToDecimalPlaces(value, decimalPlaces);
     }
 
-    private boolean isDurationStatistic(StatisticValue statisticValue) {
+    private boolean isDurationStatisticCorrect(StatisticValue statisticValue) {
         return statisticValue == StatisticValue.AVG_DURATION
                 || statisticValue == StatisticValue.MIN_DURATION
                 || statisticValue == StatisticValue.MAX_DURATION;

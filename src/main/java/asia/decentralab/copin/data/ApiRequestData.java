@@ -9,7 +9,7 @@ import java.util.Map;
 @Setter
 @Getter
 @ToString
-public class ProtocolData {
+public class ApiRequestData {
     private String url;
     private String method;
     private Map<String, Object> header;
