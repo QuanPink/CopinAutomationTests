@@ -11,12 +11,14 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class HomePage extends BasePage {
+    /* Filter trader Elements */
     private final Element topDropdownButton = new Element(By.xpath("//div[div[text()='Top']]//button"));
     private final Element inDropdownButton = new Element(By.xpath("//div[div[text()='In']]//button"));
     private final Element sourceDropdownButton = new Element(By.xpath("//div[div[text()='Source']]//button"));
     private final Element protocolLabel = new Element(By.xpath("//div[@id='home__header__wrapper']//button//span"));
     private final Element traderItem = new Element(By.xpath("//div[@id='home__traders__wrapper']/div/a"));
 
+    /* Dynamic Elements */
     private final String dynamicProtocolItem = "//div[contains(@class, 'Dropdown__Menu')]//button[span[text()='%s']]";
     private final String dynamicFilterDropdownItem = "//button[contains(@class,'Dropdown__DropdownItem')][div[text()='%s']]";
     private final String dynamicCopyButton = "//div[@id='home__traders__wrapper']/div/a[%s]//button[text()='Copy']";
@@ -58,5 +60,3 @@ public class HomePage extends BasePage {
         }
     }
 }
-
-

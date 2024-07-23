@@ -6,10 +6,13 @@ import asia.decentralab.copin.element.Element;
 import org.openqa.selenium.By;
 
 public class ConnectWalletPage {
+    /* Login Elements */
     private final Element shadowRootElement = new Element(By.cssSelector("onboard-v2"));
-    private final String dynamicWalletName = "//div[contains(@class,'wallets-container')]//div[contains(text(),'%s')]";
     private final Element connectButton = new Element(By.xpath("//button[text()='Connect']"));
     private final Element confirmButton = new Element(By.xpath("//button[text()='Confirm']"));
+
+    /* Dynamic Elements */
+    private final String dynamicWalletName = "//div[contains(@class,'wallets-container')]//div[contains(text(),'%s')]";
 
     public void connectWallet(DeFiWalletType wallet) {
         shadowRootElement.findShadowElement(String.format(dynamicWalletName, wallet.getValue())).click();

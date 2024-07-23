@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Set;
 
 public class PositionListPage extends BasePage {
-    private final Element resultSearchTxHashItemDetail = new Element(By.xpath("//div[contains(@class, 'base__Box')]//button[div[contains(@class, 'base__Flex')]]"));
+    /* Result search Elements */
+    private final Element resultSearchTxHashItemDetail = new Element(By.xpath(
+            "//div[contains(@class, 'base__Box')]//button[div[contains(@class, 'base__Flex')]]"));
 
     @Step("Check the txHash search results correct")
     public boolean isTxHashSearchResultsCorrect(String txHashPosition) {

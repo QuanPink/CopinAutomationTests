@@ -21,7 +21,7 @@ public class Element {
 
     private WebElement findElement() {
         try {
-            return Driver.waiting().until(ExpectedConditions.elementToBeClickable(locator));
+            return Driver.getWait().until(ExpectedConditions.presenceOfElementLocated(locator));
         } catch (TimeoutException e) {
             throw new RuntimeException("Element not found: " + locator, e);
         }
@@ -29,7 +29,7 @@ public class Element {
 
     private WebElement findElement(int second) {
         try {
-            return Driver.waiting(second).until(ExpectedConditions.elementToBeClickable(locator));
+            return Driver.getWait(second).until(ExpectedConditions.presenceOfElementLocated(locator));
         } catch (TimeoutException e) {
             throw new RuntimeException("Element not found: " + locator, e);
         }
@@ -37,15 +37,15 @@ public class Element {
 
     public List<WebElement> findElements() {
         try {
-            return Driver.waiting().until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
+            return Driver.getWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
         } catch (TimeoutException e) {
-            throw new TimeoutException("Elements not found: " + locator);
+            throw new RuntimeException("Elements not found: " + locator);
         }
     }
 
     public WebElement findShadowElement(String xpath) {
         try {
-            Driver.waiting().until(ExpectedConditions.presenceOfElementLocated(locator));
+            Driver.getWait().until(ExpectedConditions.presenceOfElementLocated(locator));
             return shadow.findElementByXPath(xpath);
         } catch (TimeoutException e) {
             throw new RuntimeException("Shadow element not found: " + xpath, e);
@@ -54,10 +54,10 @@ public class Element {
 
     public List<WebElement> findShadowElements(String xpath) {
         try {
-            Driver.waiting().until(ExpectedConditions.presenceOfElementLocated(locator));
+            Driver.getWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
             return shadow.findElementsByXPath(xpath);
         } catch (TimeoutException e) {
-            throw new TimeoutException("Shadow elements not found: " + xpath, e);
+            throw new RuntimeException("Shadow elements not found: " + xpath);
         }
     }
 
@@ -65,8 +65,8 @@ public class Element {
         return findElement().getText();
     }
 
-    public String getValue(String value) {
-        return findElement().getAttribute(value);
+    public String getValue(String attributeName) {
+        return findElement().getAttribute(attributeName);
     }
 
     public void click() {
@@ -91,14 +91,6 @@ public class Element {
         }
     }
 
-    public boolean isDisplayed(int timeout) {
-        try {
-            return findElement(timeout).isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
     public boolean isDisplayed() {
         try {
             return findElement().isDisplayed();
@@ -107,11 +99,31 @@ public class Element {
         }
     }
 
+    public boolean isDisplayed(int timeout) {
+        try {
+            return findElement(timeout).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public void waitForDisplay() {
-        Driver.waiting().until(ExpectedConditions.visibilityOfElementLocated(locator));
+        Driver.getWait().until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
     public void waitForNotDisplay() {
-        Driver.waiting().until(ExpectedConditions.invisibilityOfElementLocated(locator));
+        Driver.getWait().until(ExpectedConditions.invisibilityOfElementLocated(locator));
+    }
+
+    public void moveToElement() {
+        WebElement element = findElement();
+        actions.moveToElement(element).perform();
+    }
+
+    public void setCheckBoxValue(boolean desiredValue) {
+        WebElement element = findElement();
+        if (element.isSelected() != desiredValue) {
+            element.click();
+        }
     }
 }
