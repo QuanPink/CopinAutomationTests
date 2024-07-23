@@ -58,7 +58,8 @@ public class CreateWalletTests extends BaseTest {
         homePage.goToWalletManagement();
         walletManagementPage.goToCreateWalletPage(bingXWallet);
         createWalletPage.createWallet(invalidBingXExchange);
-        Assert.assertTrue(createWalletPage.isErrorMessageDisplayed(Constant.INVALID_API_KEY_MESSAGE));
+        Assert.assertEquals(createWalletPage.getNotificationMessageContent(), Constant.INVALID_API_KEY_MESSAGE);
+        createWalletPage.waitForNotificationMessageNotExist();
         createWalletPage.closeCreateWalletPopup();
     }
 
@@ -67,6 +68,8 @@ public class CreateWalletTests extends BaseTest {
         homePage.goToWalletManagement();
         walletManagementPage.goToCreateWalletPage(bingXWallet);
         createWalletPage.createWallet(bingXExchange);
+        Assert.assertEquals(createWalletPage.getNotificationMessageContent(), Constant.SUCCESS_CREATE_WALLET_MESSAGE);
+        createWalletPage.waitForNotificationMessageNotExist();
         walletManagementPage.expandWalletDetail(bingXWallet);
         Assert.assertTrue(walletManagementPage.isWalletInformationCorrect(bingXWallet, bingXExchange));
         walletManagementPage.deleteWallet(bingXWallet, bingXExchange);

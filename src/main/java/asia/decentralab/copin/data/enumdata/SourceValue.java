@@ -9,7 +9,8 @@ public enum SourceValue {
     POLYNOMIAL("Polynomial"),
     GMX_V2("GMX V2"),
     GTRADE("gTrade"),
-    LEVEL("Level");
+    LEVEL("Level"),
+    IGNORE("");
 
     private final String value;
 

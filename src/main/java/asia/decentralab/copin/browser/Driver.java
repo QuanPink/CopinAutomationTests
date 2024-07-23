@@ -137,4 +137,12 @@ public class Driver {
     public static WebDriver getDriver() {
         return driver.get();
     }
+
+    public static void delay(int numberOfSeconds) {
+        try {
+            Thread.sleep(1000 * numberOfSeconds);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

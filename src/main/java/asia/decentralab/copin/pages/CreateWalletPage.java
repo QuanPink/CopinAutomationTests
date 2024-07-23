@@ -24,17 +24,12 @@ public class CreateWalletPage extends BasePage {
         }
         walletNameTextbox.enter(wallet.getWalletName());
         createWalletButton.click();
-        waitForWalletNotificationMessageExist();
-    }
-
-    @Step("Verify error message is displayed")
-    public boolean isErrorMessageDisplayed(String messageContent) {
-        return getWalletNotificationMessageContent().equals(messageContent);
+        waitForNotificationMessageExist();
     }
 
     @Step("Close Create Wallet popup")
     public void closeCreateWalletPopup() {
-        waitForWalletNotificationMessageNotExist();
+        waitForNotificationMessageNotExist();
         closeCreateWalletButton.click();
     }
 }

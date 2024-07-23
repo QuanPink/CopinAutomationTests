@@ -11,7 +11,7 @@ public class Constant {
     public static final String POSITIONS_FILE_PATH = "src/test/resources/testData/positions.json";
     public static final String WALLETS_FILE_PATH = "src/test/resources/testData/wallets.json";
     public static final String TRUST_WALLET_URL_PATH = "chrome-extension://egjidjbpglichdcondbcbdnbeeppgdph/home.html#/onboarding/";
-
     public static final String INVALID_API_KEY_MESSAGE = "Invalid API key";
-
+    public static final String SUCCESS_CREATE_WALLET_MESSAGE = "Create wallet successful!";
+    public static final String SUCCESS_CREATE_COPY_TRADE_MESSAGE = "Make copy trade has been succeeded";
 }
