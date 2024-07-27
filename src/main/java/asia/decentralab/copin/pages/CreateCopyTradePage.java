@@ -16,9 +16,11 @@ public class CreateCopyTradePage extends BasePage {
     private final Element copyWalletCombobox = new Element(By.xpath(
             "//div[div[div[div[text()='Copy Wallet']]]]//div[contains(@class,'select__control')][div[div[contains(@class,'select__input-container')]]]"));
     private final Element marginTextbox = new Element(By.xpath("//div[text()='Margin']/parent::div/parent::div/following-sibling::div/input"));
+    private final Element copyAllRadioButton = new Element(By.xpath("//input[@name='copyAll']/following-sibling::span"));
+    private final Element excludeRadioButton = new Element(By.xpath("//input[@name='hasExclude']/following-sibling::span"));
+    private final Element tradingPairTextbox = new Element(By.xpath("//div[contains(@class,'value-container--is-multi select')]"));
     private final Element followTraderRadioButton = new Element(By.xpath("//input[@name='copyAll']/following-sibling::span"));
     private final Element tradingPairCombobox = new Element(By.xpath("//div[div[div[div[div[text()='Trading Pairs']]]]]/following-sibling::div"));
-    private final Element excludeRadioButton = new Element(By.xpath("//input[@name='hasExclude']/following-sibling::span"));
     private final Element excludePairCombobox = new Element(By.xpath("//div[@display='flex']//div[contains(text(),'Select')]/../.."));
     private final Element deleteAllTradingPair = new Element(By.xpath("//div[@display='flex']//div[contains(@class,'value-container--is-multi select')]/following-sibling::div"));
     private final Element reverseRadioButton = new Element(By.xpath("//input[@name='reverseCopy']/following-sibling::span"));
@@ -32,9 +34,9 @@ public class CreateCopyTradePage extends BasePage {
     private final Element lowerLeverageTextbox = new Element(By.xpath("//div[text()='Low Leverage']/parent::div/parent::div/following-sibling::div/input"));
     private final Element skipLowerCollateralRadioButton = new Element(By.xpath("//input[@name='skipLowCollateral']/following-sibling::span"));
     private final Element lowerCollateralTextbox = new Element(By.xpath("//div[text()='Low Collateral']/parent::div/parent::div/following-sibling::div/input"));
-    private final Element termsCheckbox = new Element(By.xpath("//input[@name='agreement']"));
     private final Element submitCopyTradeButton = new Element(By.xpath("//button[normalize-space()='Copy Trade']"));
     private final Element copyTraderHeader = new Element(By.xpath("//h5[div[span[text()='Copy Trader']]]"));
+    private final Element termsCheckbox = new Element(By.xpath("//input[@name='agreement']"));
     private final Element copyTradeHeader = new Element(By.xpath("//span[text()='Copy Trader']"));
 
     private final String dynamicDropdownItem = "//div[contains(@class,'select__menu-list')]//div[text()='%s']";
@@ -59,11 +61,12 @@ public class CreateCopyTradePage extends BasePage {
             deleteAllTradingPair.click();
             selectPairs(tradingPairCombobox, copyTrade.getSelectedPairList());
         }
-        new Element(By.xpath(String.format(dynamicLeverageValue, copyTrade.getLeverage().toString()))).click();
+        new Element(By.xpath(String.format(dynamicLeverageValue, copyTrade.getLeverage()))).click();
         if (copyTrade.isReverseCopy()) {
             reverseRadioButton.click();
         }
         stopLossAndTakeProfitExpandButton.click();
+        termsCheckbox.moveToElement();
         stopLossTextbox.enter(copyTrade.getStopLoss());
         takeProfitTextbox.enter(copyTrade.getTakeProfit());
         advanceSettingsExpandButton.click();

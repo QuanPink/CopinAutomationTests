@@ -78,7 +78,9 @@ public class Element {
     }
 
     public void enter(String value) {
-        findElement().sendKeys(value);
+        WebElement element = findElement();
+        actions.moveToElement(element).perform();
+        element.sendKeys(value);
     }
 
     public void clearValue() {

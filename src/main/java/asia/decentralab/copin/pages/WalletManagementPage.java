@@ -1,5 +1,6 @@
 package asia.decentralab.copin.pages;
 
+import asia.decentralab.copin.browser.Driver;
 import asia.decentralab.copin.data.enumdata.WalletType;
 import asia.decentralab.copin.element.Element;
 import asia.decentralab.copin.model.Wallets;
@@ -25,6 +26,7 @@ public class WalletManagementPage extends BasePage {
     @Step("Expand Wallet detail")
     public void expandWalletDetail(WalletType wallet) {
         new Element(By.xpath(String.format(dynamicExchangeNameLabel, wallet.getWalletName()))).click();
+        Driver.delay(1); //wait for the Wallet expand
     }
 
     @Step("Verify wallet information is correct")
