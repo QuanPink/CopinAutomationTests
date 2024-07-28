@@ -9,6 +9,7 @@
             <class name="asia.decentralab.copin.test.SearchTests"/>
             <class name="asia.decentralab.copin.test.CreateWalletTests"/>
             <class name="asia.decentralab.copin.test.StatisticTraderTests"/>
+            <class name="asia.decentralab.copin.test.CreateCopyTradeTests"/>
         </classes>
     </test>
 </suite>

@@ -32,7 +32,8 @@ public enum StatisticValue {
     MAX_DURATION("Max Duration"),
     MIN_DURATION("Min Duration"),
     MAX_DRAW_DOWN("Max Drawdown"),
-    MAX_DRAW_DOWN_PNL("Max Drawdown PnL");
+    MAX_DRAW_DOWN_PNL("Max Drawdown PnL"),
+    IGNORE("");
 
     private final String value;
 

@@ -1,8 +1,10 @@
 package asia.decentralab.copin.element;
 
 import asia.decentralab.copin.browser.Driver;
+import asia.decentralab.copin.data.enumdata.BackgroundColor;
 import io.github.sukgu.Shadow;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -76,7 +78,9 @@ public class Element {
     }
 
     public void enter(String value) {
-        findElement().sendKeys(value);
+        WebElement element = findElement();
+        actions.moveToElement(element).perform();
+        element.sendKeys(value);
     }
 
     public void clearValue() {
@@ -125,5 +129,25 @@ public class Element {
         if (element.isSelected() != desiredValue) {
             element.click();
         }
+    }
+
+    public String getAttribute(String attribute) {
+        try {
+            return findElement().getAttribute(attribute);
+        } catch (Exception e) {
+            System.out.println("Attribute not found " + attribute + " from: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public String getBackgroundColor() {
+        String computedStylePropertyScript = "return window.document.defaultView"
+                + ".getComputedStyle(arguments[0],null).getPropertyValue(arguments[1]);";
+        return ((JavascriptExecutor) Driver.getDriver()).executeScript(
+                computedStylePropertyScript, findElement(), "background-color").toString();
+    }
+
+    public boolean isToggleSelected() {
+        return getBackgroundColor().equals(BackgroundColor.LIGHT_BLUE.getRbg());
     }
 }

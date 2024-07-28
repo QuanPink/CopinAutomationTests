@@ -21,12 +21,12 @@ public class HomePage extends BasePage {
     /* Dynamic Elements */
     private final String dynamicProtocolItem = "//div[contains(@class, 'Dropdown__Menu')]//button[span[text()='%s']]";
     private final String dynamicFilterDropdownItem = "//button[contains(@class,'Dropdown__DropdownItem')][div[text()='%s']]";
-    private final String dynamicCopyButton = "//div[@id='home__traders__wrapper']/div/a[%s]//button[text()='Copy']";
+    private final String dynamicCopyTradeButton = "//div[@id='home__traders__wrapper']/div/a[%s]//button[text()='Copy']";
+    private final String dynamicTraderAddress = "//div[@id='home__traders__wrapper']/div/a[%s]//div[contains(text(),'0x')]";
 
-    public WebElement getRandomTrader() {
+    public int getRandomTraderIndex() {
         List<WebElement> traders = traderItem.findElements();
-        int randomTrader = ThreadLocalRandom.current().nextInt(1, 12 + 1);
-        return traders.get(randomTrader);
+        return ThreadLocalRandom.current().nextInt(1, traders.size() + 1);
     }
 
     public String getProtocolName() {
@@ -49,14 +49,22 @@ public class HomePage extends BasePage {
     }
 
     public void filterTraderStatistic(StatisticValue top, TimeValue in, SourceValue source) {
-        if (top != null) {
+        if (top != StatisticValue.IGNORE) {
             switchSortValue(top.getValue());
         }
-        if (in != null) {
+        if (in != TimeValue.IGNORE) {
             switchStatisticTime(in.getValue());
         }
-        if (source != null) {
+        if (source != SourceValue.IGNORE) {
             switchProtocol(source.getValue());
         }
+    }
+
+    public String openCopyTradePageForRandomTrader() {
+        int randomTrader = getRandomTraderIndex();
+        String traderAddress = new Element(By.xpath(String.format(dynamicTraderAddress, randomTrader))).
+                getAttribute("data-trader-copy-deleted");
+        new Element(By.xpath(String.format(dynamicCopyTradeButton, randomTrader))).click();
+        return traderAddress;
     }
 }

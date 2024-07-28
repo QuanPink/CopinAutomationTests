@@ -53,8 +53,9 @@ public class BasePage {
     /* User dropdown menu*/
     private final Element userAddressBtn = new Element(By.xpath(
             "//button[contains(@class,'Dropdown__ToggleButton')]//div[contains(text(),'0x')]"));
-    private final Element walletNotificationMessage = new Element(By.xpath(
+    private final Element notificationMessage = new Element(By.xpath(
             "//div[@class='Toastify']//div[@class = 'Toastify__toast-body']//div[@display='inline-block']"));
+    private final Element confirmButton = new Element(By.xpath("//div[@role='dialog']//button[text()='Confirm']"));
 
     /* Dynamic Element*/
     private final String dynamicUserDropdownItem = "//button[contains(@class,'Dropdown__DropdownItem')]//div[text()='%s']";
@@ -162,15 +163,32 @@ public class BasePage {
         Driver.switchToWindow(1);
     }
 
-    public void waitForWalletNotificationMessageExist() {
-        walletNotificationMessage.waitForDisplay();
+    public void waitForNotificationMessageExist() {
+        notificationMessage.waitForDisplay();
     }
 
-    public void waitForWalletNotificationMessageNotExist() {
-        walletNotificationMessage.waitForNotDisplay();
+    public void waitForNotificationMessageNotExist() {
+        notificationMessage.waitForNotDisplay();
     }
 
-    public String getWalletNotificationMessageContent() {
-        return walletNotificationMessage.getText();
+    public String getNotificationMessageContent() {
+        return notificationMessage.getText();
+    }
+
+    @Step("Go to Copy trade management page")
+    public void goToCopyTradeManagementPage() {
+        userAddressBtn.click();
+        selectUserDropdownMenu(UserDropdownItem.COPY_MANAGEMENT);
+    }
+
+    public void clickConfirmButton() {
+        confirmButton.click();
+    }
+
+    public void waitForConfirmPopupNotDisplay() {
+        confirmButton.waitForNotDisplay();
     }
 }
+
+
+

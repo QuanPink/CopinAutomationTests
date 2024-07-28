@@ -4,8 +4,7 @@ public enum Token {
     BTC("BTC"),
     ETH("ETH"),
     LINK("LINK"),
-    UNI("UNI"),
-    ALL_TOKENS("All Tokens");
+    UNI("UNI");
 
     private final String value;
 

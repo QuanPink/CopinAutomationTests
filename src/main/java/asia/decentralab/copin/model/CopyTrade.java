@@ -1,5 +1,6 @@
 package asia.decentralab.copin.model;
 
+import asia.decentralab.copin.data.enumdata.LeverageValue;
 import asia.decentralab.copin.data.enumdata.Token;
 import asia.decentralab.copin.data.enumdata.WalletType;
 import asia.decentralab.copin.utils.StringUtils;
@@ -21,9 +22,9 @@ public class CopyTrade {
     private int margin;
     private boolean isFollowTrader;
     private boolean isExcludeToken;
-    private List<Token> tokenList;
-    private List<Token> tradingPair;
-    private int leverage;
+    private List<Token> selectedPairList;
+    private List<Token> tradingPairExclude;
+    private String leverage;
     private boolean isReverseCopy;
     private String stopLoss;
     private String takeProfit;
@@ -33,22 +34,29 @@ public class CopyTrade {
     private int lowLeverage;
     private boolean isSkipLowerCollateralPosition;
     private int lowCollateral;
+    private String traderAddress;
+    private boolean runStatus;
 
     public CopyTrade(WalletType walletType, String copyWalletName) {
         this.labelCopyTradeName = "CopyTrade_" + StringUtils.generateRandomString();
         this.copyWalletType = walletType;
         this.copyWalletName = copyWalletName;
-        this.margin = ThreadLocalRandom.current().nextInt(1, 10000 + 1);
+        this.margin = ThreadLocalRandom.current().nextInt(1, 999);
+        this.selectedPairList = Arrays.asList(Token.BTC, Token.UNI);
         this.isFollowTrader = false;
-        this.tokenList = Arrays.asList(Token.BTC,Token.UNI);
-        this.leverage = ThreadLocalRandom.current().nextInt(2, 50 + 1);
+        this.isExcludeToken = false;
+        this.tradingPairExclude = Arrays.asList(Token.ETH, Token.LINK);
+        this.leverage = LeverageValue.randomLeverageValue().getValue();
         this.isReverseCopy = false;
         this.stopLoss = "50 %ROI";
         this.takeProfit = "20 %ROI";
         this.maxMarginPerPosition = 100;
         this.marginProtection = 10;
         this.isSkipLowerLeveragePosition = false;
+        this.lowLeverage = ThreadLocalRandom.current().nextInt(2, 100 + 1);
         this.isSkipLowerCollateralPosition = false;
+        this.lowCollateral = ThreadLocalRandom.current().nextInt(1, 10000 + 1);
+        this.runStatus = true;
     }
 
     public CopyTrade(WalletType walletType, String copyWalletName, boolean isFollowTrader) {
@@ -56,18 +64,20 @@ public class CopyTrade {
         this.copyWalletType = walletType;
         this.copyWalletName = copyWalletName;
         this.margin = ThreadLocalRandom.current().nextInt(1, 10000 + 1);
+        this.selectedPairList = Arrays.asList(Token.LINK, Token.UNI);
         this.isFollowTrader = true;
         this.isExcludeToken = true;
-        this.tradingPair = Arrays.asList(Token.LINK, Token.UNI);
-        this.leverage = ThreadLocalRandom.current().nextInt(2, 50 + 1);
+        this.tradingPairExclude = Arrays.asList(Token.LINK, Token.UNI);
+        this.leverage = LeverageValue.randomLeverageValue().getValue();
         this.isReverseCopy = true;
         this.stopLoss = "50 USD";
         this.takeProfit = "20 USD";
-        this.maxMarginPerPosition = 0;
-        this.marginProtection = 0;
-        this.isSkipLowerLeveragePosition = true;
+        this.maxMarginPerPosition = ThreadLocalRandom.current().nextInt(1, 10000 + 1);
+        this.marginProtection = ThreadLocalRandom.current().nextInt(1, 20 + 1);
+        this.isSkipLowerLeveragePosition = false;
         this.lowLeverage = ThreadLocalRandom.current().nextInt(2, 100 + 1);
         this.isSkipLowerCollateralPosition = false;
         this.lowCollateral = ThreadLocalRandom.current().nextInt(1, 10000 + 1);
+        this.runStatus = true;
     }
 }
