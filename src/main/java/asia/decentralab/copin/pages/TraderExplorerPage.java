@@ -41,7 +41,7 @@ public class TraderExplorerPage extends BasePage {
     @Step("Verify all statistics are accurate")
     public boolean isStatisticTraderDisplayCorrect(TraderProtocol protocol) {
         int numberTrader = 0;
-        for (TraderProtocol.TraderStatistic data : protocol.getTraderStatistics()) {
+        for (TraderProtocol.TraderStatistic data : protocol.getData()) {
             if (numberTrader == 20) {
                 pageButton.click();
                 numberTrader = 0;
@@ -49,24 +49,25 @@ public class TraderExplorerPage extends BasePage {
             }
 
             for (StatisticValue statisticValue : StatisticValue.values()) {
-                if (statisticValue.equals(StatisticValue.MARKETS)) {
+                if (statisticValue.equals(StatisticValue.MARKETS) || statisticValue.equals(StatisticValue.IGNORE)) {
                     continue;
                 }
 
+                String value = getStatisticValue(data, statisticValue);
                 String textValue;
 
-                if (getStatisticValue(data, statisticValue).equals("a minute ago")) {
+                if (value.equals("a minute ago")) {
                     textValue = "1";
-                } else if (getStatisticValue(data, statisticValue).equals("a hour ago")) {
+                } else if (value.equals("a hour ago")) {
                     textValue = "1";
-                } else if (getStatisticValue(data, statisticValue).equals("a day ago")) {
+                } else if (value.equals("a day ago")) {
                     textValue = "1";
-                } else if (getStatisticValue(data, statisticValue).equals("a month ago")) {
+                } else if (value.equals("a month ago")) {
                     textValue = "1";
-                } else if (getStatisticValue(data, statisticValue).equals("a year ago")) {
+                } else if (value.equals("a year ago")) {
                     textValue = "1";
                 } else {
-                    textValue = getStatisticValue(data, statisticValue);
+                    textValue = value;
                 }
 
                 String expectedTextValue;

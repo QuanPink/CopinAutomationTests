@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 @ToString
 public class TraderProtocol {
-    private List<TraderStatistic> traderStatistics;
+    private List<TraderStatistic> data;
 
     @Getter
     @Setter
