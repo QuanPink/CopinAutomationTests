@@ -94,28 +94,30 @@ public class TraderStatisticsRequest {
         }
     }
 
-    public TraderStatisticsRequest(String baseUrl, String path, String time) {
+    public TraderStatisticsRequest(String baseUrl, String protocol, String time) {
         this.baseUrl = baseUrl;
         this.apiEndpoints = new ApiEndpoint(
-                path, new RequestDetails(
-                new Pagination(1000, 0),
-                List.of(new Query("type", time)),
-                List.of(new Range("realisedPnl", 100, null),
-                        new Range("winRate", 51, null)),
-                "realisedPnl",
-                "desc"));
+                "/public/" + protocol + "/position/statistic/filter",
+                new RequestDetails(
+                        new Pagination(1000, 0),
+                        List.of(new Query("type", time)),
+                        List.of(new Range("realisedPnl", 100, null),
+                                new Range("winRate", 51, null)),
+                        "realisedPnl",
+                        "desc"));
     }
 
-    public TraderStatisticsRequest(String baseUrl, String path, String time, String sortBy, String sortType) {
+    public TraderStatisticsRequest(String baseUrl, String protocol, String time, String sortBy, String sortType) {
         this.baseUrl = baseUrl;
         this.apiEndpoints = new ApiEndpoint(
-                path, new RequestDetails(
-                new Pagination(2000, 0),
-                List.of(new Query("type", time)),
-                List.of(new Range("realisedPnl", 100, null),
-                        new Range("winRate", 51, null)),
-                sortBy,
-                sortType));
+                "/public/" + protocol + "/position/statistic/filter",
+                new RequestDetails(
+                        new Pagination(2000, 0),
+                        List.of(new Query("type", time)),
+                        List.of(new Range("realisedPnl", 100, null),
+                                new Range("winRate", 51, null)),
+                        sortBy,
+                        sortType));
     }
 
 }

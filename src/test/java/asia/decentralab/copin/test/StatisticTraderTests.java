@@ -24,16 +24,12 @@ public class StatisticTraderTests extends BaseTest {
         traderExplorerPage = new TraderExplorerPage();
 
         TraderStatisticsRequest requestPayload = new TraderStatisticsRequest(
-                "https://api.copin.io",
-                "/public/KWENTA/position/statistic/filter",
-                "D30"
-        );
+                "https://api.copin.io", "KWENTA", "D30");
 
         Response response = APIUtils.sendPostRequest(
                 requestPayload.getBaseUrl(),
                 requestPayload.getApiEndpoints().getPath(),
                 requestPayload.getApiEndpoints().getRequestDetails());
-
         kwentaStatisticData = JsonUtils.fromJson(response.getBody().asString(), TraderProtocol.class);
 
         homePage.goToTraderExplorerPage();
