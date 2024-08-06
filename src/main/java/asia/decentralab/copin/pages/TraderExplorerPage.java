@@ -49,7 +49,7 @@ public class TraderExplorerPage extends BasePage {
             }
 
             for (StatisticValue statisticValue : StatisticValue.values()) {
-                if (statisticValue.equals(StatisticValue.MARKETS) || statisticValue.equals(StatisticValue.IGNORE)) {
+                if (statisticValue.equals(StatisticValue.MARKETS) || statisticValue.equals(StatisticValue.IGNORE) || statisticValue.equals(StatisticValue.LAST_TRADE)) {
                     continue;
                 }
 

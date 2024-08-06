@@ -1,62 +1,38 @@
 package asia.decentralab.copin.utils;
 
-import asia.decentralab.copin.data.ApiRequestData;
-import asia.decentralab.copin.data.enumdata.HttpMethod;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
 
 public class APIUtils {
-    private static final Gson gson = new Gson();
+    public static Response sendGetRequest(String baseUrl, String endpoint) {
+        return RestAssured.given()
+                .baseUri(baseUrl)
+                .when()
+                .get(endpoint);
+    }
 
-    public static String sendRequest(ApiRequestData protocolData) {
-        try {
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(URI.create(protocolData.getUrl()));
+    public static Response sendPostRequest(String baseUrl, String endpoint, Object requestBody) {
+        return RestAssured.given()
+                .baseUri(baseUrl)
+                .header("Content-Type", "application/json")
+                .body(requestBody)
+                .when()
+                .post(endpoint);
+    }
 
-            if (protocolData.getHeader() != null) {
-                protocolData.getHeader().forEach((key, value) -> requestBuilder.header(key, value.toString()));
-            }
+    public static Response sendPutRequest(String baseUrl, String endpoint, Object requestBody) {
+        return RestAssured.given()
+                .baseUri(baseUrl)
+                .header("Content-Type", "application/json")
+                .body(requestBody)
+                .when()
+                .put(endpoint);
+    }
 
-            switch (HttpMethod.valueOf(protocolData.getMethod())) {
-                case GET:
-                    requestBuilder.GET();
-                    break;
-                case POST:
-                    String requestBodyJson = gson.toJson(protocolData.getBody());
-                    requestBuilder.POST(HttpRequest.BodyPublishers.ofString(requestBodyJson));
-                    break;
-                case PUT:
-                    String putBodyJson = gson.toJson(protocolData.getBody());
-                    requestBuilder.PUT(HttpRequest.BodyPublishers.ofString(putBodyJson));
-                    break;
-                case DELETE:
-                    if (protocolData.getBody() == null) {
-                        requestBuilder.DELETE();
-                    } else {
-                        String deleteBodyJson = gson.toJson(protocolData.getBody());
-                        requestBuilder.method("DELETE", HttpRequest.BodyPublishers.ofString(deleteBodyJson));
-                    }
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unsupported method: " + protocolData.getMethod());
-            }
-
-            HttpRequest request = requestBuilder.build();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() < 200 || response.statusCode() >= 300) {
-                throw new RuntimeException("API call failed with status code: " + response.statusCode() + " " + response.body());
-            }
-            return response.body();
-        } catch (JsonSyntaxException e) {
-            throw new RuntimeException("Invalid JSON data", e);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public static Response sendDeleteRequest(String baseUrl, String endpoint) {
+        return RestAssured.given()
+                .baseUri(baseUrl)
+                .when()
+                .delete(endpoint);
     }
 }

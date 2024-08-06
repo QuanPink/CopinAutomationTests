@@ -1,12 +1,12 @@
 package asia.decentralab.copin.test;
 
-import asia.decentralab.copin.config.Constant;
-import asia.decentralab.copin.data.ApiRequestData;
+import asia.decentralab.copin.data.TraderStatisticsRequest;
 import asia.decentralab.copin.model.TraderProtocol;
 import asia.decentralab.copin.pages.HomePage;
 import asia.decentralab.copin.pages.TraderExplorerPage;
 import asia.decentralab.copin.utils.APIUtils;
 import asia.decentralab.copin.utils.JsonUtils;
+import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -15,7 +15,7 @@ import org.testng.annotations.Test;
 public class StatisticTraderTests extends BaseTest {
     private HomePage homePage;
     private TraderExplorerPage traderExplorerPage;
-    private TraderProtocol kwentaData;
+    private TraderProtocol kwentaStatisticData;
 
     @BeforeClass
     public void setUp() {
@@ -23,9 +23,18 @@ public class StatisticTraderTests extends BaseTest {
         homePage = new HomePage();
         traderExplorerPage = new TraderExplorerPage();
 
-        ApiRequestData apiRequestData = JsonUtils.readJsonFile(Constant.KWENTA_DATA_FILE_PATH, ApiRequestData.class);
-        String jsonResponse = APIUtils.sendRequest(apiRequestData);
-        kwentaData = JsonUtils.fromJson(jsonResponse, TraderProtocol.class);
+        TraderStatisticsRequest requestPayload = new TraderStatisticsRequest(
+                "https://api.copin.io",
+                "/public/KWENTA/position/statistic/filter",
+                "D30"
+        );
+
+        Response response = APIUtils.sendPostRequest(
+                requestPayload.getBaseUrl(),
+                requestPayload.getApiEndpoints().getPath(),
+                requestPayload.getApiEndpoints().getRequestDetails());
+
+        kwentaStatisticData = JsonUtils.fromJson(response.getBody().asString(), TraderProtocol.class);
 
         homePage.goToTraderExplorerPage();
     }
@@ -38,7 +47,7 @@ public class StatisticTraderTests extends BaseTest {
     @Test(description = "Check trader's statistical information is correct on the Trader Explorer screen")
     public void pmg016TraderStatisticIsCorrectOnTheTraderExplorerScreen() {
         traderExplorerPage.displayAllStatisticsFields();
-        Assert.assertTrue(traderExplorerPage.isStatisticTraderDisplayCorrect(kwentaData));
+        Assert.assertTrue(traderExplorerPage.isStatisticTraderDisplayCorrect(kwentaStatisticData));
         ;
     }
 }
