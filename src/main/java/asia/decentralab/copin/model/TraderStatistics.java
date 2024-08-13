@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class TraderProtocol {
+public class TraderStatistics {
     private List<TraderStatistic> data;
 
     @Getter

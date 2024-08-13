@@ -2,7 +2,7 @@ package asia.decentralab.copin.pages;
 
 import asia.decentralab.copin.data.enumdata.StatisticValue;
 import asia.decentralab.copin.element.Element;
-import asia.decentralab.copin.model.TraderProtocol;
+import asia.decentralab.copin.model.TraderStatistics;
 import asia.decentralab.copin.utils.NumberFormatter;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
@@ -39,9 +39,9 @@ public class TraderExplorerPage extends BasePage {
     }
 
     @Step("Verify all statistics are accurate")
-    public boolean isStatisticTraderDisplayCorrect(TraderProtocol protocol) {
+    public boolean isStatisticTraderDisplayCorrect(TraderStatistics protocol) {
         int numberTrader = 0;
-        for (TraderProtocol.TraderStatistic data : protocol.getData()) {
+        for (TraderStatistics.TraderStatistic data : protocol.getData()) {
             if (numberTrader == 20) {
                 pageButton.click();
                 numberTrader = 0;
@@ -94,7 +94,7 @@ public class TraderExplorerPage extends BasePage {
         return true;
     }
 
-    private Object getExpectedStatisticValue(TraderProtocol.TraderStatistic data, StatisticValue statisticValue) {
+    private Object getExpectedStatisticValue(TraderStatistics.TraderStatistic data, StatisticValue statisticValue) {
         switch (statisticValue) {
             case RUNTIME_ALL:
                 return data.getRunTimeDays();
@@ -163,7 +163,7 @@ public class TraderExplorerPage extends BasePage {
         }
     }
 
-    private String getStatisticValue(TraderProtocol.TraderStatistic data, StatisticValue statisticValue) {
+    private String getStatisticValue(TraderStatistics.TraderStatistic data, StatisticValue statisticValue) {
         String currentStatistic = statisticValue.getValue();
         Element element = new Element(By.xpath(String.format(dynamicStatisticItem, currentStatistic)));
         element.moveToElement();

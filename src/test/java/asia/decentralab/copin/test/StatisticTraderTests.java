@@ -1,7 +1,10 @@
 package asia.decentralab.copin.test;
 
+import asia.decentralab.copin.config.BaseUrlConfig;
 import asia.decentralab.copin.data.TraderStatisticsRequest;
-import asia.decentralab.copin.model.TraderProtocol;
+import asia.decentralab.copin.data.enumdata.SourceValue;
+import asia.decentralab.copin.data.enumdata.TimeValue;
+import asia.decentralab.copin.model.TraderStatistics;
 import asia.decentralab.copin.pages.HomePage;
 import asia.decentralab.copin.pages.TraderExplorerPage;
 import asia.decentralab.copin.utils.APIUtils;
@@ -15,7 +18,7 @@ import org.testng.annotations.Test;
 public class StatisticTraderTests extends BaseTest {
     private HomePage homePage;
     private TraderExplorerPage traderExplorerPage;
-    private TraderProtocol kwentaStatisticData;
+    private TraderStatistics kwentaStatisticData;
 
     @BeforeClass
     public void setUp() {
@@ -24,13 +27,13 @@ public class StatisticTraderTests extends BaseTest {
         traderExplorerPage = new TraderExplorerPage();
 
         TraderStatisticsRequest requestPayload = new TraderStatisticsRequest(
-                "https://api.copin.io", "KWENTA", "D30");
+                BaseUrlConfig.PROD_BASE_URL, SourceValue.GNS_API.getValue(), TimeValue.DAYS_30_API.getValue());
 
         Response response = APIUtils.sendPostRequest(
                 requestPayload.getBaseUrl(),
                 requestPayload.getApiEndpoints().getPath(),
                 requestPayload.getApiEndpoints().getRequestDetails());
-        kwentaStatisticData = JsonUtils.fromJson(response.getBody().asString(), TraderProtocol.class);
+        kwentaStatisticData = JsonUtils.fromJson(response.getBody().asString(), TraderStatistics.class);
 
         homePage.goToTraderExplorerPage();
     }
@@ -44,6 +47,5 @@ public class StatisticTraderTests extends BaseTest {
     public void pmg016TraderStatisticIsCorrectOnTheTraderExplorerScreen() {
         traderExplorerPage.displayAllStatisticsFields();
         Assert.assertTrue(traderExplorerPage.isStatisticTraderDisplayCorrect(kwentaStatisticData));
-        ;
     }
 }
