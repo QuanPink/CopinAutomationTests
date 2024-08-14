@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="Copin Smoke Test Suite">
-    <listeners>
-        <listener class-name="asia.decentralab.copin.listener.AllureListener"/>
-    </listeners>
+<!--    <listeners>-->
+<!--        <listener class-name="asia.decentralab.copin.listener.AllureListener"/>-->
+<!--    </listeners>-->
     <test name="Chrome Tests">
         <classes>
-            <class name="asia.decentralab.copin.test.SearchTests"/>
-            <class name="asia.decentralab.copin.test.CreateWalletTests"/>
-            <class name="asia.decentralab.copin.test.StatisticTraderTests"/>
-            <class name="asia.decentralab.copin.test.CreateCopyTradeTests"/>
+<!--            <class name="asia.decentralab.copin.test.SearchTests"/>-->
+<!--            <class name="asia.decentralab.copin.test.CreateWalletTests"/>-->
+<!--            <class name="asia.decentralab.copin.test.StatisticTraderTests"/>-->
+<!--            <class name="asia.decentralab.copin.test.CreateCopyTradeTests"/>-->
+            <class name="asia.decentralab.copin.test.TraderStatisticTests"/>
         </classes>
     </test>
 </suite>

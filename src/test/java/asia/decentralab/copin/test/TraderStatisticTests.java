@@ -46,43 +46,9 @@ public class TraderStatisticTests {
             }
 
             for (TraderStatistics.TraderStatistic data : traderStatistics.getData()) {
-                int totalTrade = 0,
-                        totalOrder = 0,
-                        totalWin = 0,
-                        totalLose = 0,
-                        totalLiquidation = 0;
-                double orderPositionRatio = 0,
-                        winRate = 0,
-                        totalVolume = 0,
-                        avgVolume = 0,
-                        totalLeverage = 0,
-                        avgLeverage = 0,
-                        minLeverage = 0,
-                        maxLeverage = 0,
-                        realisedPnl = 0,
-                        realisedTotalGain = 0,
-                        realisedTotalLoss = 0,
-                        realisedProfitRate = 0,
-                        realisedProfitLossRatio = 0,
-                        realisedGainLossRatio = 0,
-                        realisedRoi = 0,
-                        realisedAvgRoi = 0,
-                        totalLong = 0,
-                        totalShort = 0,
-                        longRate = 0,
-                        totalLiquidationAmount = 0,
-                        totalFee = 0,
-                        totalGainFee = 0,
-                        totalLossFee = 0,
-                        totalDuration = 0,
-                        avgDuration = 0,
-                        minDuration = 0,
-                        maxDuration = 0,
-                        realisedMaxDrawDown = 0,
-                        realisedMaxDrawDownPnl = 0;
-                Double realisedMaxRoi = null;
-
-                PositionsByTraderReq positionByTraderPayload = new PositionsByTraderReq(BaseUrlConfig.PROD_BASE_URL, protocol, data.getAccount());
+                Stats stats = new Stats();
+                String account = data.getAccount();
+                PositionsByTraderReq positionByTraderPayload = new PositionsByTraderReq(BaseUrlConfig.PROD_BASE_URL, protocol, account);
 
                 Response responsePositionByTrader = APIUtils.sendPostRequest(
                         positionByTraderPayload.getBaseUrl(),
@@ -92,233 +58,10 @@ public class TraderStatisticTests {
                 PositionStatistics positionStatistics = JsonUtils.fromJson(responsePositionByTrader.getBody().asString(), PositionStatistics.class);
 
                 for (PositionStatistics.Position position : positionStatistics.getData()) {
-                    int number = getNumberOfDays(timeValue);
-
-                    Instant now = Instant.now();
-                    LocalDate today = now.atZone(ZoneOffset.UTC).toLocalDate();
-                    Instant startTime = today.atStartOfDay(ZoneOffset.UTC).toInstant();
-                    Instant endTime = startTime.minus(number, ChronoUnit.DAYS);
-
-                    Instant closeBlockTime = Instant.parse(position.getCloseBlockTime());
-                    if (closeBlockTime.isAfter(endTime) && !closeBlockTime.isAfter(startTime)) {
-                        totalTrade++;
-                        totalOrder += position.getOrderCount();
-
-                        if (position.isWin()) {
-                            totalWin++;
-                        } else {
-                            totalLose++;
-                        }
-
-                        totalVolume += position.getSize();
-                        totalLeverage += position.getLeverage();
-
-                        if (maxLeverage < position.getLeverage()) {
-                            maxLeverage = position.getLeverage();
-                        }
-                        if (minLeverage == 0) {
-                            if (maxLeverage >= position.getLeverage()) {
-                                minLeverage = position.getLeverage();
-                            }
-                        } else {
-                            if (minLeverage > position.getLeverage()) {
-                                minLeverage = position.getLeverage();
-                            }
-                        }
-
-                        realisedPnl += position.getRealisedPnl();
-
-                        if (position.getRealisedPnl() > 0) {
-                            realisedTotalGain += position.getRealisedPnl();
-                            totalGainFee += position.getFee();
-                        } else {
-                            realisedTotalLoss += position.getRealisedPnl();
-                            totalLossFee += position.getFee();
-                        }
-
-                        realisedRoi += position.getRealisedRoi();
-                        if (realisedMaxRoi == null) {
-                            realisedMaxRoi = position.getRealisedRoi();
-                        } else {
-                            if (realisedMaxRoi < position.getRealisedRoi()) {
-                                realisedMaxRoi = position.getRealisedRoi();
-                            }
-                        }
-
-                        if (position.isLong()) {
-                            totalLong++;
-                        } else {
-                            totalShort++;
-                        }
-
-                        if (position.isLiquidate() && !position.isWin()) {
-                            totalLiquidation++;
-                            totalLiquidationAmount += position.getRealisedPnl();
-                        }
-
-                        totalFee += position.getFee();
-
-                        totalDuration += position.getDurationInSecond();
-                        if (maxDuration < position.getDurationInSecond()) {
-                            maxDuration = position.getDurationInSecond();
-                        }
-                        if (minDuration == 0) {
-                            if (maxDuration >= position.getDurationInSecond()) {
-                                minDuration = position.getDurationInSecond();
-                            }
-                        } else {
-                            if (minDuration > position.getDurationInSecond()) {
-                                minDuration = position.getDurationInSecond();
-                            }
-                        }
-
-                        if (realisedMaxDrawDown > position.getRealisedRoi()) {
-                            realisedMaxDrawDown = position.getRealisedRoi();
-                        }
-
-                        if (realisedMaxDrawDownPnl > position.getRealisedPnl()) {
-                            realisedMaxDrawDownPnl = position.getRealisedPnl();
-                        }
-                    }
+                    updateStats(stats, position, timeValue);
+                    stats.calculateStats();
                 }
-
-                if (totalTrade != 0) {
-                    orderPositionRatio = (double) totalOrder / totalTrade;
-                    winRate = ((double) totalWin / (totalWin + totalLose)) * 100;
-                    avgVolume = totalVolume / totalTrade;
-                    avgLeverage = totalLeverage / totalTrade;
-
-                    if (realisedTotalLoss == 0) {
-                        realisedGainLossRatio = realisedTotalGain;
-                    } else {
-                        realisedGainLossRatio = realisedTotalGain / Math.abs(realisedTotalLoss);
-                    }
-
-                    if (realisedTotalGain + Math.abs(realisedTotalLoss) != 0) {
-                        realisedProfitRate = (realisedTotalGain / (realisedTotalGain + Math.abs(realisedTotalLoss))) * 100;
-                    }
-
-                    if (totalWin != 0 && totalLose != 0 && realisedTotalLoss / totalLose != 0) {
-                        realisedProfitLossRatio = realisedTotalGain / totalWin / (realisedTotalLoss / totalLose);
-                    }
-
-                    realisedAvgRoi = realisedRoi / totalTrade;
-
-                    longRate = (totalLong / totalTrade) * 100;
-                    avgDuration = totalDuration / totalTrade;
-                }
-
-                double equivalentTotalVolume = 0.02 * totalVolume;
-                double equivalentAvgVolume = 0.02 * avgVolume;
-                double equivalentAvgLeverage = 0.02 * avgLeverage;
-                double equivalentRealisedPnl = 0.02 * Math.abs(realisedPnl);
-                double equivalentRealisedTotalGain = 0.02 * Math.abs(realisedTotalGain);
-                double equivalentRealisedTotalLoss = 0.02 * Math.abs(realisedTotalLoss);
-                double equivalentRealisedProfitRate = 0.02 * Math.abs(realisedProfitRate);
-                double equivalentRealisedProfitLossRatio = 0.02 * Math.abs(realisedProfitLossRatio);
-                double equivalentRealisedGainLossRatio = 0.02 * Math.abs(realisedGainLossRatio);
-                double equivalentRealisedAvgRoi = 0.02 * Math.abs(realisedAvgRoi);
-                double equivalentTotalFee = 0.02 * Math.abs(totalFee);
-                double equivalentAvgDuration = 0.02 * avgDuration;
-                double equivalentRealisedMaxDrawDown = 0.02 * Math.abs(realisedMaxDrawDown);
-                double equivalentRealisedMaxDrawDownPnl = 0.02 * Math.abs(realisedMaxDrawDownPnl);
-
-                Assert.assertEquals(totalTrade, data.getTotalTrade(),
-                        "Total trade incorrect: " + totalTrade + "-" + data.getTotalTrade());
-                Assert.assertTrue(totalTrade >= 0, "Total trade less than 0: " + totalTrade);
-
-                Assert.assertEquals(orderPositionRatio, data.getOrderPositionRatio(), 0.01,
-                        "Order Position Ratio incorrect: " + orderPositionRatio + "-" + data.getOrderPositionRatio());
-                Assert.assertTrue(orderPositionRatio >= 0,
-                        "Order Position Ratio less than 0: " + orderPositionRatio);
-
-                Assert.assertEquals(totalWin, data.getTotalWin(),
-                        "Total Win incorrect: " + totalWin + "-" + data.getTotalWin());
-                Assert.assertTrue(totalWin >= 0, "Total Win less than 0: " + totalWin);
-
-                Assert.assertEquals(totalLose, data.getTotalLose(),
-                        "Total Lose incorrect: " + totalLose + "-" + data.getTotalLose());
-                Assert.assertTrue(totalLose >= 0, "Total Lose less than 0: " + totalLose);
-
-                Assert.assertEquals(winRate, data.getWinRate(), 0.01,
-                        "Win rate incorrect: " + winRate + "-" + data.getWinRate());
-                Assert.assertTrue(winRate >= 0, "Win rate less than 0: " + winRate);
-
-                Assert.assertEquals(totalVolume, data.getTotalVolume(), equivalentTotalVolume,
-                        "Total volume incorrect: " + totalVolume + "-" + data.getTotalVolume());
-                Assert.assertTrue(totalVolume >= 0, "Total volume less than 0: " + winRate);
-
-                Assert.assertEquals(avgVolume, data.getAvgVolume(), equivalentAvgVolume,
-                        "Avg volume incorrect: " + avgVolume + "-" + data.getAvgVolume());
-                Assert.assertTrue(avgVolume >= 0, "Avg volume less than 0: " + avgVolume);
-
-                Assert.assertEquals(avgLeverage, data.getAvgLeverage(), equivalentAvgLeverage,
-                        "Avg leverage incorrect: " + avgLeverage + "-" + data.getAvgLeverage());
-                Assert.assertTrue(avgLeverage >= 0, "Avg leverage less than 0: " + avgLeverage);
-
-                Assert.assertEquals(minLeverage, data.getMinLeverage(),
-                        "Min leverage incorrect: " + minLeverage + "-" + data.getMinLeverage());
-                Assert.assertTrue(minLeverage >= 0, "Min leverage less than 0: " + minLeverage);
-
-                Assert.assertEquals(maxLeverage, data.getMaxLeverage(),
-                        "Max leverage incorrect: " + maxLeverage + "-" + data.getMaxLeverage());
-
-                Assert.assertEquals(realisedPnl, data.getRealisedPnl(), equivalentRealisedPnl,
-                        "Realised Pnl incorrect: " + realisedPnl + "-" + data.getRealisedPnl());
-
-                Assert.assertEquals(realisedTotalGain, data.getRealisedTotalGain(), equivalentRealisedTotalGain,
-                        "Realised Total Gain incorrect: " + realisedTotalGain + "-" + data.getRealisedTotalGain());
-                Assert.assertTrue(realisedTotalGain >= 0, "Realised Total Gain less than 0: " + realisedTotalGain);
-
-                Assert.assertEquals(realisedTotalLoss, data.getRealisedTotalLoss(), equivalentRealisedTotalLoss,
-                        "Realised Total Loss incorrect: " + realisedTotalLoss + "-" + data.getRealisedTotalLoss());
-                Assert.assertTrue(realisedTotalLoss <= 0, "Realised Total Loss great than 0: " + realisedTotalLoss);
-
-                Assert.assertEquals(realisedProfitRate, data.getRealisedProfitRate(), equivalentRealisedProfitRate,
-                        "Realised Profit Rate incorrect: " + realisedProfitRate + "-" + data.getRealisedProfitRate());
-                Assert.assertTrue(realisedProfitRate >= 0, "Realised Profit Rate less than 0: " + realisedProfitRate);
-
-                Assert.assertEquals(realisedProfitLossRatio, data.getRealisedProfitLossRatio(), equivalentRealisedProfitLossRatio,
-                        "Realised Profit Loss Ratio incorrect: " + realisedProfitLossRatio + "-" + data.getRealisedProfitLossRatio());
-
-                Assert.assertEquals(realisedGainLossRatio, data.getRealisedGainLossRatio(), equivalentRealisedGainLossRatio,
-                        "Realised Gain Loss Ratio incorrect: " + realisedGainLossRatio + "-" + data.getRealisedGainLossRatio());
-                Assert.assertTrue(realisedGainLossRatio >= 0, "Realised Gain Loss Ratio less than 0: " + realisedGainLossRatio);
-
-                Assert.assertEquals(realisedAvgRoi, data.getRealisedAvgRoi(), equivalentRealisedAvgRoi,
-                        "Realised Avg Roi incorrect: " + realisedAvgRoi + "-" + data.getRealisedAvgRoi());
-
-                Assert.assertEquals(realisedMaxRoi, data.getRealisedMaxRoi(),
-                        "Realised Max Roi incorrect: " + realisedMaxRoi + "-" + data.getRealisedMaxRoi());
-
-                Assert.assertEquals(longRate, data.getLongRate(),
-                        "Long Rate incorrect: " + longRate + "-" + data.getLongRate());
-                Assert.assertTrue(longRate >= 0, "Long Rate less than 0: " + longRate);
-
-                Assert.assertEquals(totalLiquidation, data.getTotalLiquidation(),
-                        "Total Liquidation incorrect: " + totalLiquidation + "-" + data.getTotalLiquidation());
-                Assert.assertTrue(totalLiquidation >= 0, "Total Liquidation less than 0: " + totalLiquidation);
-
-                Assert.assertEquals(totalFee, data.getTotalFee(), equivalentTotalFee,
-                        "Total Fee incorrect: " + totalFee + "-" + data.getTotalFee());
-                Assert.assertTrue(totalFee >= 0, "Total Fee less than 0: " + totalFee);
-
-                Assert.assertEquals(avgDuration, data.getAvgDuration(), equivalentAvgDuration,
-                        "Avg Duration incorrect: " + avgDuration + "-" + data.getAvgDuration());
-                Assert.assertTrue(avgDuration >= 0, "Avg Duration less than 0: " + avgDuration);
-
-                Assert.assertEquals(minDuration, data.getMinDuration(),
-                        "Min Duration incorrect: " + minDuration + "-" + data.getMinDuration());
-                Assert.assertTrue(minDuration >= 0, "Min Duration less than 0: " + minDuration);
-
-                Assert.assertEquals(maxDuration, data.getMaxDuration(),
-                        "Max Duration incorrect: " + maxDuration + "-" + data.getMaxDuration());
-
-                Assert.assertEquals(realisedMaxDrawDown, data.getRealisedMaxDrawdown(), equivalentRealisedMaxDrawDown,
-                        "Realised Max Draw Down incorrect: " + realisedMaxDrawDown + "-" + data.getRealisedMaxDrawdown());
-
-                Assert.assertEquals(realisedMaxDrawDownPnl, data.getRealisedMaxDrawdownPnl(), equivalentRealisedMaxDrawDownPnl,
-                        "Realised Max Draw Down Pnl incorrect: " + realisedMaxDrawDownPnl + "-" + data.getRealisedMaxDrawdownPnl());
+                verifyStatistics(stats, data, protocol, timeValue, account);
             }
         }
     }
@@ -331,8 +74,210 @@ public class TraderStatisticTests {
                 return 15;
             case "D30":
                 return 30;
-            default:
+            case "D60":
                 return 60;
+            default:
+                return 0;
         }
+    }
+
+    private static class Stats {
+        int totalTrade = 0;
+        int totalOrder = 0;
+        double orderPositionRatio = 0;
+        double winRate = 0;
+        int totalWin = 0;
+        int totalLose = 0;
+        double totalVolume = 0;
+        double avgVolume = 0;
+        double totalLeverage = 0;
+        double avgLeverage = 0;
+        double minLeverage = Double.MAX_VALUE;
+        double maxLeverage = 0;
+        double realisedPnl = 0;
+        double realisedTotalGain = 0;
+        double realisedTotalLoss = 0;
+        double realisedProfitRate = 0;
+        double realisedProfitLossRatio = 0;
+        double realisedGainLossRatio = 0;
+        double totalFee = 0;
+        double totalGainFee = 0;
+        double totalLossFee = 0;
+        double realisedRoi = 0;
+        double realisedAvgRoi = 0;
+        double realisedMaxRoi = 0;
+        int totalLong = 0;
+        double longRate = 0;
+        int totalLiquidation = 0;
+        double totalLiquidationAmount = 0;
+        double totalDuration = 0;
+        double avgDuration = 0;
+        double minDuration = Double.MAX_VALUE;
+        double maxDuration = 0;
+        double realisedMaxDrawDown = 0;
+        double realisedMaxDrawDownPnl = 0;
+
+        void calculateStats() {
+            if (totalTrade != 0) {
+                orderPositionRatio = (double) totalOrder / totalTrade;
+                winRate = ((double) totalWin / (totalWin + totalLose)) * 100;
+                avgVolume = totalVolume / totalTrade;
+                avgLeverage = totalLeverage / totalTrade;
+
+                realisedGainLossRatio = realisedTotalLoss == 0 ? realisedTotalGain : realisedTotalGain / Math.abs(realisedTotalLoss);
+
+                realisedProfitRate = (realisedTotalGain + Math.abs(realisedTotalLoss) != 0) ?
+                        (realisedTotalGain / (realisedTotalGain + Math.abs(realisedTotalLoss))) * 100 :
+                        0;
+
+                realisedProfitLossRatio = (totalWin != 0 && totalLose != 0 && realisedTotalLoss / totalLose != 0) ?
+                        (realisedTotalGain / totalWin) / (realisedTotalLoss / totalLose) :
+                        0;
+
+                realisedAvgRoi = realisedRoi / totalTrade;
+
+                longRate = (totalLong / (double) totalTrade) * 100;
+                avgDuration = totalDuration / totalTrade;
+            }
+        }
+    }
+
+    private void updateStats(Stats stats, PositionStatistics.Position position, String timeValue) {
+        int numberOfDays = getNumberOfDays(timeValue);
+
+        Instant now = Instant.now();
+        LocalDate today = now.atZone(ZoneOffset.UTC).toLocalDate();
+        Instant startTime = today.atStartOfDay(ZoneOffset.UTC).toInstant();
+        Instant endTime = startTime.minus(numberOfDays, ChronoUnit.DAYS);
+
+        Instant closeBlockTime = Instant.parse(position.getCloseBlockTime());
+        if (closeBlockTime.isAfter(endTime) && !closeBlockTime.isAfter(startTime)) {
+            stats.totalTrade++;
+            stats.totalOrder += position.getOrderCount();
+            stats.totalWin += position.isWin() ? 1 : 0;
+            stats.totalLose += position.isWin() ? 0 : 1;
+            stats.totalVolume += position.getSize();
+            stats.totalLeverage += position.getLeverage();
+            stats.maxLeverage = Math.max(stats.maxLeverage, position.getLeverage());
+            stats.minLeverage = Math.min(stats.minLeverage, position.getLeverage());
+            stats.realisedPnl += position.getRealisedPnl();
+            stats.realisedTotalGain += position.getRealisedPnl() > 0 ? position.getRealisedPnl() : 0;
+            stats.realisedTotalLoss += position.getRealisedPnl() <= 0 ? position.getRealisedPnl() : 0;
+            stats.totalGainFee += position.getRealisedPnl() > 0 ? position.getFee() : 0;
+            stats.totalLossFee += position.getRealisedPnl() <= 0 ? position.getFee() : 0;
+            stats.realisedRoi += position.getRealisedRoi();
+            stats.realisedMaxRoi = Math.max(stats.realisedMaxRoi, position.getRealisedRoi());
+            stats.totalLong += position.isLong() ? 1 : 0;
+            stats.totalLiquidation += position.isLiquidate() && !position.isWin() ? 1 : 0;
+            stats.totalLiquidationAmount += position.isLiquidate() && !position.isWin() ? position.getRealisedPnl() : 0;
+            stats.totalFee += position.getFee();
+            stats.totalDuration += position.getDurationInSecond();
+            stats.maxDuration = Math.max(stats.maxDuration, position.getDurationInSecond());
+            stats.minDuration = Math.min(stats.minDuration, position.getDurationInSecond());
+            stats.realisedMaxDrawDown = Math.min(stats.realisedMaxDrawDown, position.getRealisedRoi());
+            stats.realisedMaxDrawDownPnl = Math.min(stats.realisedMaxDrawDownPnl, position.getRealisedPnl());
+        }
+    }
+
+    private void verifyStatistics(Stats stats, TraderStatistics.TraderStatistic data, String protocol, String timeValue, String account) {
+        double equivalentFactor = 0.02;
+        String errorMessage = " || " + timeValue + "-" + protocol + "-" + account;
+
+        Assert.assertEquals(stats.totalTrade, data.getTotalTrade(),
+                "Total trade incorrect: " + stats.totalTrade + " / " + data.getTotalTrade() + errorMessage);
+        Assert.assertTrue(stats.totalTrade >= 0, "Total trade less than 0: " + stats.totalTrade + errorMessage);
+
+        Assert.assertEquals(stats.orderPositionRatio, data.getOrderPositionRatio(), 0.01,
+                "Order Position Ratio incorrect: " + stats.orderPositionRatio + " / " + data.getOrderPositionRatio() + errorMessage);
+        Assert.assertTrue(stats.orderPositionRatio >= 0,
+                "Order Position Ratio less than 0: " + stats.orderPositionRatio + errorMessage);
+
+        Assert.assertEquals(stats.totalWin, data.getTotalWin(),
+                "Total Win incorrect: " + stats.totalWin + " / " + data.getTotalWin() + errorMessage);
+        Assert.assertTrue(stats.totalWin >= 0, "Total Win less than 0: " + stats.totalWin + errorMessage);
+
+        Assert.assertEquals(stats.totalLose, data.getTotalLose(),
+                "Total Lose incorrect: " + stats.totalLose + " / " + data.getTotalLose() + errorMessage);
+        Assert.assertTrue(stats.totalLose >= 0, "Total Lose less than 0: " + stats.totalLose + errorMessage);
+
+        Assert.assertEquals(stats.winRate, data.getWinRate(), 0.01,
+                "Win rate incorrect: " + stats.winRate + " / " + data.getWinRate() + errorMessage);
+        Assert.assertTrue(stats.winRate >= 0, "Win rate less than 0: " + stats.winRate + errorMessage);
+
+        Assert.assertEquals(stats.totalVolume, data.getTotalVolume(), stats.totalVolume * equivalentFactor,
+                "Total volume incorrect: " + stats.totalVolume + " / " + data.getTotalVolume() + errorMessage);
+        Assert.assertTrue(stats.totalVolume >= 0, "Total volume less than 0: " + stats.winRate + errorMessage);
+
+        Assert.assertEquals(stats.avgVolume, data.getAvgVolume(), stats.avgVolume * equivalentFactor,
+                "Avg volume incorrect: " + stats.avgVolume + " / " + data.getAvgVolume() + errorMessage);
+        Assert.assertTrue(stats.avgVolume >= 0, "Avg volume less than 0: " + stats.avgVolume + errorMessage);
+
+        Assert.assertEquals(stats.avgLeverage, data.getAvgLeverage(), stats.avgLeverage * equivalentFactor,
+                "Avg leverage incorrect: " + stats.avgLeverage + " / " + data.getAvgLeverage() + errorMessage);
+        Assert.assertTrue(stats.avgLeverage >= 0, "Avg leverage less than 0: " + stats.avgLeverage + errorMessage);
+
+        Assert.assertEquals(stats.minLeverage, data.getMinLeverage(),
+                "Min leverage incorrect: " + stats.minLeverage + " / " + data.getMinLeverage() + errorMessage);
+        Assert.assertTrue(stats.minLeverage >= 0, "Min leverage less than 0: " + stats.minLeverage + errorMessage);
+
+        Assert.assertEquals(stats.maxLeverage, data.getMaxLeverage(),
+                "Max leverage incorrect: " + stats.maxLeverage + " / " + data.getMaxLeverage() + errorMessage);
+
+        Assert.assertEquals(stats.realisedPnl, data.getRealisedPnl(), Math.abs(stats.realisedPnl * equivalentFactor),
+                "Realised Pnl incorrect: " + stats.realisedPnl + " / " + data.getRealisedPnl() + errorMessage);
+
+        Assert.assertEquals(stats.realisedTotalGain, data.getRealisedTotalGain(), stats.realisedTotalGain * equivalentFactor,
+                "Realised Total Gain incorrect: " + stats.realisedTotalGain + " / " + data.getRealisedTotalGain() + errorMessage);
+        Assert.assertTrue(stats.realisedTotalGain >= 0, "Realised Total Gain less than 0: " + stats.realisedTotalGain + errorMessage);
+
+        Assert.assertEquals(stats.realisedTotalLoss, data.getRealisedTotalLoss(), 0.01,
+                "Realised Total Loss incorrect: " + stats.realisedTotalLoss + " / " + data.getRealisedTotalLoss() + errorMessage);
+        Assert.assertTrue(stats.realisedTotalLoss <= 0, "Realised Total Loss great than 0: " + stats.realisedTotalLoss + errorMessage);
+
+        Assert.assertEquals(stats.realisedProfitRate, data.getRealisedProfitRate(), stats.realisedProfitRate * equivalentFactor,
+                "Realised Profit Rate incorrect: " + stats.realisedProfitRate + " / " + data.getRealisedProfitRate() + errorMessage);
+        Assert.assertTrue(stats.realisedProfitRate >= 0, "Realised Profit Rate less than 0: " + stats.realisedProfitRate + errorMessage);
+
+        Assert.assertEquals(stats.realisedProfitLossRatio, data.getRealisedProfitLossRatio(), Math.abs(stats.realisedProfitLossRatio * equivalentFactor),
+                "Realised Profit Loss Ratio incorrect: " + stats.realisedProfitLossRatio + " / " + data.getRealisedProfitLossRatio() + errorMessage);
+
+        Assert.assertEquals(stats.realisedGainLossRatio, data.getRealisedGainLossRatio(), Math.abs(stats.realisedGainLossRatio * equivalentFactor),
+                "Realised Gain Loss Ratio incorrect: " + stats.realisedGainLossRatio + " / " + data.getRealisedGainLossRatio() + errorMessage);
+        Assert.assertTrue(stats.realisedGainLossRatio >= 0, "Realised Gain Loss Ratio less than 0: " + stats.realisedGainLossRatio + errorMessage);
+
+        Assert.assertEquals(stats.realisedAvgRoi, data.getRealisedAvgRoi(), Math.abs(stats.realisedAvgRoi * equivalentFactor),
+                "Realised Avg Roi incorrect: " + stats.realisedAvgRoi + " / " + data.getRealisedAvgRoi() + errorMessage);
+
+        Assert.assertEquals(stats.realisedMaxRoi, data.getRealisedMaxRoi(),
+                "Realised Max Roi incorrect: " + stats.realisedMaxRoi + " / " + data.getRealisedMaxRoi() + errorMessage);
+
+        Assert.assertEquals(stats.longRate, data.getLongRate(),
+                "Long Rate incorrect: " + stats.longRate + " / " + data.getLongRate() + errorMessage);
+        Assert.assertTrue(stats.longRate >= 0, "Long Rate less than 0: " + stats.longRate + errorMessage);
+
+        Assert.assertEquals(stats.totalLiquidation, data.getTotalLiquidation(),
+                "Total Liquidation incorrect: " + stats.totalLiquidation + " / " + data.getTotalLiquidation() + errorMessage);
+        Assert.assertTrue(stats.totalLiquidation >= 0, "Total Liquidation less than 0: " + stats.totalLiquidation + errorMessage);
+
+        Assert.assertEquals(stats.totalFee, data.getTotalFee(), stats.totalFee * equivalentFactor,
+                "Total Fee incorrect: " + stats.totalFee + " / " + data.getTotalFee() + errorMessage);
+        Assert.assertTrue(stats.totalFee >= 0, "Total Fee less than 0: " + stats.totalFee + errorMessage);
+
+        Assert.assertEquals(stats.avgDuration, data.getAvgDuration(), stats.avgDuration * equivalentFactor,
+                "Avg Duration incorrect: " + stats.avgDuration + " / " + data.getAvgDuration() + errorMessage);
+        Assert.assertTrue(stats.avgDuration >= 0, "Avg Duration less than 0: " + stats.avgDuration + errorMessage);
+
+        Assert.assertEquals(stats.minDuration, data.getMinDuration(),
+                "Min Duration incorrect: " + stats.minDuration + " / " + data.getMinDuration() + errorMessage);
+        Assert.assertTrue(stats.minDuration >= 0, "Min Duration less than 0: " + stats.minDuration + errorMessage);
+
+        Assert.assertEquals(stats.maxDuration, data.getMaxDuration(),
+                "Max Duration incorrect: " + stats.maxDuration + " / " + data.getMaxDuration() + errorMessage);
+
+        Assert.assertEquals(stats.realisedMaxDrawDown, data.getRealisedMaxDrawdown(), Math.abs(stats.realisedMaxDrawDown * equivalentFactor),
+                "Realised Max Draw Down incorrect: " + stats.realisedMaxDrawDown + " / " + data.getRealisedMaxDrawdown() + errorMessage);
+
+        Assert.assertEquals(stats.realisedMaxDrawDownPnl, data.getRealisedMaxDrawdownPnl(), Math.abs(stats.realisedMaxDrawDownPnl * equivalentFactor),
+                "Realised Max Draw Down Pnl incorrect: " + stats.realisedMaxDrawDownPnl + " / " + data.getRealisedMaxDrawdownPnl() + errorMessage);
     }
 }
