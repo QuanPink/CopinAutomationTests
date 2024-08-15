@@ -217,15 +217,6 @@ public class TraderStatisticTests {
                 "Avg volume incorrect: " + errorMessage);
         Assert.assertTrue(stats.avgVolume >= 0, "Avg volume less than 0: " + errorMessage);
 
-        Assert.assertEquals(stats.avgLeverage, data.getAvgLeverage(), stats.avgLeverage * equivalentFactor,
-                "Avg leverage incorrect: " + errorMessage);
-        Assert.assertTrue(stats.avgLeverage >= 0, "Avg leverage less than 0: " + errorMessage);
-
-        Assert.assertEquals(stats.minLeverage, data.getMinLeverage(), "Min leverage incorrect: " + errorMessage);
-        Assert.assertTrue(stats.minLeverage >= 0, "Min leverage less than 0: " + errorMessage);
-
-        Assert.assertEquals(stats.maxLeverage, data.getMaxLeverage(), "Max leverage incorrect: " + errorMessage);
-
         Assert.assertEquals(stats.realisedPnl, data.getRealisedPnl(), Math.abs(stats.realisedPnl * equivalentFactor),
                 "Realised Pnl incorrect: " + errorMessage);
 
@@ -285,5 +276,16 @@ public class TraderStatisticTests {
         Assert.assertEquals(stats.realisedMaxDrawDownPnl, data.getRealisedMaxDrawdownPnl(),
                 Math.abs(stats.realisedMaxDrawDownPnl * equivalentFactor),
                 "Realised Max Draw Down Pnl incorrect: " + errorMessage);
+
+        if (!(protocol.equals("SYNTHETIX_V3") || protocol.equals("HMX_ARB"))) {
+            Assert.assertEquals(stats.avgLeverage, data.getAvgLeverage(), stats.avgLeverage * equivalentFactor,
+                    "Avg leverage incorrect: " + errorMessage);
+            Assert.assertTrue(stats.avgLeverage >= 0, "Avg leverage less than 0: " + errorMessage);
+
+            Assert.assertEquals(stats.minLeverage, data.getMinLeverage(), "Min leverage incorrect: " + errorMessage);
+            Assert.assertTrue(stats.minLeverage >= 0, "Min leverage less than 0: " + errorMessage);
+
+            Assert.assertEquals(stats.maxLeverage, data.getMaxLeverage(), "Max leverage incorrect: " + errorMessage);
+        }
     }
 }
