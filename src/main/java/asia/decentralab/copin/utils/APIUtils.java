@@ -4,6 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
 public class APIUtils {
+    private static final String CONTENT_TYPE_JSON = "application/json";
+
     public static Response sendGetRequest(String baseUrl, String endpoint) {
         return RestAssured.given()
                 .baseUri(baseUrl)
@@ -14,7 +16,7 @@ public class APIUtils {
     public static Response sendPostRequest(String baseUrl, String endpoint, Object requestBody) {
         return RestAssured.given()
                 .baseUri(baseUrl)
-                .header("Content-Type", "application/json")
+                .header("Content-Type", CONTENT_TYPE_JSON)
                 .body(requestBody)
                 .when()
                 .post(endpoint);
@@ -23,7 +25,7 @@ public class APIUtils {
     public static Response sendPutRequest(String baseUrl, String endpoint, Object requestBody) {
         return RestAssured.given()
                 .baseUri(baseUrl)
-                .header("Content-Type", "application/json")
+                .header("Content-Type", CONTENT_TYPE_JSON)
                 .body(requestBody)
                 .when()
                 .put(endpoint);
