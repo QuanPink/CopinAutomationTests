@@ -23,7 +23,7 @@ public class TraderStatisticTests {
     public Object[][] protocols() {
         String[] protocols = {"EQUATION_ARB", "GMX", "GMX_V2", "GNS", "HMX_ARB", "LEVEL_ARB", "MUX_ARB", "MYX_ARB",
                 "VELA_ARB", "YFX_ARB", "AVANTIS_BASE", "SYNTHETIX_V3", "LOGX_BLAST", "APOLLOX_BNB", "LEVEL_BNB",
-                "KTX_MANTLE", "LOGX_MODE", "CYBERDEX", "DEXTORO", "KWENTA", "POLYNOMIAL", "GNS_POLY"};
+                "KTX_MANTLE", "LOGX_MODE", "CYBERDEX", "DEXTORO", "KWENTA", "POLYNOMIAL", "GNS_POLY", "ROLLIE_SCROLL", "KILOEX_OPBNB"};
         String[] timeValues = {"D7", "D15", "D30", "D60"};
 
         Object[][] data = new Object[protocols.length * timeValues.length][2];
