@@ -46,7 +46,8 @@ public class TraderStatisticTests {
                 traderStatisticByProtocolPayload.getApiEndpoints().getPath(),
                 traderStatisticByProtocolPayload.getApiEndpoints().getRequestDetails());
 
-        TraderStatistics traderStatistics = JsonUtils.fromJson(responseTraderStatistic.getBody().asString(), TraderStatistics.class);
+        TraderStatistics traderStatistics = JsonUtils.fromJson(responseTraderStatistic.getBody().asString(),
+                TraderStatistics.class);
 
         if (traderStatistics.getData() == null || traderStatistics.getData().isEmpty()) {
             throw new Exception("No position data available for protocol: " + protocol);
@@ -54,20 +55,22 @@ public class TraderStatisticTests {
 
         Instant now = Instant.now();
         LocalDate today = now.atZone(ZoneOffset.UTC).toLocalDate();
-        Instant startTime = today.atStartOfDay(ZoneOffset.UTC).toInstant();
-        Instant endTime = startTime.minus(getNumberOfDays(timeValue), ChronoUnit.DAYS);
+        Instant endTime = today.atStartOfDay(ZoneOffset.UTC).toInstant();
+        Instant startTime = endTime.minus(getNumberOfDays(timeValue), ChronoUnit.DAYS);
 
         for (TraderStatistics.TraderStatistic data : traderStatistics.getData()) {
             Stats stats = new Stats();
             String account = data.getAccount();
-            PositionsByTraderReq positionByTraderPayload = new PositionsByTraderReq(BaseUrlConfig.PROD_BASE_URL, protocol, account);
+            PositionsByTraderReq positionByTraderPayload = new PositionsByTraderReq(BaseUrlConfig.PROD_BASE_URL,
+                    protocol, account);
 
             Response responsePositionByTrader = APIUtils.sendPostRequest(
                     positionByTraderPayload.getBaseUrl(),
                     positionByTraderPayload.getApiEndpoints().getPath(),
                     positionByTraderPayload.getApiEndpoints().getRequestDetails());
 
-            PositionStatistics positionStatistics = JsonUtils.fromJson(responsePositionByTrader.getBody().asString(), PositionStatistics.class);
+            PositionStatistics positionStatistics = JsonUtils.fromJson(responsePositionByTrader.getBody().asString(),
+                    PositionStatistics.class);
 
             for (PositionStatistics.Position position : positionStatistics.getData()) {
                 updateStats(stats, position, startTime, endTime);
@@ -135,7 +138,9 @@ public class TraderStatisticTests {
                 avgVolume = totalVolume / totalTrade;
                 avgLeverage = totalLeverage / totalTrade;
 
-                realisedGainLossRatio = realisedTotalLoss == 0 ? realisedTotalGain : realisedTotalGain / Math.abs(realisedTotalLoss);
+                realisedGainLossRatio = realisedTotalLoss == 0 ?
+                        realisedTotalGain :
+                        realisedTotalGain / Math.abs(realisedTotalLoss);
 
                 realisedProfitRate = (realisedTotalGain + Math.abs(realisedTotalLoss) != 0) ?
                         (realisedTotalGain / (realisedTotalGain + Math.abs(realisedTotalLoss))) * 100 :
@@ -155,7 +160,7 @@ public class TraderStatisticTests {
 
     private void updateStats(Stats stats, PositionStatistics.Position position, Instant startTime, Instant endTime) {
         Instant closeBlockTime = Instant.parse(position.getCloseBlockTime());
-        if (closeBlockTime.isAfter(endTime) && !closeBlockTime.isAfter(startTime)) {
+        if (!closeBlockTime.isBefore(startTime) && closeBlockTime.isBefore(endTime)) {
             stats.totalTrade++;
             stats.totalOrder += position.getOrderCount();
             stats.totalWin += position.isWin() ? 1 : 0;
