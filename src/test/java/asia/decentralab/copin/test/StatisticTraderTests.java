@@ -23,6 +23,16 @@ public class StatisticTraderTests extends BaseTest {
     @BeforeClass
     public void setUp() {
         super.setup();
+        homePage.goToTraderExplorerPage();
+    }
+
+    @AfterMethod
+    public void afterEachTest() {
+        homePage.goToTraderExplorerPage();
+    }
+
+    @Test(description = "Check trader's statistical information is correct on the Trader Explorer screen")
+    public void pmg016TraderStatisticIsCorrectOnTheTraderExplorerScreen() {
         homePage = new HomePage();
         traderExplorerPage = new TraderExplorerPage();
 
@@ -35,16 +45,6 @@ public class StatisticTraderTests extends BaseTest {
                 traderStatisticByProtocolPayload.getApiEndpoints().getRequestDetails());
         kwentaStatisticData = JsonUtils.fromJson(response.getBody().asString(), TraderStatistics.class);
 
-        homePage.goToTraderExplorerPage();
-    }
-
-    @AfterMethod
-    public void afterEachTest() {
-        homePage.goToTraderExplorerPage();
-    }
-
-    @Test(description = "Check trader's statistical information is correct on the Trader Explorer screen")
-    public void pmg016TraderStatisticIsCorrectOnTheTraderExplorerScreen() {
         traderExplorerPage.displayAllStatisticsFields();
         Assert.assertTrue(traderExplorerPage.isStatisticTraderDisplayCorrect(kwentaStatisticData));
     }
