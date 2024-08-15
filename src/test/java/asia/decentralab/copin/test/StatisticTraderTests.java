@@ -1,7 +1,7 @@
 package asia.decentralab.copin.test;
 
 import asia.decentralab.copin.config.BaseUrlConfig;
-import asia.decentralab.copin.data.TraderStatisticsRequest;
+import asia.decentralab.copin.config.endpoints.TraderStatisticByProtocolReq;
 import asia.decentralab.copin.data.enumdata.SourceValue;
 import asia.decentralab.copin.data.enumdata.TimeValue;
 import asia.decentralab.copin.model.TraderStatistics;
@@ -26,13 +26,13 @@ public class StatisticTraderTests extends BaseTest {
         homePage = new HomePage();
         traderExplorerPage = new TraderExplorerPage();
 
-        TraderStatisticsRequest requestPayload = new TraderStatisticsRequest(
+        TraderStatisticByProtocolReq traderStatisticByProtocolPayload = new TraderStatisticByProtocolReq(
                 BaseUrlConfig.PROD_BASE_URL, SourceValue.GNS_API.getValue(), TimeValue.DAYS_30_API.getValue());
 
         Response response = APIUtils.sendPostRequest(
-                requestPayload.getBaseUrl(),
-                requestPayload.getApiEndpoints().getPath(),
-                requestPayload.getApiEndpoints().getRequestDetails());
+                traderStatisticByProtocolPayload.getBaseUrl(),
+                traderStatisticByProtocolPayload.getApiEndpoints().getPath(),
+                traderStatisticByProtocolPayload.getApiEndpoints().getRequestDetails());
         kwentaStatisticData = JsonUtils.fromJson(response.getBody().asString(), TraderStatistics.class);
 
         homePage.goToTraderExplorerPage();
