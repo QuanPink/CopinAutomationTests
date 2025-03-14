@@ -17,8 +17,6 @@ import org.testng.annotations.Test;
 
 public class StatisticTraderTests extends BaseTest {
     private HomePage homePage;
-    private TraderExplorerPage traderExplorerPage;
-    private TraderStatistics kwentaStatisticData;
 
     @BeforeClass
     public void setUp() {
@@ -34,7 +32,7 @@ public class StatisticTraderTests extends BaseTest {
     @Test(description = "Check trader's statistical information is correct on the Trader Explorer screen")
     public void pmg016TraderStatisticIsCorrectOnTheTraderExplorerScreen() {
         homePage = new HomePage();
-        traderExplorerPage = new TraderExplorerPage();
+        TraderExplorerPage traderExplorerPage = new TraderExplorerPage();
 
         TraderStatisticByProtocolReq traderStatisticByProtocolPayload = new TraderStatisticByProtocolReq(
                 BaseUrlConfig.PROD_BASE_URL, SourceValue.GNS_API.getValue(), TimeValue.DAYS_30_API.getValue());
@@ -43,7 +41,7 @@ public class StatisticTraderTests extends BaseTest {
                 traderStatisticByProtocolPayload.getBaseUrl(),
                 traderStatisticByProtocolPayload.getApiEndpoints().getPath(),
                 traderStatisticByProtocolPayload.getApiEndpoints().getRequestDetails());
-        kwentaStatisticData = JsonUtils.fromJson(response.getBody().asString(), TraderStatistics.class);
+        TraderStatistics kwentaStatisticData = JsonUtils.fromJson(response.getBody().asString(), TraderStatistics.class);
 
         traderExplorerPage.displayAllStatisticsFields();
         Assert.assertTrue(traderExplorerPage.isStatisticTraderDisplayCorrect(kwentaStatisticData));

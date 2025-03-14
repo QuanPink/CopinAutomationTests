@@ -8,6 +8,7 @@ import asia.decentralab.copin.model.TraderStatistics;
 import asia.decentralab.copin.utils.APIUtils;
 import asia.decentralab.copin.utils.JsonUtils;
 import io.restassured.response.Response;
+import org.apache.commons.lang3.function.TriConsumer;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -23,7 +24,8 @@ public class TraderStatisticTests {
     public Object[][] protocols() {
         String[] protocols = {"EQUATION_ARB", "GMX", "GMX_V2", "GNS", "HMX_ARB", "LEVEL_ARB", "MUX_ARB", "MYX_ARB",
                 "VELA_ARB", "YFX_ARB", "AVANTIS_BASE", "SYNTHETIX_V3", "LOGX_BLAST", "APOLLOX_BNB", "LEVEL_BNB",
-                "KTX_MANTLE", "LOGX_MODE", "CYBERDEX", "DEXTORO", "KWENTA", "POLYNOMIAL", "GNS_POLY", "ROLLIE_SCROLL", "KILOEX_OPBNB"};
+                "KTX_MANTLE", "LOGX_MODE", "CYBERDEX", "DEXTORO", "KWENTA", "POLYNOMIAL", "GNS_POLY", "ROLLIE_SCROLL",
+                "KILOEX_OPBNB", "MUMMY_FANTOM", "MORPHEX_FANTOM"};
         String[] timeValues = {"D7", "D15", "D30", "D60"};
 
         Object[][] data = new Object[protocols.length * timeValues.length][2];
@@ -192,100 +194,91 @@ public class TraderStatisticTests {
         double equivalentFactor = 0.02;
         String errorMessage = timeValue + "-" + protocol + "-" + account;
 
-        Assert.assertEquals(stats.totalTrade, data.getTotalTrade(), "Total trade incorrect: " + errorMessage);
-        Assert.assertTrue(stats.totalTrade >= 0, "Total trade less than 0: " + errorMessage);
+        // Helper functions
+        TriConsumer<Number, Number, String> assertEqual = (expected, actual, fieldName) ->
+                Assert.assertEquals(expected.doubleValue(), actual.doubleValue(), equivalentFactor,
+                        String.format("%s mismatch: %s { %s / %s }", fieldName, errorMessage, expected, actual));
 
-        Assert.assertEquals(stats.orderPositionRatio, data.getOrderPositionRatio(), 0.01,
-                "Order Position Ratio incorrect: " + errorMessage);
-        Assert.assertTrue(stats.orderPositionRatio >= 0,
-                "Order Position Ratio less than 0: " + errorMessage);
+        TriConsumer<Number, Number, String> assertNonNegative = (value, expected, fieldName) -> {
+            Assert.assertTrue(value.doubleValue() >= 0,
+                    String.format("%s less than 0: %s { %s / %s }", fieldName, errorMessage, value, expected));
+        };
 
-        Assert.assertEquals(stats.totalWin, data.getTotalWin(), "Total Win incorrect: " + errorMessage);
-        Assert.assertTrue(stats.totalWin >= 0, "Total Win less than 0: " + errorMessage);
+        TriConsumer<Double, Double, String> assertWithFactor = (expected, actual, fieldName) ->
+                Assert.assertEquals(expected, actual, Math.abs(expected * equivalentFactor),
+                        String.format("%s mismatch: %s { %s / %s }", fieldName, errorMessage, expected, actual));
 
-        Assert.assertEquals(stats.totalLose, data.getTotalLose(), "Total Lose incorrect: " + errorMessage);
-        Assert.assertTrue(stats.totalLose >= 0, "Total Lose less than 0: " + errorMessage);
+        // Assert fields with direct equals
+        assertEqual.accept(stats.totalTrade, data.getTotalTrade(), "Total Trade");
+        assertNonNegative.accept(stats.totalTrade, data.getTotalTrade(), "Total Trade");
 
-        Assert.assertEquals(stats.winRate, data.getWinRate(), 0.01, "Win rate incorrect: " + errorMessage);
-        Assert.assertTrue(stats.winRate >= 0, "Win rate less than 0: " + errorMessage);
+        assertEqual.accept(stats.orderPositionRatio, data.getOrderPositionRatio(), "Order Position Ratio");
+        assertNonNegative.accept(stats.orderPositionRatio, data.getOrderPositionRatio(), "Order Position Ratio");
 
-        Assert.assertEquals(stats.totalVolume, data.getTotalVolume(), stats.totalVolume * equivalentFactor,
-                "Total volume incorrect: " + errorMessage);
-        Assert.assertTrue(stats.totalVolume >= 0, "Total volume less than 0: " + errorMessage);
+        assertEqual.accept(stats.totalWin, data.getTotalWin(), "Total Win");
+        assertNonNegative.accept(stats.totalWin, data.getTotalWin(), "Total Win");
 
-        Assert.assertEquals(stats.avgVolume, data.getAvgVolume(), stats.avgVolume * equivalentFactor,
-                "Avg volume incorrect: " + errorMessage);
-        Assert.assertTrue(stats.avgVolume >= 0, "Avg volume less than 0: " + errorMessage);
+        assertEqual.accept(stats.totalLose, data.getTotalLose(), "Total Lose");
+        assertNonNegative.accept(stats.totalLose, data.getTotalLose(), "Total Lose");
 
-        Assert.assertEquals(stats.realisedPnl, data.getRealisedPnl(), Math.abs(stats.realisedPnl * equivalentFactor),
-                "Realised Pnl incorrect: " + errorMessage);
+        assertEqual.accept(stats.winRate, data.getWinRate(), "Win Rate");
+        assertNonNegative.accept(stats.winRate, data.getWinRate(), "Win Rate");
 
-        Assert.assertEquals(stats.realisedTotalGain, data.getRealisedTotalGain(), stats.realisedTotalGain * equivalentFactor,
-                "Realised Total Gain incorrect: " + errorMessage);
-        Assert.assertTrue(stats.realisedTotalGain >= 0, "Realised Total Gain less than 0: " + errorMessage);
+        // Assert fields with tolerance using factor
+        assertWithFactor.accept(stats.totalVolume, data.getTotalVolume(), "Total Volume");
+        assertNonNegative.accept(stats.totalVolume, data.getTotalVolume(), "Total Volume");
 
-        Assert.assertEquals(stats.realisedTotalLoss, data.getRealisedTotalLoss(), 0.01,
-                "Realised Total Loss incorrect: " + errorMessage);
-        Assert.assertTrue(stats.realisedTotalLoss <= 0, "Realised Total Loss great than 0: " + errorMessage);
+        assertWithFactor.accept(stats.avgVolume, data.getAvgVolume(), "Avg Volume");
+        assertNonNegative.accept(stats.avgVolume, data.getAvgVolume(), "Avg Volume");
 
-        Assert.assertEquals(stats.realisedProfitRate, data.getRealisedProfitRate(), stats.realisedProfitRate * equivalentFactor,
-                "Realised Profit Rate incorrect: " + errorMessage);
-        Assert.assertTrue(stats.realisedProfitRate >= 0, "Realised Profit Rate less than 0: " + errorMessage);
+        assertWithFactor.accept(stats.realisedPnl, data.getRealisedPnl(), "Realised Pnl");
 
-        Assert.assertEquals(stats.realisedProfitLossRatio, data.getRealisedProfitLossRatio(),
-                Math.abs(stats.realisedProfitLossRatio * equivalentFactor),
-                "Realised Profit Loss Ratio incorrect: " + errorMessage);
+        assertWithFactor.accept(stats.realisedTotalGain, data.getRealisedTotalGain(), "Realised Total Gain");
+        assertNonNegative.accept(stats.realisedTotalGain, data.getRealisedTotalGain(), "Realised Total Gain");
 
-        Assert.assertEquals(stats.realisedGainLossRatio, data.getRealisedGainLossRatio(),
-                Math.abs(stats.realisedGainLossRatio * equivalentFactor),
-                "Realised Gain Loss Ratio incorrect: " + errorMessage);
-        Assert.assertTrue(stats.realisedGainLossRatio >= 0,
-                "Realised Gain Loss Ratio less than 0: " + errorMessage);
+        assertEqual.accept(stats.realisedTotalLoss, data.getRealisedTotalLoss(), "Realised Total Loss");
+        assertNonNegative.accept(-stats.realisedTotalLoss, -data.getRealisedTotalLoss(), "Realised Total Loss");
 
-        Assert.assertEquals(stats.realisedAvgRoi, data.getRealisedAvgRoi(), Math.abs(stats.realisedAvgRoi * equivalentFactor),
-                "Realised Avg Roi incorrect: " + errorMessage);
+        assertWithFactor.accept(stats.realisedProfitRate, data.getRealisedProfitRate(), "Realised Profit Rate");
+        assertNonNegative.accept(stats.realisedProfitRate, data.getRealisedProfitRate(), "Realised Profit Rate");
 
-        Assert.assertEquals(stats.realisedMaxRoi, data.getRealisedMaxRoi(),
-                "Realised Max Roi incorrect: " + errorMessage);
+        assertWithFactor.accept(stats.realisedProfitLossRatio, data.getRealisedProfitLossRatio(), "Realised Profit Loss Ratio");
 
-        Assert.assertEquals(stats.longRate, data.getLongRate(), "Long Rate incorrect: " + errorMessage);
-        Assert.assertTrue(stats.longRate >= 0, "Long Rate less than 0: " + errorMessage);
+        assertWithFactor.accept(stats.realisedGainLossRatio, data.getRealisedGainLossRatio(), "Realised Gain Loss Ratio");
+        assertNonNegative.accept(stats.realisedGainLossRatio, data.getRealisedGainLossRatio(), "Realised Gain Loss Ratio");
 
-        Assert.assertEquals(stats.totalLiquidation, data.getTotalLiquidation(),
-                "Total Liquidation incorrect: " + errorMessage);
-        Assert.assertTrue(stats.totalLiquidation >= 0, "Total Liquidation less than 0: " + errorMessage);
+        assertWithFactor.accept(stats.realisedAvgRoi, data.getRealisedAvgRoi(), "Realised Avg Roi");
+        assertEqual.accept(stats.realisedMaxRoi, data.getRealisedMaxRoi(), "Realised Max Roi");
 
-        Assert.assertEquals(stats.totalFee, data.getTotalFee(), stats.totalFee * equivalentFactor,
-                "Total Fee incorrect: " + errorMessage);
-        Assert.assertTrue(stats.totalFee >= 0, "Total Fee less than 0: " + errorMessage);
+        assertEqual.accept(stats.longRate, data.getLongRate(), "Long Rate");
+        assertNonNegative.accept(stats.longRate, data.getLongRate(), "Long Rate");
 
-        Assert.assertEquals(stats.avgDuration, data.getAvgDuration(), stats.avgDuration * equivalentFactor,
-                "Avg Duration incorrect: " + errorMessage);
-        Assert.assertTrue(stats.avgDuration >= 0, "Avg Duration less than 0: " + errorMessage);
+        assertEqual.accept(stats.totalLiquidation, data.getTotalLiquidation(), "Total Liquidation");
+        assertNonNegative.accept(stats.totalLiquidation, data.getTotalLiquidation(), "Total Liquidation");
 
-        Assert.assertEquals(stats.minDuration, data.getMinDuration(), "Min Duration incorrect: " + errorMessage);
-        Assert.assertTrue(stats.minDuration >= 0,
-                "Min Duration less than 0: " + stats.minDuration + errorMessage);
+        assertWithFactor.accept(stats.totalFee, data.getTotalFee(), "Total Fee");
+        assertNonNegative.accept(stats.totalFee, data.getTotalFee(), "Total Fee");
 
-        Assert.assertEquals(stats.maxDuration, data.getMaxDuration(), "Max Duration incorrect: " + errorMessage);
+        assertWithFactor.accept(stats.avgDuration, data.getAvgDuration(), "Avg Duration");
+        assertNonNegative.accept(stats.avgDuration, data.getAvgDuration(), "Avg Duration");
 
-        Assert.assertEquals(stats.realisedMaxDrawDown, data.getRealisedMaxDrawdown(),
-                Math.abs(stats.realisedMaxDrawDown * equivalentFactor),
-                "Realised Max Draw Down incorrect: " + errorMessage);
+        assertEqual.accept(stats.minDuration, data.getMinDuration(), "Min Duration");
+        assertNonNegative.accept(stats.minDuration, data.getMinDuration(), "Min Duration");
 
-        Assert.assertEquals(stats.realisedMaxDrawDownPnl, data.getRealisedMaxDrawdownPnl(),
-                Math.abs(stats.realisedMaxDrawDownPnl * equivalentFactor),
-                "Realised Max Draw Down Pnl incorrect: " + errorMessage);
+        assertEqual.accept(stats.maxDuration, data.getMaxDuration(), "Max Duration");
 
+        assertWithFactor.accept(stats.realisedMaxDrawDown, data.getRealisedMaxDrawdown(), "Realised Max Draw Down");
+        assertWithFactor.accept(stats.realisedMaxDrawDownPnl, data.getRealisedMaxDrawdownPnl(), "Realised Max Draw Down Pnl");
+
+        // Conditional checks for protocols
         if (!(protocol.equals("SYNTHETIX_V3") || protocol.equals("HMX_ARB"))) {
-            Assert.assertEquals(stats.avgLeverage, data.getAvgLeverage(), stats.avgLeverage * equivalentFactor,
-                    "Avg leverage incorrect: " + errorMessage);
-            Assert.assertTrue(stats.avgLeverage >= 0, "Avg leverage less than 0: " + errorMessage);
+            assertWithFactor.accept(stats.avgLeverage, data.getAvgLeverage(), "Avg Leverage");
+            assertNonNegative.accept(stats.avgLeverage, data.getAvgLeverage(), "Avg Leverage");
 
-            Assert.assertEquals(stats.minLeverage, data.getMinLeverage(), "Min leverage incorrect: " + errorMessage);
-            Assert.assertTrue(stats.minLeverage >= 0, "Min leverage less than 0: " + errorMessage);
+            assertEqual.accept(stats.minLeverage, data.getMinLeverage(), "Min Leverage");
+            assertNonNegative.accept(stats.minLeverage, data.getMinLeverage(), "Min Leverage");
 
-            Assert.assertEquals(stats.maxLeverage, data.getMaxLeverage(), "Max leverage incorrect: " + errorMessage);
+            assertEqual.accept(stats.maxLeverage, data.getMaxLeverage(), "Max Leverage");
         }
     }
 }

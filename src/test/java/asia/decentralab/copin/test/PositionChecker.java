@@ -13,13 +13,14 @@ import java.time.Duration;
 import java.time.Instant;
 
 public class PositionChecker {
+    private final int maxDate = 1;
 
     @DataProvider(name = "Protocol list")
     public Object[][] protocols() {
         return new Object[][]{{"EQUATION_ARB"}, {"GMX"}, {"GMX_V2"}, {"GNS"}, {"HMX_ARB"}, {"LEVEL_ARB"}, {"MUX_ARB"},
                 {"MYX_ARB"}, {"VELA_ARB"}, {"YFX_ARB"}, {"AVANTIS_BASE"}, {"SYNTHETIX_V3"}, {"LOGX_BLAST"},
                 {"APOLLOX_BNB"}, {"LEVEL_BNB"}, {"KTX_MANTLE"}, {"LOGX_MODE"}, {"CYBERDEX"}, {"DEXTORO"}, {"KWENTA"},
-                {"POLYNOMIAL"}, {"GNS_POLY"}};
+                {"POLYNOMIAL"}, {"GNS_POLY"}, {"ROLLIE_SCROLL"}, {"KILOEX_OPBNB"}, {"MUMMY_FANTOM"}, {"MORPHEX_FANTOM"}};
     }
 
     @Test(dataProvider = "Protocol list")
@@ -45,8 +46,8 @@ public class PositionChecker {
         Instant now = Instant.now();
         Instant lastTimePosition = Instant.parse(lastTimePositionStr);
         Duration duration = Duration.between(lastTimePosition, now);
-        if (duration.toDays() > 3) {
-            throw new Exception("Last trade less than 3 days: " + lastTimePositionStr);
+        if (duration.toDays() > maxDate) {
+            throw new Exception("Last trade less than " + maxDate + " days: " + lastTimePositionStr);
         }
     }
 }
