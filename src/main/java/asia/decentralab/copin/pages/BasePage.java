@@ -1,12 +1,34 @@
 package asia.decentralab.copin.pages;
 
-import asia.decentralab.copin.element.Element;
+import asia.decentralab.copin.browser.WebDriverManager;
+import asia.decentralab.copin.config.EnvironmentConfig;
+import asia.decentralab.copin.elements.Button;
+import asia.decentralab.copin.elements.Input;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 
 public class BasePage {
-    private final Element traderExplorerBtn = new Element(By.xpath("//header//a[@class='navlink-default']//span[normalize-space()='Traders Explorer']"));
+    protected WebDriver driver;
+    protected EnvironmentConfig config;
 
-    public void goToTraderExplorerPage() {
-        traderExplorerBtn.click();
+    public BasePage() {
+        this.driver = WebDriverManager.getDriver();
+        this.config = EnvironmentConfig.getInstance();
+    }
+
+    protected Button createButton(By locator) {
+        return new Button(driver, locator);
+    }
+
+    protected Input createInput(By locator) {
+        return new Input(driver, locator);
+    }
+
+    public void openUrl(String url) {
+        driver.get(url);
+    }
+
+    public void refreshPage() {
+        driver.navigate().refresh();
     }
 }

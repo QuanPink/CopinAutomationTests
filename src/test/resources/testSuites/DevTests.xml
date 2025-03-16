@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="Copin Smoke Tests">
-    <test name="Home Page Tests">
+<suite name="Copin Test Suite - Dev Environment">
+    <test name="Browser Test">
         <classes>
             <class name="asia.decentralab.copin.test.functional.HomePageTest"/>
         </classes>
