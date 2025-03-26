@@ -7,6 +7,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BaseElement {
     protected WebDriver driver;
@@ -23,6 +25,10 @@ public class BaseElement {
         return driver.findElement(locator);
     }
 
+    public List<WebElement> getElements() {
+        return driver.findElements(locator);
+    }
+
     public void waitForVisible() {
         wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
@@ -37,5 +43,16 @@ public class BaseElement {
 
     public String getText() {
         return getElement().getText();
+    }
+
+    public List<String> getTexts() {
+        List<WebElement> elements = getElements();
+        List<String> texts = new ArrayList<>();
+
+        for (WebElement element : elements) {
+            texts.add(element.getText());
+        }
+
+        return texts;
     }
 }

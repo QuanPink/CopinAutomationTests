@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
+    <groupId>asia.decentralab</groupId>
     <artifactId>CopinAutomation</artifactId>
     <version>1.0-SNAPSHOT</version>
 
@@ -14,9 +14,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <aspectj.version>1.9.6</aspectj.version>
         <allure.version>2.27.0</allure.version>
-        <selenium.version>4.22.0</selenium.version>
+        <testSuite>src/test/resources/testSuites/CopinSmokeTests.xml</testSuite>
+        <selenium.version>4.29.0</selenium.version>
         <rest-assured.version>5.5.0</rest-assured.version>
-        <webdrivermanager.version>5.9.3</webdrivermanager.version>
+        <webdrivermanager.version>6.0.0</webdrivermanager.version>
         <testng.version>7.10.2</testng.version>
         <slf4j.version>2.0.16</slf4j.version>
         <skipTestSuiteGeneration>true</skipTestSuiteGeneration>
@@ -25,39 +26,9 @@
     <!-- Profiles for different environments -->
     <profiles>
         <profile>
-            <id>dev</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <env>dev</env>
-                <testSuite>src/test/resources/testSuites/DevTests.xml</testSuite>
-            </properties>
-        </profile>
-        <profile>
-            <id>staging</id>
-            <properties>
-                <env>staging</env>
-                <testSuite>src/test/resources/testSuites/StagingTests.xml</testSuite>
-            </properties>
-        </profile>
-        <profile>
-            <id>prod</id>
-            <properties>
-                <env>prod</env>
-                <testSuite>src/test/resources/testSuites/ProdTests.xml</testSuite>
-            </properties>
-        </profile>
-        <profile>
             <id>smoke</id>
             <properties>
                 <testSuite>src/test/resources/testSuites/CopinSmokeTests.xml</testSuite>
-            </properties>
-        </profile>
-        <profile>
-            <id>default</id>
-            <properties>
-                <testSuite>src/test/resources/testSuites/DefaultTests.xml</testSuite>
             </properties>
         </profile>
     </profiles>
@@ -171,9 +142,6 @@
                     <threadCount>4</threadCount>
                     <perCoreThreadCount>true</perCoreThreadCount>
 
-                    <!-- Test retries -->
-                    <rerunFailingTestsCount>2</rerunFailingTestsCount>
-
                     <!-- TestNG suite file -->
                     <suiteXmlFiles>
                         <suiteXmlFile>${testSuite}</suiteXmlFile>
@@ -187,7 +155,6 @@
                     <!-- System properties -->
                     <systemPropertyVariables>
                         <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
-                        <environment>${env}</environment>
                     </systemPropertyVariables>
                 </configuration>
                 <dependencies>
@@ -219,6 +186,16 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- Allure Maven Plugin - Thêm vào đây -->
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>2.12.0</version>
+                <configuration>
+                    <reportVersion>${allure.version}</reportVersion>
+                </configuration>
             </plugin>
 
             <!-- Copy Dependencies -->

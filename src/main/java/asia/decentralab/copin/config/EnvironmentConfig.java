@@ -1,5 +1,8 @@
 package asia.decentralab.copin.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,6 +12,7 @@ import java.util.Properties;
 public class EnvironmentConfig {
     private static final Properties props = new Properties();
     private static EnvironmentConfig instance;
+    private static final Logger logger = LoggerFactory.getLogger(EnvironmentConfig.class);
 
     private EnvironmentConfig() {
         try {
@@ -16,13 +20,13 @@ public class EnvironmentConfig {
             if (Files.exists(Paths.get(".env"))) {
                 props.load(new FileInputStream(".env"));
             } else {
-                System.out.println(".env file not found. Using default values.");
+                logger.info(".env file not found. Using default values.");
             }
 
             // Record with System Properties if any
             props.putAll(System.getProperties());
         } catch (IOException e) {
-            System.err.println("Failed to load environment config: " + e.getMessage());
+            logger.error("Failed to load environment config: {}", e.getMessage());
         }
     }
 
@@ -38,7 +42,7 @@ public class EnvironmentConfig {
     }
 
     public String getWebBaseUrl() {
-        return props.getProperty("WEB_BASE_URL", "https://copin.io");
+        return props.getProperty("WEB_BASE_URL", "https://example.com");
     }
 
     public String getBrowser() {
@@ -71,16 +75,15 @@ public class EnvironmentConfig {
 
     // The method to print out all the loaded configurations
     public void printConfig() {
-        System.out.println("=== Environment Configuration ===");
-        System.out.println("API_BASE_URL: " + getApiBaseUrl());
-        System.out.println("WEB_BASE_URL: " + getWebBaseUrl());
-        System.out.println("DEFAULT_BROWSER: " + getBrowser());
-        System.out.println("HEADLESS_MODE: " + isHeadless());
-        System.out.println("DEFAULT_TIMEOUT: " + getDefaultTimeout());
-        System.out.println("IMPLICIT_WAIT: " + getImplicitWait());
-        System.out.println("RETRY_COUNT: " + getRetryCount());
-        System.out.println("ENVIRONMENT: " + getEnvironment());
-        System.out.println("SCREENSHOT_ON_FAILURE: " + isScreenshotOnFailure());
-        System.out.println("================================");
+        logger.info("=== Environment Configuration ===");
+        logger.info("API_BASE_URL: {}", getApiBaseUrl());
+        logger.info("WEB_BASE_URL: {}", getWebBaseUrl());
+        logger.info("DEFAULT_BROWSER: {}", getBrowser());
+        logger.info("HEADLESS_MODE: {}", isHeadless());
+        logger.info("DEFAULT_TIMEOUT: {}", getDefaultTimeout());
+        logger.info("IMPLICIT_WAIT: {}", getImplicitWait());
+        logger.info("RETRY_COUNT: {}", getRetryCount());
+        logger.info("ENVIRONMENT: {}", getEnvironment());
+        logger.info("SCREENSHOT_ON_FAILURE: {}", isScreenshotOnFailure());
     }
 }
