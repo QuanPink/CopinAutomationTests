@@ -8,11 +8,15 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BrowserFactory {
+    private static final Logger logger = LoggerFactory.getLogger(BrowserFactory.class);
+
     public static WebDriver createDriver(String browserType, boolean headless) {
         if (browserType == null) {
-            System.out.println("Browser type is null. Using Chrome as default.");
+            logger.info("Browser type is null. Using Chrome as default.");
             return createChromeDriver(headless);
         }
 
@@ -24,7 +28,7 @@ public class BrowserFactory {
             case "edge":
                 return createEdgeDriver(headless);
             default:
-                System.out.println("Browser type '" + browserType + "' not recognized. Using Chrome as default.");
+                logger.info("Browser type '{}' not recognized. Using Chrome as default.", browserType);
                 return createChromeDriver(headless);
         }
     }
