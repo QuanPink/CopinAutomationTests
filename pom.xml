@@ -188,7 +188,7 @@
                 </executions>
             </plugin>
 
-            <!-- Allure Maven Plugin - Thêm vào đây -->
+            <!-- Allure Maven Plugin -->
             <plugin>
                 <groupId>io.qameta.allure</groupId>
                 <artifactId>allure-maven</artifactId>

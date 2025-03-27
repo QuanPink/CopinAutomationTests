@@ -5,6 +5,7 @@ import asia.decentralab.copin.config.EnvironmentConfig;
 import asia.decentralab.copin.elements.BaseElement;
 import asia.decentralab.copin.elements.Button;
 import asia.decentralab.copin.elements.Input;
+import asia.decentralab.copin.utils.WaitUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -12,10 +13,13 @@ import java.util.List;
 
 public class BasePage {
     protected WebDriver driver;
+    protected WaitUtils waitUtils;
     protected EnvironmentConfig config;
+    private final By loadingLocator = By.xpath("//div[@id='app_main__wrapper']//div[contains(text(), 'Loading-sc')]");
 
     public BasePage() {
         this.driver = WebDriverManager.getDriver();
+        this.waitUtils = new WaitUtils(driver);
         this.config = EnvironmentConfig.getInstance();
     }
 
@@ -23,15 +27,21 @@ public class BasePage {
         driver.get(url);
     }
 
+    public void waitForPageLoad() {
+        waitUtils.waitForPageLoad(loadingLocator);
+    }
+
     public void refreshPage() {
         driver.navigate().refresh();
     }
 
     protected void click(By locator) {
+        waitUtils.waitForClickable(locator);
         new Button(driver, locator).click();
     }
 
     protected void sendKeys(By locator, String text) {
+        waitUtils.waitForPresence(locator);
         new Input(driver, locator).type(text);
     }
 
