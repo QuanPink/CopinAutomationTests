@@ -17,7 +17,6 @@ public class HomePageTest extends BaseTest {
     public void testDefaultTopFilters() {
         HomePage homePage = new HomePage();
         homePage.navigateToHomePage();
-        homePage.waitForPageLoad();
 
         String defaultTopFilter = homePage.getTopFilterValue();
         Assert.assertEquals(defaultTopFilter, "PNL",
@@ -30,7 +29,6 @@ public class HomePageTest extends BaseTest {
     public void testDefaultTimeFilters() {
         HomePage homePage = new HomePage();
         homePage.navigateToHomePage();
-        homePage.waitForPageLoad();
 
         String defaultTimeFilter = homePage.getTimeFilterValue();
         Assert.assertEquals(defaultTimeFilter, "30 DAYS",
@@ -44,10 +42,8 @@ public class HomePageTest extends BaseTest {
     public void testFilterByPnL() {
         HomePage homePage = new HomePage();
         homePage.navigateToHomePage();
-        homePage.waitForPageLoad();
 
         homePage.selectPnLFilter();
-        homePage.waitForPageLoad();
         Assert.assertTrue(homePage.isPnLSortByDesc(),
                 "Top trader theo PnL không được sắp xếp đúng");
     }
@@ -58,10 +54,8 @@ public class HomePageTest extends BaseTest {
     public void testFilterByROI() {
         HomePage homePage = new HomePage();
         homePage.navigateToHomePage();
-        homePage.waitForPageLoad();
 
         homePage.selectAvgRoiFilter();
-        homePage.waitForPageLoad();
         Assert.assertTrue(homePage.isROISortByDesc(),
                 "Top trader theo Avg ROI không được sắp xếp đúng");
     }
@@ -72,10 +66,8 @@ public class HomePageTest extends BaseTest {
     public void testFilterByWinRate() {
         HomePage homePage = new HomePage();
         homePage.navigateToHomePage();
-        homePage.waitForPageLoad();
 
         homePage.selectWinRateFilter();
-        homePage.waitForPageLoad();
         Assert.assertTrue(homePage.isWinRateSortByDesc(),
                 "Top trader theo Win Rate không được sắp xếp đúng");
     }
@@ -96,10 +88,8 @@ public class HomePageTest extends BaseTest {
     public void testFilterByTime(String filterValue, int expectedDays) {
         HomePage homePage = new HomePage();
         homePage.navigateToHomePage();
-        homePage.waitForPageLoad();
 
         homePage.selectDaysTimeFilter(filterValue);
-        homePage.waitForPageLoad();
         Assert.assertTrue(homePage.isFilterByDays(expectedDays),
                 "Top trader theo Win Rate không được sắp xếp đúng");
     }

@@ -9,11 +9,11 @@ public class TextUtils {
             return 0;
         }
 
-        Pattern pattern = Pattern.compile("(-?\\d+(\\.\\d+)?)");
+        Pattern pattern = Pattern.compile("(-?[\\d,]+\\.?\\d*)");
         Matcher matcher = pattern.matcher(input);
 
         if (matcher.find()) {
-            String number = matcher.group(1);
+            String number = matcher.group(1).replace(",", "");
             try {
                 return Double.parseDouble(number);
             } catch (NumberFormatException e) {

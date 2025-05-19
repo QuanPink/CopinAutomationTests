@@ -3,6 +3,7 @@
     <listeners>
         <listener class-name="asia.decentralab.copin.listener.AllureListener"/>
         <listener class-name="asia.decentralab.copin.listener.RetryListener"/>
+        <listener class-name="asia.decentralab.copin.listener.ThreadConfigurationListener"/>
     </listeners>
 
     <test name="Home Page Tests">

@@ -20,7 +20,8 @@
         <webdrivermanager.version>6.0.0</webdrivermanager.version>
         <testng.version>7.10.2</testng.version>
         <slf4j.version>2.0.16</slf4j.version>
-        <skipTestSuiteGeneration>true</skipTestSuiteGeneration>
+        <lombok.version>1.18.32</lombok.version>
+        <dotenv.version>2.3.2</dotenv.version>
     </properties>
 
     <!-- Profiles for different environments -->
@@ -125,7 +126,7 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>1.18.32</version>
+                            <version>${lombok.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
@@ -135,13 +136,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
-                <configuration>
-                    <!-- Parallel execution -->
-                    <parallel>methods</parallel>
-                    <threadCount>4</threadCount>
-                    <perCoreThreadCount>true</perCoreThreadCount>
+                <version>3.5.2</version>
 
+                <configuration>
                     <!-- TestNG suite file -->
                     <suiteXmlFiles>
                         <suiteXmlFile>${testSuite}</suiteXmlFile>
@@ -152,7 +149,7 @@
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>
 
-                    <!-- System properties -->
+                    <!-- System properties - Truyền các biến từ .env vào JVM -->
                     <systemPropertyVariables>
                         <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
                     </systemPropertyVariables>
@@ -217,26 +214,6 @@
                 </executions>
             </plugin>
 
-            <!-- Create Default TestNG Suite if missing -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>create-testng-suites</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>asia.decentralab.copin.utils.TestSuiteGenerator</mainClass>
-                            <classpathScope>test</classpathScope>
-                            <skip>${skipTestSuiteGeneration}</skip>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
 
         <!-- Resource filtering for properties -->
