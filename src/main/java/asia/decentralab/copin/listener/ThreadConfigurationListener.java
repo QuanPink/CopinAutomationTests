@@ -18,7 +18,7 @@ public class ThreadConfigurationListener implements IAlterSuiteListener {
             return;
         }
 
-        // Lấy cấu hình từ EnvironmentConfig
+        // Get configuration from EnvironmentConfig
         EnvironmentConfig config = EnvironmentConfig.getInstance();
         int threadCount = config.getThreadCount();
         String parallelMode = config.getParallelMode();
@@ -26,12 +26,12 @@ public class ThreadConfigurationListener implements IAlterSuiteListener {
         log.info("Applying thread configuration from .env: threadCount={}, parallelMode={}",
                 threadCount, parallelMode);
 
-        // Áp dụng cấu hình cho tất cả các suites
+        // Use the configuration across all suites
         for (XmlSuite suite : suites) {
-            // Áp dụng số lượng thread
+            // Set thread count
             suite.setThreadCount(threadCount);
 
-            // Áp dụng parallel mode
+            // Set parallel mode
             try {
                 XmlSuite.ParallelMode mode = XmlSuite.ParallelMode.getValidParallel(parallelMode);
                 suite.setParallel(mode);
