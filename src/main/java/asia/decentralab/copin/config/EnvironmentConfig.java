@@ -1,31 +1,50 @@
 package asia.decentralab.copin.config;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Properties;
+import io.github.cdimascio.dotenv.Dotenv;
+import io.github.cdimascio.dotenv.DotenvEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class EnvironmentConfig {
-    private static final Properties props = new Properties();
     private static EnvironmentConfig instance;
+    private static final Logger logger = LoggerFactory.getLogger(EnvironmentConfig.class);
 
-    private EnvironmentConfig() {
+    // Initialize configuration by loading from .env and setting to System properties
+    static {
         try {
-            // Read file .env if existing
-            if (Files.exists(Paths.get(".env"))) {
-                props.load(new FileInputStream(".env"));
-            } else {
-                System.out.println(".env file not found. Using default values.");
+            Dotenv dotenv = Dotenv.configure()
+                    .ignoreIfMissing()
+                    .load();
+
+            // Get all keys from dotenv
+            Set<String> keys = dotenv.entries().stream()
+                    .map(DotenvEntry::getKey)
+                    .collect(Collectors.toSet());
+
+            // Iterate through all existing environment variables
+            for (String key : keys) {
+                if (System.getProperty(key) == null) {
+                    String value = dotenv.get(key);
+                    if (value != null && !value.isEmpty()) {
+                        System.setProperty(key, value);
+                    }
+                }
             }
 
-            // Record with System Properties if any
-            props.putAll(System.getProperties());
-        } catch (IOException e) {
-            System.err.println("Failed to load environment config: " + e.getMessage());
+            logger.info("Environment loaded from .env to System properties");
+        } catch (Exception e) {
+            logger.error("Failed to load environment from .env: {}", e.getMessage(), e);
         }
     }
 
+    private EnvironmentConfig() {
+        // Private constructor
+    }
+
+    // Get singleton instance
     public static synchronized EnvironmentConfig getInstance() {
         if (instance == null) {
             instance = new EnvironmentConfig();
@@ -33,54 +52,98 @@ public class EnvironmentConfig {
         return instance;
     }
 
-    public String getApiBaseUrl() {
-        return props.getProperty("API_BASE_URL", "https://api.example.com");
+    // Get a configuration value from System properties with fallback to default value
+    private String getConfigValue(String key, String defaultValue) {
+        String value = System.getProperty(key);
+
+        if (value == null || value.trim().isEmpty()) {
+            logger.debug("Using default value for {}: {}", key, defaultValue);
+            return defaultValue;
+        }
+
+        return value;
     }
 
-    public String getWebBaseUrl() {
-        return props.getProperty("WEB_BASE_URL", "https://copin.io");
+    // Get an integer configuration value
+    private int getIntConfigValue(String key, int defaultValue) {
+        String value = getConfigValue(key, String.valueOf(defaultValue));
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            logger.warn("Invalid value for {}: {}. Using default: {}. Error: {}",
+                    key, value, defaultValue, e.getMessage());
+            return defaultValue;
+        }
     }
 
+    // Get a boolean configuration value
+    private boolean getBooleanConfigValue(String key, boolean defaultValue) {
+        String value = getConfigValue(key, String.valueOf(defaultValue));
+        return Boolean.parseBoolean(value);
+    }
+
+    // Browser configuration
     public String getBrowser() {
-        return props.getProperty("DEFAULT_BROWSER", "chrome");
+        return getConfigValue("DEFAULT_BROWSER", "chrome");
     }
 
     public boolean isHeadless() {
-        return Boolean.parseBoolean(props.getProperty("HEADLESS_MODE", "false"));
+        return getBooleanConfigValue("HEADLESS_MODE", false);
     }
 
-    public int getDefaultTimeout() {
-        return Integer.parseInt(props.getProperty("DEFAULT_TIMEOUT", "30"));
+    // URL configuration
+    public String getWebBaseUrl() {
+        return getConfigValue("WEB_BASE_URL", "https://example.com");
     }
 
+    public String getApiBaseUrl() {
+        return getConfigValue("API_BASE_URL", "https://api.example.com");
+    }
+
+    // Thread configuration
+    public int getThreadCount() {
+        return getIntConfigValue("THREAD_COUNT", 1);
+    }
+
+    public String getParallelMode() {
+        return getConfigValue("PARALLEL_MODE", "methods");
+    }
+
+    // Test configuration
     public int getRetryCount() {
-        return Integer.parseInt(props.getProperty("RETRY_COUNT", "2"));
+        return getIntConfigValue("RETRY_COUNT", 2);
     }
 
     public String getEnvironment() {
-        return props.getProperty("ENVIRONMENT", "dev");
+        return getConfigValue("ENVIRONMENT", "dev");
+    }
+
+    public int getDefaultTimeout() {
+        return getIntConfigValue("DEFAULT_TIMEOUT", 30);
     }
 
     public int getImplicitWait() {
-        return Integer.parseInt(props.getProperty("IMPLICIT_WAIT", "10"));
+        return getIntConfigValue("IMPLICIT_WAIT", 10);
     }
 
     public boolean isScreenshotOnFailure() {
-        return Boolean.parseBoolean(props.getProperty("SCREENSHOT_ON_FAILURE", "true"));
+        return getBooleanConfigValue("SCREENSHOT_ON_FAILURE", true);
     }
 
-    // The method to print out all the loaded configurations
+    // Print all the loaded configurations
     public void printConfig() {
-        System.out.println("=== Environment Configuration ===");
-        System.out.println("API_BASE_URL: " + getApiBaseUrl());
-        System.out.println("WEB_BASE_URL: " + getWebBaseUrl());
-        System.out.println("DEFAULT_BROWSER: " + getBrowser());
-        System.out.println("HEADLESS_MODE: " + isHeadless());
-        System.out.println("DEFAULT_TIMEOUT: " + getDefaultTimeout());
-        System.out.println("IMPLICIT_WAIT: " + getImplicitWait());
-        System.out.println("RETRY_COUNT: " + getRetryCount());
-        System.out.println("ENVIRONMENT: " + getEnvironment());
-        System.out.println("SCREENSHOT_ON_FAILURE: " + isScreenshotOnFailure());
-        System.out.println("================================");
+        logger.info("=== Environment Configuration ===");
+        logger.info("API_BASE_URL: {}", getApiBaseUrl());
+        logger.info("WEB_BASE_URL: {}", getWebBaseUrl());
+        logger.info("DEFAULT_BROWSER: {}", getBrowser());
+        logger.info("HEADLESS_MODE: {}", isHeadless());
+        logger.info("DEFAULT_TIMEOUT: {}s", getDefaultTimeout());
+        logger.info("IMPLICIT_WAIT: {}s", getImplicitWait());
+        logger.info("RETRY_COUNT: {}", getRetryCount());
+        logger.info("THREAD_COUNT: {}", getThreadCount());
+        logger.info("PARALLEL_MODE: {}", getParallelMode());
+        logger.info("ENVIRONMENT: {}", getEnvironment());
+        logger.info("SCREENSHOT_ON_FAILURE: {}", isScreenshotOnFailure());
+        logger.info("=================================");
     }
 }
