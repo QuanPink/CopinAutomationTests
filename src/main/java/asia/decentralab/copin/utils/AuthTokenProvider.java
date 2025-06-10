@@ -36,7 +36,7 @@ public class AuthTokenProvider {
     }
 
     private void performLoginFlow() {
-        logger.info("Starting 3-step authentication flow...");
+        logger.info("Starting 2-step authentication flow...");
 
         try {
             String email = config.getEmail();
@@ -68,7 +68,6 @@ public class AuthTokenProvider {
 
     private Response verifyOTP(String email, String otpCode) {
         RequestSpecification request = RestAssured.given()
-                .baseUri(config.getApiBaseUrl())
                 .contentType("application/json")
                 .header("privy-app-id", "cm7d2vu66037010jr8dm0thd9")
                 .body(Map.of(
