@@ -12,25 +12,40 @@ import java.util.Map;
 
 public class AuthTokenProvider {
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenProvider.class);
-    private static AuthTokenProvider instance;
-    private static String cachedToken;
-    private static boolean tokenInitialized = false;
 
     private final EnvironmentConfig config = EnvironmentConfig.getInstance();
+    private static volatile AuthTokenProvider instance;
+
+    private volatile String cachedToken;
+    private volatile boolean tokenInitialized = false;
 
     private AuthTokenProvider() {
     }
 
-    public static synchronized AuthTokenProvider getInstance() {
+    public static AuthTokenProvider getInstance() {
         if (instance == null) {
-            instance = new AuthTokenProvider();
+            synchronized (AuthTokenProvider.class) {
+                if (instance == null) {
+                    instance = new AuthTokenProvider();
+                }
+            }
         }
         return instance;
     }
 
-    public String getToken() {
+    public void initialize() {
         if (!tokenInitialized || cachedToken == null) {
-            performLoginFlow();
+            synchronized (this) {
+                if (!tokenInitialized || cachedToken == null) {
+                    performLoginFlow();
+                }
+            }
+        }
+    }
+
+    public synchronized String getToken() {
+        if (!tokenInitialized || cachedToken == null) {
+            throw new IllegalStateException("Token not initialized. Call initialize() first.");
         }
         return cachedToken;
     }
@@ -39,29 +54,31 @@ public class AuthTokenProvider {
         logger.info("Starting 2-step authentication flow...");
 
         try {
-            String email = config.getEmail();
-            String otp = config.getDefaultOTP();
-            String apiBaseUrl = config.getApiBaseUrl();
+            final String email = config.getEmail();
+            final String otp = config.getDefaultOTP();
+            final String apiBaseUrl = config.getApiBaseUrl();
 
-            // Step 1: Verify OTP
-            logger.info("Step 1: Verifying OTP: {}", otp);
-            Response verifyOtpResponse = verifyOTP(email, otp);
-            validateResponse(verifyOtpResponse, "Verify OTP");
+            // Step 1: Verify OTP with external service
+            logger.info("Step 1: Verifying OTP for email: {}***",
+                    email.substring(0, Math.min(3, email.length())));
 
-            String token = extractToken(verifyOtpResponse, "token");
+            final Response otpResponse = verifyOTP(email, otp);
+            validateResponse(otpResponse, "OTP Verification");
+            final String intermediateToken = extractToken(otpResponse, "token");
 
-            // Step 2: Login to Copin
-            logger.info("Step 2: Logging into Copin");
-            Response loginResponse = login(apiBaseUrl, token);
+            // Step 2: Exchange for API access token
+            logger.info("Step 2: Authenticating with Copin API");
+            final Response loginResponse = authenticateWithCopin(apiBaseUrl, intermediateToken);
             validateResponse(loginResponse, "Login Copin");
 
             cachedToken = extractToken(loginResponse, "access_token");
             tokenInitialized = true;
 
-            logger.info("✅ Authentication completed successfully");
+            logger.info("Authentication completed successfully - token cached");
 
         } catch (Exception e) {
             logger.error("❌ Authentication failed", e);
+            clearTokenState();
             throw new RuntimeException("Authentication failed: " + e.getMessage());
         }
     }
@@ -79,7 +96,7 @@ public class AuthTokenProvider {
         return request.post(ApiEndpoints.VERIFY_OTP);
     }
 
-    private Response login(String apiBaseUrl, String token) {
+    private Response authenticateWithCopin(String apiBaseUrl, String token) {
         RequestSpecification request = RestAssured.given()
                 .baseUri(apiBaseUrl)
                 .contentType("application/json")
@@ -88,35 +105,40 @@ public class AuthTokenProvider {
         return request.post(ApiEndpoints.LOGIN);
     }
 
-    private void validateResponse(Response response, String step) {
-        int statusCode = response.getStatusCode();
+    private void validateResponse(final Response response, final String operationName) {
+        final int statusCode = response.getStatusCode();
 
         if (statusCode != 200 && statusCode != 201) {
-            String errorMsg = String.format("%s failed with status %d: %s",
-                    step, statusCode, response.getBody().asString());
+            final String errorMsg = String.format("%s failed (HTTP %d): %s",
+                    operationName, statusCode,
+                    response.getBody().asString());
             logger.error(errorMsg);
             throw new RuntimeException(errorMsg);
         }
     }
 
-    private String extractToken(Response response, String tokenField) {
-        String token = response.jsonPath().getString(tokenField);
+    private String extractToken(final Response response, final String tokenFieldName) {
+        try {
+            final String token = response.jsonPath().getString(tokenFieldName);
 
-        if (token == null || token.isEmpty()) {
-            throw new RuntimeException("Token field '" + tokenField + "' not found");
+            if (token == null || token.trim().isEmpty()) {
+                throw new RuntimeException(
+                        String.format("Token field '%s' is missing or empty in response", tokenFieldName)
+                );
+            }
+
+            logger.debug("✅ Token extracted successfully from field: {}", tokenFieldName);
+            return token;
+
+        } catch (Exception e) {
+            final String errorMsg = String.format("Failed to extract token from field '%s': %s",
+                    tokenFieldName, e.getMessage());
+            logger.error(errorMsg);
+            throw new RuntimeException(errorMsg, e);
         }
-
-        return token;
     }
 
-    public String refreshToken() {
-        logger.info("Refreshing token...");
-        tokenInitialized = false;
-        cachedToken = null;
-        return getToken();
-    }
-
-    public void clearToken() {
+    public synchronized void clearTokenState() {
         cachedToken = null;
         tokenInitialized = false;
     }

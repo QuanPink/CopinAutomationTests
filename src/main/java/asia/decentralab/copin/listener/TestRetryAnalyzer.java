@@ -30,6 +30,10 @@ public class TestRetryAnalyzer implements IRetryAnalyzer {
     @Override
     public boolean retry(ITestResult result) {
         if (!result.isSuccess()) {
+            if (isApiTest(result)) {
+                logger.info("❌ API test failed - no retry: {}", result.getName());
+                return false;
+            }
             // Generate a unique key for each method
             String methodKey = result.getTestClass().getName() + "." + result.getMethod().getMethodName();
 
@@ -52,5 +56,40 @@ public class TestRetryAnalyzer implements IRetryAnalyzer {
             }
         }
         return false;
+    }
+
+    private boolean isApiTest(ITestResult result) {
+        String className = result.getTestClass().getName();
+        String packageName = result.getTestClass().getRealClass().getPackage().getName();
+
+        // Check if it's an API test based on package or class name
+        boolean isApiPackage = packageName.contains("api") ||
+                packageName.contains("service") ||
+                packageName.contains("integration");
+
+        boolean isApiClass = className.contains("Api") ||
+                className.contains("Service") ||
+                className.contains("Client") ||
+                className.contains("Integration");
+
+        // Check if test extends BaseApiTest
+        boolean extendsBaseApiTest = false;
+        try {
+            Class<?> testClass = result.getTestClass().getRealClass();
+            while (testClass != null) {
+                if ("BaseApiTest".equals(testClass.getSimpleName())) {
+                    extendsBaseApiTest = true;
+                    break;
+                }
+                testClass = testClass.getSuperclass();
+            }
+        } catch (Exception e) {
+            logger.debug("Could not check superclass hierarchy: {}", e.getMessage());
+        }
+
+        boolean isApi = isApiPackage || isApiClass || extendsBaseApiTest;
+        logger.debug("Test {} is API test (no retry): {}", className, isApi);
+
+        return isApi;
     }
 }

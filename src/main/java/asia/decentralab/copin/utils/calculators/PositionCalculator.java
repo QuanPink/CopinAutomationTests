@@ -23,7 +23,7 @@ public class PositionCalculator {
         result.pnl = result.realisedPnl - result.fee + result.funding;
         result.roi = result.collateral != 0 ? (result.pnl / result.collateral) * 100 : 0;
         result.leverage = result.collateral != 0 ? result.size / result.collateral : 0;
-        result.orderCount = result.orderIncreaseCount + result.orderDecreaseCount + result.orderLiquidateCount;
+        result.orderCount = result.orderIncreaseCount + result.orderDecreaseCount + result.orderMarginTransferCount + result.orderLiquidateCount;
 
         return result;
     }
@@ -71,16 +71,12 @@ public class PositionCalculator {
                 if (isFinalOrder) {
                     result.realisedPnl += calculatePnlMultiplier(order, result.avgPrice) * sizeDelta;
                     result.closePrice = price;
-                }else {
+                } else {
                     result.totalDecreasePnl += calculatePnlMultiplier(order, result.avgPrice) * sizeDelta;
                 }
                 result.fee += feeNumber;
                 result.funding += fundingNumber;
-                if (type.equals("DECREASE") || type.equals("CLOSE")) {
-                    result.orderDecreaseCount++;
-                } else {
-                    result.orderLiquidateCount++;
-                }
+                result.orderDecreaseCount++;
                 return isFinalOrder;
         }
         return false;

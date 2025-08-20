@@ -1,43 +1,41 @@
 package asia.decentralab.copin.test.base;
 
+import asia.decentralab.copin.api.clients.FlexibleApiClient;
 import asia.decentralab.copin.utils.AuthTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 
 public class BaseApiTest {
     private static final Logger logger = LoggerFactory.getLogger(BaseApiTest.class);
+    protected FlexibleApiClient apiClient;
 
-    /**
-     * Get auth token để dùng trong tests
-     * AuthTokenProvider sẽ tự động handle 3-step authentication và cache token
-     *
-     * @return Authentication token
-     */
-    protected String getAuthToken() {
+    @BeforeClass
+    public void setUpApiTest() {
+        logger.info("🔌 Setting up API test suite");
         try {
-            AuthTokenProvider tokenProvider = AuthTokenProvider.getInstance();
-            return tokenProvider.getToken();
+            AuthTokenProvider.getInstance().initialize();
+            logger.info("Authentication successful - token obtained");
+
+            apiClient = new FlexibleApiClient();
+            String authToken = AuthTokenProvider.getInstance().getToken();
+            apiClient.setAuthToken(authToken);
+            logger.info("API client configured");
         } catch (Exception e) {
-            logger.error("❌ Failed to get auth token", e);
-            throw new RuntimeException("Failed to get auth token: " + e.getMessage());
+            logger.error("❌ Authentication setup failed: {}", e.getMessage());
+            throw new RuntimeException("Cannot proceed with API tests without valid authentication", e);
         }
     }
 
-    /**
-     * Refresh token nếu cần (khi API return 401)
-     *
-     * @return New token
-     */
-    protected String refreshAuthToken() {
-        logger.warn("🔄 Refreshing auth token...");
+    @AfterClass
+    public void tearDownApiTest() {
+        logger.info("🔌 API test suite completed");
         try {
-            AuthTokenProvider tokenProvider = AuthTokenProvider.getInstance();
-            String newToken = tokenProvider.refreshToken();
-            logger.info("✅ Auth token refreshed successfully");
-            return newToken;
+            AuthTokenProvider.getInstance().clearTokenState();
+            logger.info("Authentication cache cleared");
         } catch (Exception e) {
-            logger.error("❌ Failed to refresh auth token", e);
-            throw new RuntimeException("Failed to refresh auth token: " + e.getMessage());
+            logger.warn("⚠️ Failed to clear auth cache: {}", e.getMessage());
         }
     }
 }
