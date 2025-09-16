@@ -112,20 +112,51 @@ public class BasePositionValidator {
                 "isLong should be consistent between first order and position"
         );
 
+        Map<String, Object> firstOrder = orders.get(0); // Fixed: should be orders.get(0) not orders.indexOf(0)
         Map<String, Object> lastOrder = orders.get(orders.size() - 1);
+        String firstOrderType = (String) firstOrder.get("type");
         String lastOrderType = (String) lastOrder.get("type");
         boolean isClose = Boolean.TRUE.equals(lastOrder.get("isClose"));
 
-        ValidationUtils.assertEquals(isClose, true,
-                String.format("Closed position requires last order to have isClose=true. " +
-                        "Found: type=%s, isClose=%s", lastOrderType, isClose));
+        // Validate first order type should be OPEN or INCREASE
+        boolean isValidFirstOrderType = "OPEN".equals(firstOrderType) || "INCREASE".equals(firstOrderType);
+        ValidationUtils.assertTrue(isValidFirstOrderType,
+                String.format("First order type should be OPEN or INCREASE. Found: type=%s", firstOrderType));
 
-        boolean isValidClosingOrderType = "DECREASE".equals(lastOrderType) ||
-                "CLOSE".equals(lastOrderType) ||
-                "LIQUIDATE".equals(lastOrderType);
+        String status = (String) position.get("status");
 
-        ValidationUtils.assertTrue(isValidClosingOrderType,
-                String.format("Closed position requires last order type to be DECREASE, CLOSE, or LIQUIDATE. " +
-                        "Found: type=%s", lastOrderType));
+        if ("CLOSE".equals(status)) {
+            // Validation for closed positions
+            ValidationUtils.assertEquals(isClose, true,
+                    String.format("Closed position requires last order to have isClose=true. " +
+                            "Found: type=%s, isClose=%s", lastOrderType, isClose));
+
+            boolean isValidClosingOrderType = "DECREASE".equals(lastOrderType) ||
+                    "CLOSE".equals(lastOrderType) ||
+                    "LIQUIDATE".equals(lastOrderType);
+
+            ValidationUtils.assertTrue(isValidClosingOrderType,
+                    String.format("Closed position requires last order type to be DECREASE, CLOSE, or LIQUIDATE. " +
+                            "Found: type=%s", lastOrderType));
+        } else {
+            // Validation for open positions
+            ValidationUtils.assertEquals(status, "OPEN", "Position should have OPEN status when not closed");
+
+            // Open position should have positive values
+            ValidationUtils.assertTrue(
+                    ValidationUtils.getDoubleValue(position, "lastSize") > 0,
+                    "Open position should have positive lastSize"
+            );
+
+            ValidationUtils.assertTrue(
+                    ValidationUtils.getDoubleValue(position, "lastCollateral") > 0,
+                    "Open position should have positive lastCollateral"
+            );
+
+            // Last order should not be a closing order
+            boolean lastOrderIsClose = Boolean.TRUE.equals(lastOrder.get("isClose"));
+            ValidationUtils.assertEquals(lastOrderIsClose, false,
+                    "Open position should not have last order marked as close");
+        }
     }
 }

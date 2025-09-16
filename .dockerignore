@@ -1,0 +1,32 @@
+# Ignore build artifacts
+target/
+*.log
+
+# Ignore IDE files
+.idea/
+*.iml
+.vscode/
+.eclipse/
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore Git
+.git/
+.gitignore
+
+# Ignore Docker files in build context
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Ignore temporary files
+*.tmp
+*.temp
+
+# Keep .env files for configuration
+# .env
+
+# Ignore allure reports (will be generated in container)
+allure-report/

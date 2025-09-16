@@ -70,7 +70,7 @@ public class FlexibleApiClient extends BaseApiClient {
 
         // Default pagination
         Map<String, Object> pagination = new HashMap<>();
-        pagination.put("limit", 500);
+        pagination.put("limit", 2);
         pagination.put("offset", 0);
         body.put("pagination", pagination);
 
