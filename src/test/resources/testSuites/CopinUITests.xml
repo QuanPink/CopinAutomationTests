@@ -6,14 +6,9 @@
         <listener class-name="asia.decentralab.copin.listener.ThreadConfigurationListener"/>
     </listeners>
 
-<!--    <test name="Home Page Tests">-->
-<!--        <classes>-->
-<!--            <class name="asia.decentralab.copin.test.functional.HomePageTest"/>-->
-<!--        </classes>-->
-<!--    </test>-->
-    <test name="Validate order and position tests">
+    <test name="Home Page Tests">
         <classes>
-            <class name="asia.decentralab.copin.test.api.GmxV2ArbTest"/>
+            <class name="asia.decentralab.copin.test.functional.HomePageTest"/>
         </classes>
     </test>
 </suite>

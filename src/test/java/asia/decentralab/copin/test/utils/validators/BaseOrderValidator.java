@@ -1,4 +1,4 @@
-package asia.decentralab.copin.utils.validators;
+package asia.decentralab.copin.test.utils.validators;
 
 import asia.decentralab.copin.utils.ValidationUtils;
 

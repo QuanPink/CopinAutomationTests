@@ -1,5 +1,6 @@
 package asia.decentralab.copin.api.clients;
 
+import asia.decentralab.copin.api.auth.AuthTokenProvider;
 import asia.decentralab.copin.config.EnvironmentConfig;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
@@ -27,20 +28,22 @@ public class BaseApiClient {
         this.requestSpec = specBuilder.build();
     }
 
-    public void setAuthToken(String token) {
-        if (token != null && !token.isEmpty()) {
-            this.requestSpec = RestAssured.given(this.requestSpec)
-                    .header("Authorization", "Bearer " + token);
-            logger.info("Auth token set for API client");
-        }
-    }
-
-    public void clearAuthToken() {
-        setupRequestSpec();
-        logger.info("Auth token cleared from API client");
+    protected RequestSpecification getAuthenticatedSpec() {
+        return RestAssured.given(requestSpec)
+                .header("authorization", getAuthToken());
     }
 
     protected RequestSpecification getBaseSpec() {
         return RestAssured.given(requestSpec);
+    }
+
+    private String getAuthToken() {
+        AuthTokenProvider authProvider = AuthTokenProvider.getInstance();
+
+        if (!authProvider.isLoggedIn()) {
+            throw new IllegalStateException("Authentication required. Ensure login is performed in test setup.");
+        }
+
+        return authProvider.getToken();
     }
 }

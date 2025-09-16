@@ -1,4 +1,4 @@
-package asia.decentralab.copin.utils;
+package asia.decentralab.copin.api.auth;
 
 import asia.decentralab.copin.config.EnvironmentConfig;
 import asia.decentralab.copin.constants.ApiEndpoints;
@@ -12,12 +12,11 @@ import java.util.Map;
 
 public class AuthTokenProvider {
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenProvider.class);
-
-    private final EnvironmentConfig config = EnvironmentConfig.getInstance();
     private static volatile AuthTokenProvider instance;
 
+    private final EnvironmentConfig config = EnvironmentConfig.getInstance();
     private volatile String cachedToken;
-    private volatile boolean tokenInitialized = false;
+    private volatile boolean isLoggedIn = false;
 
     private AuthTokenProvider() {
     }
@@ -33,54 +32,52 @@ public class AuthTokenProvider {
         return instance;
     }
 
-    public void initialize() {
-        if (!tokenInitialized || cachedToken == null) {
-            synchronized (this) {
-                if (!tokenInitialized || cachedToken == null) {
-                    performLoginFlow();
-                }
-            }
+    public synchronized void performLogin() {
+        if (isLoggedIn && cachedToken != null) {
+            logger.debug("Already logged in, skipping login flow");
+            return;
         }
+
+        logger.info("Starting authentication flow...");
+
+        final String email = config.getEmail();
+        final String otp = config.getDefaultOTP();
+        final String apiBaseUrl = config.getApiBaseUrl();
+
+        // Step 1: Verify OTP with external service
+        logger.info("Step 1: Verifying OTP for email: {}***",
+                email.substring(0, Math.min(3, email.length())));
+
+        final Response otpResponse = verifyOTP(email, otp);
+        validateResponse(otpResponse, "OTP Verification");
+        final String intermediateToken = extractToken(otpResponse, "token");
+
+        // Step 2: Exchange for API access token
+        logger.info("Step 2: Authenticating with Copin API");
+        final Response loginResponse = authenticateWithCopin(apiBaseUrl, intermediateToken);
+        validateResponse(loginResponse, "Login Copin");
+
+        cachedToken = extractToken(loginResponse, "access_token");
+        isLoggedIn = true;
+
+        logger.info("✅ Authentication completed successfully");
     }
 
-    public synchronized String getToken() {
-        if (!tokenInitialized || cachedToken == null) {
-            throw new IllegalStateException("Token not initialized. Call initialize() first.");
+    public String getToken() {
+        if (!isLoggedIn || cachedToken == null) {
+            throw new IllegalStateException("Not logged in. Call performLogin() first.");
         }
         return cachedToken;
     }
 
-    private void performLoginFlow() {
-        logger.info("Starting 2-step authentication flow...");
+    public boolean isLoggedIn() {
+        return isLoggedIn && cachedToken != null;
+    }
 
-        try {
-            final String email = config.getEmail();
-            final String otp = config.getDefaultOTP();
-            final String apiBaseUrl = config.getApiBaseUrl();
-
-            // Step 1: Verify OTP with external service
-            logger.info("Step 1: Verifying OTP for email: {}***",
-                    email.substring(0, Math.min(3, email.length())));
-
-            final Response otpResponse = verifyOTP(email, otp);
-            validateResponse(otpResponse, "OTP Verification");
-            final String intermediateToken = extractToken(otpResponse, "token");
-
-            // Step 2: Exchange for API access token
-            logger.info("Step 2: Authenticating with Copin API");
-            final Response loginResponse = authenticateWithCopin(apiBaseUrl, intermediateToken);
-            validateResponse(loginResponse, "Login Copin");
-
-            cachedToken = extractToken(loginResponse, "access_token");
-            tokenInitialized = true;
-
-            logger.info("Authentication completed successfully - token cached");
-
-        } catch (Exception e) {
-            logger.error("❌ Authentication failed", e);
-            clearTokenState();
-            throw new RuntimeException("Authentication failed: " + e.getMessage());
-        }
+    public synchronized void clearTokenState() {
+        cachedToken = null;
+        isLoggedIn = false;
+        logger.debug("Authentication state cleared");
     }
 
     private Response verifyOTP(String email, String otpCode) {
@@ -138,8 +135,13 @@ public class AuthTokenProvider {
         }
     }
 
-    public synchronized void clearTokenState() {
-        cachedToken = null;
-        tokenInitialized = false;
+    public static class AuthenticationException extends RuntimeException {
+        public AuthenticationException(String message) {
+            super(message);
+        }
+
+        public AuthenticationException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
 }
