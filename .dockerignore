@@ -1,32 +1,143 @@
-# Ignore build artifacts
+# ========================================
+# Build artifacts and compiled code
+# ========================================
 target/
+*.class
+*.jar
+*.war
+*.ear
 *.log
 
-# Ignore IDE files
+# ========================================
+# Test results and reports
+# ========================================
+allure-results/
+allure-report/
+test-output/
+surefire-reports/
+failsafe-reports/
+screenshots/
+
+# ========================================
+# IDE files
+# ========================================
 .idea/
 *.iml
+*.ipr
+*.iws
 .vscode/
 .eclipse/
+.classpath
+.project
+.settings/
+.nb-configuration.xml
+nbproject/
 
-# Ignore OS files
+# ========================================
+# OS generated files
+# ========================================
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+desktop.ini
 
-# Ignore Git
+# ========================================
+# Git files
+# ========================================
 .git/
 .gitignore
+.gitattributes
+.gitlab-ci.yml
+.github/
 
-# Ignore Docker files in build context
-Dockerfile
-docker-compose.yml
+# ========================================
+# Docker files (không copy vào image)
+# ========================================
+Dockerfile*
+docker-compose*.yml
 .dockerignore
 
-# Ignore temporary files
+# ========================================
+# Scripts and documentation
+# ========================================
+*.sh
+*.ps1
+*.bat
+*.md
+README*
+LICENSE
+CHANGELOG*
+docs/
+
+# ========================================
+# Environment and config files
+# ========================================
+.env
+.env.*
+!.env.example  # Giữ lại .env.example
+*.local
+
+# ========================================
+# Package manager files
+# ========================================
+node_modules/
+npm-debug.log
+yarn-error.log
+.npm/
+.yarn/
+
+# ========================================
+# Temporary files
+# ========================================
 *.tmp
 *.temp
+*.swp
+*.swo
+*~
+.cache/
+tmp/
+temp/
 
-# Keep .env files for configuration
-# .env
+# ========================================
+# Archive files
+# ========================================
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
 
-# Ignore allure reports (will be generated in container)
-allure-report/
+# ========================================
+# Backup files
+# ========================================
+*.bak
+*.backup
+*.old
+*.orig
+
+# ========================================
+# Maven specific (optional)
+# ========================================
+.mvn/wrapper/*.jar
+.mvn/timing.properties
+.mvn/.gitignore
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# ========================================
+# Keep only necessary files
+# ========================================
+# Các files cần thiết sẽ được COPY trong Dockerfile:
+# - pom.xml
+# - src/
+# - .mvn/ (config)
+# - mvnw (wrapper)

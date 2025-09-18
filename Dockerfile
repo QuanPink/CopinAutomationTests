@@ -1,56 +1,59 @@
-# Use OpenJDK 11 as base image
-FROM openjdk:11-jdk-slim
+# Single stage for development (faster build)
+FROM maven:3.8-openjdk-11
 
-# Install necessary tools
+# Install Chrome and dependencies
 RUN apt-get update && apt-get install -y \
     wget \
-    curl \
-    unzip \
+    gnupg \
     xvfb \
-    chromium \
-    chromium-driver \
-    firefox-esr \
+    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list \
+    && apt-get update \
+    && apt-get install -y google-chrome-stable \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Set environment variables
-ENV JAVA_HOME=/usr/local/openjdk-11
-ENV CHROME_BIN=/usr/bin/chromium
-ENV CHROMEDRIVER_PATH=/usr/bin/chromedriver
-ENV DISPLAY=:99
+# Install ChromeDriver
+RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | awk -F'.' '{print $1}') \
+    && CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION}") \
+    && wget -q "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" \
+    && unzip chromedriver_linux64.zip -d /usr/local/bin/ \
+    && chmod +x /usr/local/bin/chromedriver \
+    && rm chromedriver_linux64.zip
 
-# Create app directory
+# Environment variables
+ENV DISPLAY=:99
+ENV CHROME_BIN=/usr/bin/google-chrome
+ENV CHROMEDRIVER_PATH=/usr/local/bin/chromedriver
+
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml first (for better caching)
-COPY mvnw ./
-COPY .mvn ./.mvn
-COPY pom.xml ./
+# Copy Maven files first (for dependency caching)
+COPY pom.xml .
+COPY .mvn .mvn
+COPY mvnw .
 
-# Make Maven wrapper executable
-RUN chmod +x ./mvnw
-
-# Download dependencies (this layer will be cached unless pom.xml changes)
-RUN ./mvnw dependency:resolve
+# Download dependencies (this layer will be cached)
+RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
 
 # Copy source code
-COPY src ./src
-
-# Copy test resources and configuration
+COPY src src
 COPY .env* ./
-COPY src/test/resources ./src/test/resources
 
-# Build the project
-RUN ./mvnw clean compile test-compile
+# Create result directories
+RUN mkdir -p allure-results target/surefire-reports
 
-# Create script to start Xvfb and run tests
+# Simple entrypoint for dev
 RUN echo '#!/bin/bash\n\
-Xvfb :99 -screen 0 1024x768x24 -ac &\n\
+set -e\n\
+echo "Starting Xvfb..."\n\
+Xvfb :99 -screen 0 1920x1080x24 &\n\
 export DISPLAY=:99\n\
 sleep 2\n\
-exec "$@"' > /app/start.sh && chmod +x /app/start.sh
+echo "Environment: Development"\n\
+echo "Browser: ${DEFAULT_BROWSER:-chrome}"\n\
+echo "Headless: ${HEADLESS_MODE:-true}"\n\
+exec "$@"' > /entrypoint.sh && chmod +x /entrypoint.sh
 
-# Default command
-CMD ["/app/start.sh", "./mvnw", "test"]
-
-# Expose port if needed (optional)
-EXPOSE 4444
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["mvn", "test", "-Papi"]
