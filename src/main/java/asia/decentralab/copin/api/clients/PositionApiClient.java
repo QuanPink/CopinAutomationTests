@@ -59,7 +59,7 @@ public class PositionApiClient extends BaseApiClient {
 
         // Default pagination
         Map<String, Object> pagination = new HashMap<>();
-        pagination.put("limit", 10);
+        pagination.put("limit", 100);
         pagination.put("offset", 0);
         body.put("pagination", pagination);
 
