@@ -130,6 +130,14 @@ public class EnvironmentConfig {
         return getBooleanConfigValue("SCREENSHOT_ON_FAILURE", true);
     }
 
+    public String getEmail() {
+        return getConfigValue("EMAIL", "test@example.com");
+    }
+
+    public String getDefaultOTP() {
+        return getConfigValue("DEFAULT_OTP", "123456");
+    }
+
     // Print all the loaded configurations
     public void printConfig() {
         logger.info("=== Environment Configuration ===");
@@ -144,6 +152,8 @@ public class EnvironmentConfig {
         logger.info("PARALLEL_MODE: {}", getParallelMode());
         logger.info("ENVIRONMENT: {}", getEnvironment());
         logger.info("SCREENSHOT_ON_FAILURE: {}", isScreenshotOnFailure());
+        logger.info("EMAIL: {}", getEmail());
+        logger.info("DEFAULT_OTP: {}", getDefaultOTP());
         logger.info("=================================");
     }
 }

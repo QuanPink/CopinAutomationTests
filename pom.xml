@@ -12,7 +12,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <aspectj.version>1.9.6</aspectj.version>
+        <aspectj.version>1.9.24</aspectj.version>
         <allure.version>2.27.0</allure.version>
         <testSuite>src/test/resources/testSuites/CopinSmokeTests.xml</testSuite>
         <selenium.version>4.29.0</selenium.version>
@@ -20,17 +20,78 @@
         <webdrivermanager.version>6.0.0</webdrivermanager.version>
         <testng.version>7.10.2</testng.version>
         <slf4j.version>2.0.16</slf4j.version>
-        <lombok.version>1.18.32</lombok.version>
+        <lombok.version>1.18.40</lombok.version>
         <dotenv.version>2.3.2</dotenv.version>
+        <commons-io.version>2.20.0</commons-io.version>
     </properties>
 
-    <!-- Profiles for different environments -->
     <profiles>
+        <!-- API Tests Profile -->
         <profile>
-            <id>smoke</id>
-            <properties>
-                <testSuite>src/test/resources/testSuites/CopinSmokeTests.xml</testSuite>
-            </properties>
+            <id>api</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.5.2</version>
+                        <configuration>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>src/test/resources/testSuites/CopinApiDataTest.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                            <!-- Allure configuration -->
+                            <argLine>
+                                -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                            </argLine>
+                            <systemPropertyVariables>
+                                <allure.results.directory>${project.build.directory}/allure-results
+                                </allure.results.directory>
+                            </systemPropertyVariables>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.aspectj</groupId>
+                                <artifactId>aspectjweaver</artifactId>
+                                <version>${aspectj.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- UI Tests Profile -->
+        <profile>
+            <id>ui</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.5.2</version>
+                        <configuration>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>src/test/resources/testSuites/CopinUITests.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                            <!-- Allure configuration -->
+                            <argLine>
+                                -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                            </argLine>
+                            <systemPropertyVariables>
+                                <allure.results.directory>${project.build.directory}/allure-results
+                                </allure.results.directory>
+                            </systemPropertyVariables>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.aspectj</groupId>
+                                <artifactId>aspectjweaver</artifactId>
+                                <version>${aspectj.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 
@@ -68,14 +129,6 @@
             <version>${testng.version}</version>
         </dependency>
 
-        <!-- Lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.32</version>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- Allure Reporting -->
         <dependency>
             <groupId>io.qameta.allure</groupId>
@@ -101,14 +154,21 @@
         <dependency>
             <groupId>io.github.cdimascio</groupId>
             <artifactId>dotenv-java</artifactId>
-            <version>2.3.2</version>
+            <version>${dotenv.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Apache Commons IO for file operations -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.15.1</version>
+            <version>${commons-io.version}</version>
         </dependency>
     </dependencies>
 
