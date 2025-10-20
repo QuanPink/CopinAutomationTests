@@ -60,6 +60,10 @@ public class ValidationUtils {
         Assert.assertTrue(condition, message);
     }
 
+    public static void assertFalse(boolean condition, String message) {
+        Assert.assertFalse(condition, message);
+    }
+
     public static void assertEquals(Object actual, Object expected, String message) {
         Assert.assertEquals(actual, expected, message);
     }
