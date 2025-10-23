@@ -50,10 +50,37 @@ public class ValidationUtils {
         return ((Number) value).doubleValue();
     }
 
+    public static long getLongValue(Map<String, Object> map, String key) {
+        Object value = map.get(key);
+
+        if (value == null) {
+            throw new IllegalArgumentException("Value for key '" + key + "' is null");
+        }
+
+        if (!(value instanceof Number)) {
+            throw new IllegalArgumentException("Value for key '" + key + "' is not a Number, got: " + value.getClass());
+        }
+
+        return ((Number) value).longValue();
+    }
+
     public static int getIntValue(Map<String, Object> map, String key) {
         Object value = map.get(key);
         if (value instanceof Number) return ((Number) value).intValue();
         throw new IllegalArgumentException("Value for key '" + key + "' is not a Number");
+    }
+
+    public static boolean getBooleanValue(Map<String, Object> map, String key) {
+        Object value = map.get(key);
+
+        if (value == null) {
+            throw new IllegalArgumentException("Value for key '" + key + "' is null");
+        }
+
+        if (!(value instanceof Boolean)) {
+            throw new IllegalArgumentException("Value for key '" + key + "' is not a Boolean, got: " + value.getClass());
+        }
+        return (Boolean) value;
     }
 
     public static void assertTrue(boolean condition, String message) {
@@ -73,6 +100,10 @@ public class ValidationUtils {
         double normalizedExpected = normalizeValue(expected);
 
         Assert.assertEquals(normalizedActual, normalizedExpected, message);
+    }
+
+    public static void assertNotNull(Map<String, Object> map, String message) {
+        Assert.assertNotNull(map, message);
     }
 
     private static double normalizeValue(double value) {

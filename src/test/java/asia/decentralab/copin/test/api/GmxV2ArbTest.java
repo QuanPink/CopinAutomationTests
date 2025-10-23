@@ -20,7 +20,7 @@ public class GmxV2ArbTest extends BaseApiTest {
 
     @DataProvider(name = "positionIds")
     public Object[][] getPositionIds() {
-        Response positionsResponse = apiClient.getPositionsByFilter("gmx_v2", "/position/filter");
+        Response positionsResponse = positionApiClient.getPositionsByFilter("gmx_v2", "/position/filter");
         List<String> positionIds = positionsResponse.jsonPath().getList("data.id", String.class);
 
         return positionIds.stream()
@@ -32,7 +32,7 @@ public class GmxV2ArbTest extends BaseApiTest {
     @Description("Validate individual position data integrity")
     @Severity(SeverityLevel.CRITICAL)
     public void testPositionsDataIntegrity(String positionId) {
-        Response positionDetailResponse = apiClient.getPositionDetail("gmx_v2", "/position/detail/{id}", positionId);
+        Response positionDetailResponse = positionApiClient.getPositionDetail("gmx_v2", "/position/detail/{id}", positionId);
 
         Map<String, Object> position = positionDetailResponse.jsonPath().getMap("");
         List<Map<String, Object>> orders = positionDetailResponse.jsonPath().getList("orders");
