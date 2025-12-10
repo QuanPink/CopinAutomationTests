@@ -10,7 +10,6 @@ import java.util.Map;
 public class PositionApiClient extends BaseApiClient {
     public PositionApiClient() {
         super();
-        logger.info("Position API Client initialized with base URL: {}", baseUrl);
     }
 
     /**
@@ -77,7 +76,7 @@ public class PositionApiClient extends BaseApiClient {
 
         // Default pagination
         Map<String, Object> pagination = new HashMap<>();
-        pagination.put("limit", 100);
+        pagination.put("limit", 500);
         pagination.put("offset", 0);
         body.put("pagination", pagination);
 
@@ -111,7 +110,7 @@ public class PositionApiClient extends BaseApiClient {
         body.put("queries", queries);
 
         // Default sorting
-        body.put("sortBy", "openBlockTime");
+        body.put("sortBy", "closeBlockTime");
         body.put("sortType", "desc");
 
         return body;

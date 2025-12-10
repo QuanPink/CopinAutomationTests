@@ -1,7 +1,7 @@
 package asia.decentralab.copin.utils.calculators;
 
 import asia.decentralab.copin.models.TraderStatisticCalculationResult;
-import asia.decentralab.copin.utils.ValidationUtils;
+import asia.decentralab.copin.utils.MapUtils;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -53,7 +53,7 @@ public class TraderStatisticCalculator {
             processPosition(position, result);
 
             // Streak calculation
-            boolean isWin = ValidationUtils.getBooleanValue(position, "isWin");
+            boolean isWin = MapUtils.getBoolean(position, "isWin");
             if (tempIsWin == null || tempIsWin == isWin) {
                 tempStreak++;
             } else {
@@ -129,18 +129,18 @@ public class TraderStatisticCalculator {
                                  TraderStatisticCalculationResult result) {
 
         // Extract position data
-        boolean isWin = ValidationUtils.getBooleanValue(position, "isWin");
-        boolean isLong = ValidationUtils.getBooleanValue(position, "isLong");
-        boolean isLiquidate = ValidationUtils.getBooleanValue(position, "isLiquidate");
-        double size = ValidationUtils.getDoubleValue(position, "size");
-        double leverage = ValidationUtils.getDoubleValue(position, "leverage");
-        double realisedPnl = ValidationUtils.getDoubleValue(position, "realisedPnl");
-        double pnl = ValidationUtils.getDoubleValue(position, "pnl");
-        double realisedRoi = ValidationUtils.getDoubleValue(position, "realisedRoi");
-        double roi = ValidationUtils.getDoubleValue(position, "roi");
-        double fee = ValidationUtils.getDoubleValue(position, "fee");
-        long duration = ValidationUtils.getLongValue(position, "durationInSecond");
-        int orderCount = ValidationUtils.getIntValue(position, "orderCount");
+        boolean isWin = MapUtils.getBoolean(position, "isWin");
+        boolean isLong = MapUtils.getBoolean(position, "isLong");
+        boolean isLiquidate = MapUtils.getBoolean(position, "isLiquidate");
+        double size = MapUtils.getDouble(position, "size");
+        double leverage = MapUtils.getDouble(position, "leverage");
+        double realisedPnl = MapUtils.getDouble(position, "realisedPnl");
+        double pnl = MapUtils.getDouble(position, "pnl");
+        double realisedRoi = MapUtils.getDouble(position, "realisedRoi");
+        double roi = MapUtils.getDouble(position, "roi");
+        double fee = MapUtils.getDouble(position, "fee");
+        long duration = MapUtils.getLong(position, "durationInSecond");
+        int orderCount = MapUtils.getInt(position, "orderCount");
 
         result.totalTrade++;
         result.totalOrder += orderCount;
@@ -171,7 +171,7 @@ public class TraderStatisticCalculator {
         result.roi += roi;
         result.realisedMaxRoi = Math.max(realisedRoi, result.realisedMaxRoi);
         result.realisedMaxDrawdown = Math.min(realisedRoi, result.realisedMaxDrawdown);
-        result.realisedMaxDrawdownPnl = Math.min(realisedPnl, result.realisedMaxDrawdown);
+        result.realisedMaxDrawdownPnl = Math.min(realisedPnl, result.realisedMaxDrawdownPnl);
 
         if (isLong) {
             result.totalLong++;
@@ -219,7 +219,7 @@ public class TraderStatisticCalculator {
         if (positions.isEmpty()) return;
 
         for (int i = 0; i < positions.size(); i++) {
-            boolean isWin = ValidationUtils.getBooleanValue(positions.get(i), "isWin");
+            boolean isWin = MapUtils.getBoolean(positions.get(i), "isWin");
 
             if (i == 0) {
                 result.isCurrentStreakWin = isWin;

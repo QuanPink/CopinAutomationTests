@@ -1,59 +1,48 @@
 package asia.decentralab.copin.test.utils.validators;
 
-import asia.decentralab.copin.utils.ValidationUtils;
-
 import java.util.Map;
+
+import static asia.decentralab.copin.utils.MapUtils.getDouble;
+import static asia.decentralab.copin.utils.ValidationUtils.assertInRange;
+import static asia.decentralab.copin.utils.ValidationUtils.assertNotNull;
 
 public class BaseOrderValidator {
     protected static void validateCommonFields(Map<String, Object> order) {
-        ValidationUtils.assertNotNull(order.get("id"), "order id should not be null");
-        ValidationUtils.assertNotNull(order.get("account"), "order account should not be null");
-        ValidationUtils.assertNotNull(order.get("protocol"), "order protocol should not be null");
-        ValidationUtils.assertNotNull(order.get("indexToken"), "order indexToken should not be null");
-        ValidationUtils.assertNotNull(order.get("pair"), "order pair should not be null");
-        ValidationUtils.assertNotNull(order.get("type"), "order type should not be null");
-        ValidationUtils.assertNotNull(order.get("blockTime"), "order blockTime should not be null");
-        ValidationUtils.assertNotNull(order.get("blockNumber"), "order blockNumber should not be null");
+        assertNotNull(order.get("id"), "order id should not be null");
+        assertNotNull(order.get("account"), "order account should not be null");
+        assertNotNull(order.get("protocol"), "order protocol should not be null");
+        assertNotNull(order.get("indexToken"), "order indexToken should not be null");
+        assertNotNull(order.get("pair"), "order pair should not be null");
+        assertNotNull(order.get("type"), "order type should not be null");
+        assertNotNull(order.get("blockTime"), "order blockTime should not be null");
+        assertNotNull(order.get("blockNumber"), "order blockNumber should not be null");
     }
 
     public static void validateTradingOrders(Map<String, Object> order) {
         validateCommonFields(order);
 
+        String account = (String) order.get("account");
+
         if (!"MARGIN_TRANSFERRED".equals(order.get("type"))) {
-            ValidationUtils.assertNotNull(order.get("isLong"), "isLong should not be null");
+            assertNotNull(order.get("isLong"), "isLong should not be null");
 
-            ValidationUtils.assertInRange(
-                    ValidationUtils.getDoubleValue(order, "sizeDeltaNumber"),
-                    0,  // min
-                    100_000_000,
-                    "sizeDeltaNumber"
+            assertInRange(getDouble(order, "sizeDeltaNumber"), 0, 100_000_000,
+                    "sizeDeltaNumber", account
             );
 
-            ValidationUtils.assertInRange(
-                    ValidationUtils.getDoubleValue(order, "sizeNumber"),
-                    0,  // min
-                    100_000_000,
-                    "sizeNumber"
+            assertInRange(getDouble(order, "sizeNumber"), 0, 100_000_000,
+                    "sizeNumber", account
             );
 
-            ValidationUtils.assertInRange(
-                    ValidationUtils.getDoubleValue(order, "priceNumber"),
-                    0,
-                    1_000_000,
-                    "priceNumber"
+            assertInRange(getDouble(order, "priceNumber"), 0, 1_000_000,
+                    "priceNumber", account
             );
         } else {
-            ValidationUtils.assertInRange(
-                    ValidationUtils.getDoubleValue(order, "collateralDeltaNumber"),
-                    -1_000_000,
-                    1_000_000,
-                    "collateralDeltaNumber"
+            assertInRange(getDouble(order, "collateralDeltaNumber"), -1_000_000, 1_000_000,
+                    "collateralDeltaNumber", account
             );
-            ValidationUtils.assertInRange(
-                    ValidationUtils.getDoubleValue(order, "collateralNumber"),
-                    0,
-                    1_000_000,
-                    "collateralNumber"
+            assertInRange(getDouble(order, "collateralNumber"), 0, 1_000_000,
+                    "collateralNumber", account
             );
         }
     }

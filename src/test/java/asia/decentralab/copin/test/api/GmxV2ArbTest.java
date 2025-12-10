@@ -5,6 +5,8 @@ import asia.decentralab.copin.test.base.BaseApiTest;
 import asia.decentralab.copin.test.utils.validators.BaseOrderValidator;
 import asia.decentralab.copin.test.utils.validators.BasePositionValidator;
 import asia.decentralab.copin.utils.ValidationUtils;
+import static asia.decentralab.copin.utils.MapUtils.getDouble;
+import static asia.decentralab.copin.utils.MapUtils.getInt;
 import asia.decentralab.copin.utils.calculators.PositionCalculator;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;
@@ -72,40 +74,45 @@ public class GmxV2ArbTest extends BaseApiTest {
     }
 
     private void validateGmxV2TradingOrder(Map<String, Object> order, boolean isOpen, boolean isClose) {
+        String account = (String) order.get("account");
+
         ValidationUtils.assertInRange(
-                ValidationUtils.getDoubleValue(order, "collateralDeltaNumber"),
+                getDouble(order, "collateralDeltaNumber"),
                 0,
                 100_000_000,
-                "collateralDeltaNumber"
+                "collateralDeltaNumber",
+                account
         );
 
         ValidationUtils.assertInRange(
-                ValidationUtils.getDoubleValue(order, "collateralNumber"),
+                getDouble(order, "collateralNumber"),
                 0,
                 100_000_000,
-                "collateralNumber"
+                "collateralNumber",
+                account
         );
 
         ValidationUtils.assertInRange(
-                ValidationUtils.getDoubleValue(order, "leverage"),
+                getDouble(order, "leverage"),
                 0.0000000001,
                 1_000,
-                "leverage"
+                "leverage",
+                account
         );
 
         if (isOpen) {
-            double collateralDelta = ValidationUtils.getDoubleValue(order, "collateralDeltaNumber");
-            double collateral = ValidationUtils.getDoubleValue(order, "collateralNumber");
-            double sizeDelta = ValidationUtils.getDoubleValue(order, "sizeDeltaNumber");
-            double size = ValidationUtils.getDoubleValue(order, "sizeNumber");
+            double collateralDelta = getDouble(order, "collateralDeltaNumber");
+            double collateral = getDouble(order, "collateralNumber");
+            double sizeDelta = getDouble(order, "sizeDeltaNumber");
+            double size = getDouble(order, "sizeNumber");
 
             ValidationUtils.assertCloseToValue(collateralDelta, collateral, 0.01, "OPEN order collateral consistency");
             ValidationUtils.assertCloseToValue(sizeDelta, size, 0.01, "OPEN order size consistency");
         }
 
         if (isClose) {
-            double finalCollateral = ValidationUtils.getDoubleValue(order, "collateralNumber");
-            double finalSize = ValidationUtils.getDoubleValue(order, "sizeNumber");
+            double finalCollateral = getDouble(order, "collateralNumber");
+            double finalSize = getDouble(order, "sizeNumber");
 
             ValidationUtils.assertEquals(finalCollateral, 0, "CLOSE order should result in zero collateral");
             ValidationUtils.assertEquals(finalSize, 0, "CLOSE order should result in zero size");
@@ -115,14 +122,16 @@ public class GmxV2ArbTest extends BaseApiTest {
     private void validateGmxV2PositionCalculations(Map<String, Object> position, PositionCalculationResult calc) {
         BasePositionValidator.validatePositionCalculations(position, calc);
 
+        String account = (String) position.get("account");
         double tolerance = 0.01; // 1%
 
-        double positionCollateral = ValidationUtils.getDoubleValue(position, "collateral");
+        double positionCollateral = getDouble(position, "collateral");
         ValidationUtils.assertInRange(
                 positionCollateral,
                 0,
                 100_000_000,
-                "collateral position consistency"
+                "collateral position consistency",
+                account
         );
         ValidationUtils.assertCloseToValue(
                 positionCollateral,
@@ -131,12 +140,13 @@ public class GmxV2ArbTest extends BaseApiTest {
                 "position collateral"
         );
 
-        double positionLeverage = ValidationUtils.getDoubleValue(position, "leverage");
+        double positionLeverage = getDouble(position, "leverage");
         ValidationUtils.assertInRange(
                 positionLeverage,
                 0,
                 1_000,
-                "leverage position consistency"
+                "leverage position consistency",
+                account
         );
         ValidationUtils.assertCloseToValue(
                 positionLeverage,
@@ -147,7 +157,7 @@ public class GmxV2ArbTest extends BaseApiTest {
 
 //        String status = (String) position.get("status");
 //        if ("CLOSE".equals(status)) {
-//            double positionLastCollateral = ValidationUtils.getDoubleValue(position, "lastCollateral");
+//            double positionLastCollateral = getDouble(position, "lastCollateral");
 //            ValidationUtils.assertInRange(
 //                    positionLastCollateral,
 //                    0,
@@ -161,7 +171,7 @@ public class GmxV2ArbTest extends BaseApiTest {
 //                    "Closed position lastCollateral should be near zero"
 //            );
 //
-//            double positionLastSize = ValidationUtils.getDoubleValue(position, "lastSize");
+//            double positionLastSize = getDouble(position, "lastSize");
 //            ValidationUtils.assertInRange(
 //                    positionLastSize,
 //                    0,
@@ -186,22 +196,22 @@ public class GmxV2ArbTest extends BaseApiTest {
 //        String status = (String) position.get("status");
 //        if ("CLOSE".equals(status)) {
 //            ValidationUtils.assertTrue(
-//                    ValidationUtils.getDoubleValue(position, "lastSize") == 0,
+//                    getDouble(position, "lastSize") == 0,
 //                    "GMX V2 open position should have positive lastSize"
 //            );
 //
 //            ValidationUtils.assertTrue(
-//                    ValidationUtils.getDoubleValue(position, "lastCollateral") == 0,
+//                    getDouble(position, "lastCollateral") == 0,
 //                    "GMX V2 open position should have positive lastCollateral"
 //            );
 //        } else {
 //            ValidationUtils.assertTrue(
-//                    ValidationUtils.getDoubleValue(position, "lastSize") > 0,
+//                    getDouble(position, "lastSize") > 0,
 //                    "GMX V2 open position should have positive lastSize"
 //            );
 //
 //            ValidationUtils.assertTrue(
-//                    ValidationUtils.getDoubleValue(position, "lastCollateral") > 0,
+//                    getDouble(position, "lastCollateral") > 0,
 //                    "GMX V2 open position should have positive lastCollateral"
 //            );
 //        }

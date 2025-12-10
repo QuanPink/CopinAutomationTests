@@ -1,6 +1,5 @@
 package asia.decentralab.copin.api.clients;
 
-import asia.decentralab.copin.api.auth.AuthTokenProvider;
 import asia.decentralab.copin.config.EnvironmentConfig;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
@@ -13,11 +12,19 @@ public class BaseApiClient {
     protected static final Logger logger = LoggerFactory.getLogger(BaseApiClient.class);
     protected final EnvironmentConfig config = EnvironmentConfig.getInstance();
     protected final String baseUrl;
+    protected final String xApiKey;
     protected RequestSpecification requestSpec;
 
     public BaseApiClient() {
         this.baseUrl = config.getApiBaseUrl();
+        this.xApiKey = config.getXApiKey();
+
+        if (xApiKey == null || xApiKey.isEmpty() || "123456".equals(xApiKey)) {
+            logger.warn("X_API_KEY is not configured properly!");
+        }
+
         setupRequestSpec();
+        logger.info("{} initialized with base URL: {}", this.getClass().getSimpleName(), baseUrl);
     }
 
     private void setupRequestSpec() {
@@ -30,20 +37,6 @@ public class BaseApiClient {
 
     protected RequestSpecification getAuthenticatedSpec() {
         return RestAssured.given(requestSpec)
-                .header("authorization", getAuthToken());
-    }
-
-    protected RequestSpecification getBaseSpec() {
-        return RestAssured.given(requestSpec);
-    }
-
-    private String getAuthToken() {
-        AuthTokenProvider authProvider = AuthTokenProvider.getInstance();
-
-        if (!authProvider.isLoggedIn()) {
-            throw new IllegalStateException("Authentication required. Ensure login is performed in test setup.");
-        }
-
-        return authProvider.getToken();
+                .header("x-api-key", xApiKey);
     }
 }

@@ -1,59 +1,33 @@
-# Single stage for development (faster build)
-FROM maven:3.8-openjdk-11
-
-# Install Chrome and dependencies
-RUN apt-get update && apt-get install -y \
-    wget \
-    gnupg \
-    xvfb \
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install ChromeDriver
-RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | awk -F'.' '{print $1}') \
-    && CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION}") \
-    && wget -q "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" \
-    && unzip chromedriver_linux64.zip -d /usr/local/bin/ \
-    && chmod +x /usr/local/bin/chromedriver \
-    && rm chromedriver_linux64.zip
-
-# Environment variables
-ENV DISPLAY=:99
-ENV CHROME_BIN=/usr/bin/google-chrome
-ENV CHROMEDRIVER_PATH=/usr/local/bin/chromedriver
+FROM maven:3.9.6-eclipse-temurin-11 AS builder
 
 WORKDIR /app
 
-# Copy Maven files first (for dependency caching)
+# Copy pom.xml trước để cache dependencies
 COPY pom.xml .
-COPY .mvn .mvn
-COPY mvnw .
-
-# Download dependencies (this layer will be cached)
-RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
+RUN mvn dependency:go-offline -B
 
 # Copy source code
-COPY src src
-COPY .env* ./
+COPY src ./src
 
-# Create result directories
-RUN mkdir -p allure-results target/surefire-reports
+# Build project
+RUN mvn clean compile test-compile -B
 
-# Simple entrypoint for dev
-RUN echo '#!/bin/bash\n\
-set -e\n\
-echo "Starting Xvfb..."\n\
-Xvfb :99 -screen 0 1920x1080x24 &\n\
-export DISPLAY=:99\n\
-sleep 2\n\
-echo "Environment: Development"\n\
-echo "Browser: ${DEFAULT_BROWSER:-chrome}"\n\
-echo "Headless: ${HEADLESS_MODE:-true}"\n\
-exec "$@"' > /entrypoint.sh && chmod +x /entrypoint.sh
+# Copy dependencies (bao gồm aspectjweaver)
+RUN mvn dependency:copy-dependencies -DoutputDirectory=target/libs -DincludeScope=test -B
 
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["mvn", "test", "-Papi"]
+# ============================================
+FROM eclipse-temurin:11-jre
+
+WORKDIR /app
+
+# Copy built artifacts
+COPY --from=builder /app/target/classes ./classes
+COPY --from=builder /app/target/test-classes ./test-classes
+COPY --from=builder /app/target/libs ./libs
+COPY --from=builder /app/src/test/resources/testSuites ./testSuites
+
+# Copy run script
+COPY run-tests.sh .
+RUN chmod +x run-tests.sh
+
+ENTRYPOINT ["./run-tests.sh"]

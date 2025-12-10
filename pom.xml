@@ -39,6 +39,19 @@
                             <suiteXmlFiles>
                                 <suiteXmlFile>src/test/resources/testSuites/CopinApiDataTest.xml</suiteXmlFile>
                             </suiteXmlFiles>
+
+                            <!-- ✅ FIX: Prevent fork crash -->
+                            <forkCount>1</forkCount>
+                            <reuseForks>false</reuseForks>
+                            <useSystemClassLoader>false</useSystemClassLoader>
+
+                            <!-- ✅ Increase memory -->
+                            <argLine>
+                                -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                                -Xmx1024m
+                                -XX:MaxMetaspaceSize=256m
+                            </argLine>
+
                             <!-- Allure configuration -->
                             <argLine>
                                 -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"

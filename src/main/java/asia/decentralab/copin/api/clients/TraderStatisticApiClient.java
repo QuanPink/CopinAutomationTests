@@ -10,7 +10,6 @@ import java.util.Map;
 public class TraderStatisticApiClient extends BaseApiClient {
     public TraderStatisticApiClient() {
         super();
-        logger.info("Position API Client initialized with base URL: {}", baseUrl);
     }
 
     public Response getTraderStatisticByProtocol(String protocol, String time,  String endpoint) {
@@ -29,7 +28,7 @@ public class TraderStatisticApiClient extends BaseApiClient {
     }
 
     private String buildEndpoint(String protocol, String endpoint) {
-        return "/" + protocol + endpoint;
+        return "/public/" + protocol + endpoint;
     }
 
     private Map<String, Object> createFilterBodyWithTimeFrame(String time) {
@@ -37,7 +36,7 @@ public class TraderStatisticApiClient extends BaseApiClient {
 
         // Default pagination
         Map<String, Object> pagination = new HashMap<>();
-        pagination.put("limit", 500);
+        pagination.put("limit", 100);
         pagination.put("offset", 0);
         body.put("pagination", pagination);
 

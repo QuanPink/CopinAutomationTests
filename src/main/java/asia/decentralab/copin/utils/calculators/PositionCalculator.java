@@ -1,7 +1,7 @@
 package asia.decentralab.copin.utils.calculators;
 
 import asia.decentralab.copin.models.PositionCalculationResult;
-import asia.decentralab.copin.utils.ValidationUtils;
+import asia.decentralab.copin.utils.MapUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -34,12 +34,12 @@ public class PositionCalculator {
         if (isOpen) result.isOpenCount++;
 
         String type = (String) order.get("type");
-        double collateralDelta = ValidationUtils.getDoubleValue(order, "collateralDeltaNumber");
-        double sizeDelta = ValidationUtils.getDoubleValue(order, "sizeDeltaNumber");
-        double price = ValidationUtils.getDoubleValue(order, "priceNumber");
-        double feeNumber = ValidationUtils.getDoubleValue(order, "feeNumber");
+        double collateralDelta = MapUtils.getDouble(order, "collateralDeltaNumber");
+        double sizeDelta = MapUtils.getDouble(order, "sizeDeltaNumber");
+        double price = MapUtils.getDouble(order, "priceNumber");
+        double feeNumber = MapUtils.getDouble(order, "feeNumber");
         double fundingNumber = order.get("fundingNumber") != null ?
-                ValidationUtils.getDoubleValue(order, "fundingNumber") : 0;
+                MapUtils.getDouble(order, "fundingNumber") : 0;
 
         switch (type) {
             case "OPEN":
@@ -84,7 +84,7 @@ public class PositionCalculator {
 
     public static double calculatePnlMultiplier(Map<String, Object> order, double avgPrice) {
         boolean isLong = Boolean.TRUE.equals(order.get("isLong"));
-        double priceNumber = ValidationUtils.getDoubleValue(order, "priceNumber");
+        double priceNumber = MapUtils.getDouble(order, "priceNumber");
         if (avgPrice == 0) {
             throw new IllegalArgumentException("avgPrice must not be zero");
         }

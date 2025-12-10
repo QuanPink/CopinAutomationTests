@@ -1,6 +1,5 @@
 package asia.decentralab.copin.test.base;
 
-import asia.decentralab.copin.api.auth.AuthTokenProvider;
 import asia.decentralab.copin.api.clients.PositionApiClient;
 import asia.decentralab.copin.api.clients.TraderStatisticApiClient;
 import org.slf4j.Logger;
@@ -17,10 +16,6 @@ public class BaseApiTest {
     public void setUpApiTest() {
         logger.info("Setting up API test suite");
 
-        // Initialize authentication token
-        AuthTokenProvider.getInstance().performLogin();
-        logger.info("Authentication completed");
-
         // Initialize API client
         positionApiClient = new PositionApiClient();
         traderStatisticApiClient = new TraderStatisticApiClient();
@@ -30,9 +25,5 @@ public class BaseApiTest {
     @AfterClass
     public void tearDownApiTest() {
         logger.info("API test suite completed");
-
-        // Clear authentication state
-        AuthTokenProvider.getInstance().clearTokenState();
-        logger.info("✅ Authentication state cleared");
     }
 }
