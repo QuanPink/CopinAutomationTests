@@ -1,14 +1,17 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <suite name="Copin API Data Tests">
     <listeners>
-        <listener class-name="asia.decentralab.copin.listener.AllureListener"/>
+
+<!--        <listener class-name="asia.decentralab.copin.listener.AllureListener"/>-->
         <listener class-name="asia.decentralab.copin.listener.RetryListener"/>
         <listener class-name="asia.decentralab.copin.listener.ThreadConfigurationListener"/>
+        <listener class-name="asia.decentralab.copin.listener.LarkNotificationListener"/>
+
     </listeners>
 
     <test name="Validate_order_and_position_tests">
         <classes>
-            <class name="asia.decentralab.copin.test.api.GmxV2ArbTest"/>
+            <class name="asia.decentralab.copin.test.api.TraderStatisticsTest"/>
         </classes>
     </test>
 </suite>

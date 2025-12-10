@@ -41,7 +41,7 @@ public class AuthTokenProvider {
         logger.info("Starting authentication flow...");
 
         final String email = config.getEmail();
-        final String otp = config.getDefaultOTP();
+        final String otp = config.getDefaultOtp();
         final String apiBaseUrl = config.getApiBaseUrl();
 
         // Step 1: Verify OTP with external service

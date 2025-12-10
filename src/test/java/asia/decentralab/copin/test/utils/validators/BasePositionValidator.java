@@ -1,7 +1,9 @@
 package asia.decentralab.copin.test.utils.validators;
 
 import asia.decentralab.copin.models.PositionCalculationResult;
-import asia.decentralab.copin.utils.ValidationUtils;
+
+import static asia.decentralab.copin.utils.ValidationUtils.*;
+import static asia.decentralab.copin.utils.MapUtils.*;
 
 import java.util.List;
 import java.util.Map;
@@ -10,151 +12,98 @@ public class BasePositionValidator {
     private static final double DEFAULT_TOLERANCE = 0.0001;
 
     public static void validatePositionFields(Map<String, Object> position) {
-        ValidationUtils.assertNotNull(position.get("id"), "position id should not be null");
-        ValidationUtils.assertNotNull(position.get("account"), "position account should not be null");
-        ValidationUtils.assertNotNull(position.get("protocol"), "position protocol should not be null");
-        ValidationUtils.assertNotNull(position.get("indexToken"), "position indexToken should not be null");
-        ValidationUtils.assertNotNull(position.get("pair"), "position pair should not be null");
-        ValidationUtils.assertNotNull(position.get("status"), "position status should not be null");
-        ValidationUtils.assertNotNull(position.get("isLong"), "position isLong should not be null");
-        ValidationUtils.assertNotNull(position.get("openBlockTime"), "position openBlockTime should not be null");
-        ValidationUtils.assertNotNull(position.get("openBlockNumber"), "position openBlockNumber should not be null");
-        ValidationUtils.assertNotNull(position.get("averagePrice"), "position averagePrice should not be null");
+        assertNotNull(position.get("id"), "position id should not be null");
+        assertNotNull(position.get("account"), "position account should not be null");
+        assertNotNull(position.get("protocol"), "position protocol should not be null");
+        assertNotNull(position.get("indexToken"), "position indexToken should not be null");
+        assertNotNull(position.get("pair"), "position pair should not be null");
+        assertNotNull(position.get("status"), "position status should not be null");
+        assertNotNull(position.get("isLong"), "position isLong should not be null");
+        assertNotNull(position.get("openBlockTime"), "position openBlockTime should not be null");
+        assertNotNull(position.get("openBlockNumber"), "position openBlockNumber should not be null");
+        assertNotNull(position.get("averagePrice"), "position averagePrice should not be null");
     }
 
     public static void validatePositionCalculations(Map<String, Object> position, PositionCalculationResult calc) {
+        String account = (String) position.get("account");
 
-        double positionSize = ValidationUtils.getDoubleValue(position, "size");
-        ValidationUtils.assertInRange(
-                positionSize,
-                0,  // min
-                100_000_000,  // max
-                "position size"
+        double positionSize = getDouble(position, "size");
+        assertInRange(positionSize, 0, 100_000_000,
+                "position size", account
         );
-        ValidationUtils.assertCloseToValue(
-                positionSize,
-                calc.size,
-                DEFAULT_TOLERANCE,
-                "position size calculation"
+        assertCloseToValue(calc.size, positionSize,
+                DEFAULT_TOLERANCE, "position size calculation"
         );
 
-        double positionAveragePrice = ValidationUtils.getDoubleValue(position, "averagePrice");
-        ValidationUtils.assertInRange(
-                positionAveragePrice,
-                0,
-                1_000_000,
-                "protocol average price"
+        double positionAveragePrice = getDouble(position, "averagePrice");
+        assertInRange(positionAveragePrice, 0, 1_000_000,
+                "protocol average price", account
         );
-        ValidationUtils.assertCloseToValue(
-                positionAveragePrice,
-                calc.avgPrice,
-                DEFAULT_TOLERANCE,
-                "protocol average price calculation"
+        assertCloseToValue(calc.avgPrice, positionAveragePrice,
+                DEFAULT_TOLERANCE, "protocol average price calculation"
         );
 
         String status = (String) position.get("status");
         if ("CLOSE".equals(status)) {
-            double positionRealisedPnl =  ValidationUtils.getDoubleValue(position, "realisedPnl");
-            ValidationUtils.assertInRange(
-                    positionRealisedPnl,
-                    -100_000_000,
-                    100_000_000,
-                    "position realisedPnl"
+            double positionRealisedPnl = getDouble(position, "realisedPnl");
+            assertInRange(positionRealisedPnl, -100_000_000, 100_000_000,
+                    "position realisedPnl", account
             );
-            ValidationUtils.assertCloseToValue(
-                    positionRealisedPnl,
-                    calc.realisedPnl,
-                    DEFAULT_TOLERANCE,
-                    "position realisedPnl calculation"
+            assertCloseToValue(calc.realisedPnl, positionRealisedPnl,
+                    0.01, "position realisedPnl calculation"
             );
 
-            double positionPnl = ValidationUtils.getDoubleValue(position, "pnl");
-            ValidationUtils.assertInRange(
-                    positionPnl,
-                    -100_000_000,
-                    100_000_000,
-                    "position pnl"
+            double positionPnl = getDouble(position, "pnl");
+            assertInRange(positionPnl, -100_000_000, 100_000_000,
+                    "position pnl", account
             );
-            ValidationUtils.assertCloseToValue(
-                    positionPnl,
-                    calc.pnl,
-                    DEFAULT_TOLERANCE,
-                    "position pnl calculation"
+            assertCloseToValue(calc.pnl, positionPnl,
+                    0.01, "position pnl calculation"
             );
 
-            double positionRealisedRoi =  ValidationUtils.getDoubleValue(position, "realisedRoi");
-            ValidationUtils.assertInRange(
-                    positionRealisedRoi,
-                    -1_000,
-                    10_000,
-                    "position realisedRoi"
+            double positionRealisedRoi = getDouble(position, "realisedRoi");
+            assertInRange(positionRealisedRoi, -1_000, 10_000,
+                    "position realisedRoi", account
             );
-            ValidationUtils.assertCloseToValue(
-                    positionRealisedRoi,
-                    calc.realisedRoi,
-                    DEFAULT_TOLERANCE,
-                    "position realisedRoi  calculation"
+            assertCloseToValue(calc.realisedRoi, positionRealisedRoi,
+                    0.01, "position realisedRoi  calculation"
             );
 
-            double positionRoi = ValidationUtils.getDoubleValue(position, "roi");
-            ValidationUtils.assertInRange(
-                    positionRoi,
-                    -1_000,
-                    10_000,
-                    "position roi"
+            double positionRoi = getDouble(position, "roi");
+            assertInRange(positionRoi, -1_000, 10_000,
+                    "position roi", account
             );
-            ValidationUtils.assertCloseToValue(
-                    positionRoi,
-                    calc.roi,
-                    DEFAULT_TOLERANCE,
-                    "position roi calculation"
+            assertCloseToValue(calc.roi, positionRoi,
+                    0.01, "position roi calculation"
             );
         } else {
-            double  positionTotalDecreasePnl = ValidationUtils.getDoubleValue(position, "totalDecreasePnl");
-            ValidationUtils.assertInRange(
-                    positionTotalDecreasePnl,
-                    -100_000_000,
-                    100_000_000,
-                    "position totalDecreasePnl"
+            double positionTotalDecreasePnl = getDouble(position, "totalDecreasePnl");
+            assertInRange(positionTotalDecreasePnl, -100_000_000, 100_000_000,
+                    "position totalDecreasePnl", account
             );
-            ValidationUtils.assertCloseToValue(
-                    positionTotalDecreasePnl,
-                    calc.realisedPnl,
-                    DEFAULT_TOLERANCE,
-                    "position totalDecreasePnl calculation"
+            assertCloseToValue(calc.realisedPnl, positionTotalDecreasePnl,
+                    DEFAULT_TOLERANCE, "position totalDecreasePnl calculation"
             );
         }
 
-        ValidationUtils.assertEquals(
-                ValidationUtils.getIntValue(position, "orderCount"),
-                calc.orderCount,
+        assertEquals(calc.orderCount, getInt(position, "orderCount"),
                 "position orderCount"
         );
 
-        ValidationUtils.assertEquals(
-                ValidationUtils.getIntValue(position, "orderIncreaseCount"),
-                calc.orderIncreaseCount,
+        assertEquals(calc.orderIncreaseCount, getInt(position, "orderIncreaseCount"),
                 "position orderIncreaseCount"
         );
 
-        ValidationUtils.assertEquals(
-                ValidationUtils.getIntValue(position, "orderDecreaseCount"),
-                calc.orderDecreaseCount,
+        assertEquals(calc.orderDecreaseCount, getInt(position, "orderDecreaseCount"),
                 "position orderDecreaseCount"
         );
 
-        double positionFee =  ValidationUtils.getDoubleValue(position, "fee");
-        ValidationUtils.assertInRange(
-                positionFee,
-                -100_000_000,
-                100_000_000,
-                "position fee"
+        double positionFee = getDouble(position, "fee");
+        assertInRange(positionFee, -100_000_000, 100_000_000,
+                "position fee", account
         );
-        ValidationUtils.assertCloseToValue(
-                positionFee,
-                calc.fee,
-                DEFAULT_TOLERANCE,
-                "position fee"
+        assertCloseToValue(calc.fee, positionFee,
+                DEFAULT_TOLERANCE, "position fee"
         );
     }
 
@@ -163,15 +112,15 @@ public class BasePositionValidator {
                                                      PositionCalculationResult calc) {
         validatePositionFields(position);
 
-        ValidationUtils.assertFalse(orders.isEmpty(), "Orders list cannot be empty");
+        assertFalse(orders.isEmpty(), "Orders list cannot be empty");
 
         Map<String, Object> firstOrder = orders.get(0);
         String firstOrderType = (String) firstOrder.get("type");
-        ValidationUtils.assertEquals(firstOrder.get("isOpen"), true, "First order should be OPEN");
+        assertEquals(firstOrder.get("isOpen"), true, "First order should be OPEN");
         boolean isValidFirstOrderType = "OPEN".equals(firstOrderType) || "INCREASE".equals(firstOrderType);
-        ValidationUtils.assertTrue(isValidFirstOrderType,
+        assertTrue(isValidFirstOrderType,
                 String.format("First order type should be OPEN or INCREASE. Found: type=%s", firstOrderType));
-        ValidationUtils.assertEquals(calc.isOpenCount, 1, "Should have exactly one OPEN order");
+        assertEquals(calc.isOpenCount, 1, "Should have exactly one OPEN order");
 
         Boolean positionIsLong = (Boolean) position.get("isLong");
         for (Map<String, Object> order : orders) {
@@ -181,9 +130,7 @@ public class BasePositionValidator {
                 continue;
             }
 
-            ValidationUtils.assertEquals(
-                    order.get("isLong"),
-                    positionIsLong,
+            assertEquals(order.get("isLong"), positionIsLong,
                     "All orders must have same isLong as position"
             );
         }
@@ -198,26 +145,26 @@ public class BasePositionValidator {
                 "LIQUIDATE".equals(lastOrderType);
 
         if ("CLOSE".equals(status)) {
-            ValidationUtils.assertEquals(isClose, true,
+            assertEquals(isClose, true,
                     String.format("Closed position requires last order to have isClose=true. " +
                             "Found: type=%s, isClose=%s", lastOrderType, isClose));
 
-            ValidationUtils.assertTrue(isValidClosingOrderType,
+            assertTrue(isValidClosingOrderType,
                     String.format("Closed position requires last order type to be DECREASE, CLOSE, or LIQUIDATE. " +
                             "Found: type=%s", lastOrderType));
 
-            ValidationUtils.assertNotNull(position.get("closeBlockTime"),
+            assertNotNull(position.get("closeBlockTime"),
                     "Closed position must have closeBlockTime");
 
-            ValidationUtils.assertNotNull(position.get("closeBlockNumber"),
+            assertNotNull(position.get("closeBlockNumber"),
                     "Closed position must have closeBlockNumber");
         } else {
             if (isValidClosingOrderType) {
                 Boolean lastOrderIsClose = (Boolean) lastOrder.get("isClose");
-                ValidationUtils.assertNotNull(lastOrderIsClose,
+                assertNotNull(lastOrderIsClose,
                         "Order type " + lastOrderType + " must have isClose field");
 
-                ValidationUtils.assertEquals(lastOrderIsClose, false,
+                assertEquals(lastOrderIsClose, false,
                         "Open position with " + lastOrderType + " order must have isClose=false");
             }
         }

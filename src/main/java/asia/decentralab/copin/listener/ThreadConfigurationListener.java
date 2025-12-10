@@ -30,6 +30,7 @@ public class ThreadConfigurationListener implements IAlterSuiteListener {
         for (XmlSuite suite : suites) {
             // Set thread count
             suite.setThreadCount(threadCount);
+            suite.setDataProviderThreadCount(threadCount);
 
             // Set parallel mode
             try {
