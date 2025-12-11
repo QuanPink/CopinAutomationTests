@@ -32,7 +32,7 @@ public class BasePositionValidator {
                 "position size", account
         );
         assertCloseToValue(calc.size, positionSize,
-                DEFAULT_TOLERANCE, "position size calculation"
+                DEFAULT_TOLERANCE, "position size calculation", account
         );
 
         double positionAveragePrice = getDouble(position, "averagePrice");
@@ -40,7 +40,7 @@ public class BasePositionValidator {
                 "protocol average price", account
         );
         assertCloseToValue(calc.avgPrice, positionAveragePrice,
-                DEFAULT_TOLERANCE, "protocol average price calculation"
+                DEFAULT_TOLERANCE, "protocol average price calculation", account
         );
 
         String status = (String) position.get("status");
@@ -50,7 +50,7 @@ public class BasePositionValidator {
                     "position realisedPnl", account
             );
             assertCloseToValue(calc.realisedPnl, positionRealisedPnl,
-                    0.01, "position realisedPnl calculation"
+                    0.01, "position realisedPnl calculation", account
             );
 
             double positionPnl = getDouble(position, "pnl");
@@ -58,7 +58,7 @@ public class BasePositionValidator {
                     "position pnl", account
             );
             assertCloseToValue(calc.pnl, positionPnl,
-                    0.01, "position pnl calculation"
+                    0.01, "position pnl calculation", account
             );
 
             double positionRealisedRoi = getDouble(position, "realisedRoi");
@@ -66,7 +66,7 @@ public class BasePositionValidator {
                     "position realisedRoi", account
             );
             assertCloseToValue(calc.realisedRoi, positionRealisedRoi,
-                    0.01, "position realisedRoi  calculation"
+                    0.01, "position realisedRoi  calculation", account
             );
 
             double positionRoi = getDouble(position, "roi");
@@ -74,7 +74,7 @@ public class BasePositionValidator {
                     "position roi", account
             );
             assertCloseToValue(calc.roi, positionRoi,
-                    0.01, "position roi calculation"
+                    0.01, "position roi calculation", account
             );
         } else {
             double positionTotalDecreasePnl = getDouble(position, "totalDecreasePnl");
@@ -82,7 +82,7 @@ public class BasePositionValidator {
                     "position totalDecreasePnl", account
             );
             assertCloseToValue(calc.realisedPnl, positionTotalDecreasePnl,
-                    DEFAULT_TOLERANCE, "position totalDecreasePnl calculation"
+                    DEFAULT_TOLERANCE, "position totalDecreasePnl calculation", account
             );
         }
 
@@ -103,7 +103,7 @@ public class BasePositionValidator {
                 "position fee", account
         );
         assertCloseToValue(calc.fee, positionFee,
-                DEFAULT_TOLERANCE, "position fee"
+                DEFAULT_TOLERANCE, "position fee", account
         );
     }
 

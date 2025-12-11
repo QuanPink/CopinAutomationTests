@@ -87,21 +87,11 @@ public class LarkNotificationListener implements ITestListener {
         String actual = "N/A";
         String account = "";
 
-        // Format 1: "fieldName account should be between X and Y. Actual value: Z"
+        // Format 1: "fieldName should be between X and Y. Actual value: Z, Account: W"
         if (errorMessage.contains("should be between")) {
             int shouldIdx = errorMessage.indexOf(" should be between");
             if (shouldIdx > 0) {
-                String prefix = errorMessage.substring(0, shouldIdx);
-                int accountStart = prefix.lastIndexOf(" 0x");
-                if (accountStart == -1) {
-                    accountStart = prefix.lastIndexOf(" dydx");
-                }
-                if (accountStart > 0) {
-                    account = prefix.substring(accountStart + 1).trim();
-                    fieldName = prefix.substring(0, accountStart).trim();
-                } else {
-                    fieldName = prefix.trim();
-                }
+                fieldName = errorMessage.substring(0, shouldIdx).trim();
             }
 
             // Extract range
@@ -117,13 +107,29 @@ public class LarkNotificationListener implements ITestListener {
             // Extract actual
             int actualIdx = errorMessage.indexOf("Actual value: ");
             if (actualIdx > 0) {
-                String actualPart = errorMessage.substring(actualIdx + 14);
-                // Remove trailing "expected [true] but found [false]" if present
-                int expectedIdx = actualPart.indexOf(" expected");
-                if (expectedIdx > 0) {
-                    actual = actualPart.substring(0, expectedIdx).trim();
+                int actualEnd = errorMessage.indexOf(", Account:", actualIdx);
+                if (actualEnd > actualIdx) {
+                    actual = errorMessage.substring(actualIdx + 14, actualEnd).trim();
                 } else {
-                    actual = actualPart.trim();
+                    String actualPart = errorMessage.substring(actualIdx + 14);
+                    int expectedIdx = actualPart.indexOf(" expected");
+                    if (expectedIdx > 0) {
+                        actual = actualPart.substring(0, expectedIdx).trim();
+                    } else {
+                        actual = actualPart.trim();
+                    }
+                }
+            }
+
+            // Extract account
+            int accIdx = errorMessage.indexOf(", Account: ");
+            if (accIdx > 0) {
+                String accountPart = errorMessage.substring(accIdx + 11);
+                int endIdx = accountPart.indexOf(" expected");
+                if (endIdx > 0) {
+                    account = accountPart.substring(0, endIdx).trim();
+                } else {
+                    account = accountPart.trim();
                 }
             }
 
@@ -135,36 +141,43 @@ public class LarkNotificationListener implements ITestListener {
         else if (errorMessage.contains(" mismatch.")) {
             int mismatchIdx = errorMessage.indexOf(" mismatch.");
             if (mismatchIdx > 0) {
-                String prefix = errorMessage.substring(0, mismatchIdx);
-                int accountStart = prefix.lastIndexOf(" 0x");
-                if (accountStart == -1) {
-                    accountStart = prefix.lastIndexOf(" dydx");
-                }
-                if (accountStart > 0) {
-                    account = prefix.substring(accountStart + 1).trim();
-                    fieldName = prefix.substring(0, accountStart).trim();
-                } else {
-                    fieldName = prefix.trim();
-                }
+                fieldName = errorMessage.substring(0, mismatchIdx).trim();
             }
 
             int expIdx = errorMessage.indexOf("Expected: ") + 10;
-            int expEnd = errorMessage.indexOf(",", expIdx);
+            int expEnd = errorMessage.indexOf(", Actual: ", expIdx);
             if (expEnd > expIdx) {
                 expected = errorMessage.substring(expIdx, expEnd).trim();
             }
 
-            int actIdx = errorMessage.indexOf("Actual: ") + 8;
-            String actualPart = errorMessage.substring(actIdx);
-            // Remove trailing " expected [true] but found [false]" or ", Diff: X"
-            int endIdx = actualPart.indexOf(" expected");
-            if (endIdx == -1) {
-                endIdx = actualPart.indexOf(", Diff");
-            }
-            if (endIdx > 0) {
-                actual = actualPart.substring(0, endIdx).trim();
+            int actIdx = errorMessage.indexOf(", Actual: ") + 10;
+            int actEnd = errorMessage.indexOf(", Account:", actIdx);
+            if (actEnd > actIdx) {
+                actual = errorMessage.substring(actIdx, actEnd).trim();
             } else {
-                actual = actualPart.trim();
+                String actualPart = errorMessage.substring(actIdx);
+                int endIdx = actualPart.indexOf(" expected");
+                if (endIdx == -1) {
+                    endIdx = actualPart.indexOf(", Diff");
+                }
+                if (endIdx > 0) {
+                    actual = actualPart.substring(0, endIdx).trim();
+                } else {
+                    actual = actualPart.trim();
+                }
+            }
+
+            // Extract account
+            int accIdx = errorMessage.indexOf(", Account: ");
+            if (accIdx > 0) {
+                String accountPart = errorMessage.substring(accIdx + 11);
+                // Remove trailing " expected [...] but found [...]"
+                int endIdx = accountPart.indexOf(" expected");
+                if (endIdx > 0) {
+                    account = accountPart.substring(0, endIdx).trim();
+                } else {
+                    account = accountPart.trim();
+                }
             }
 
             String accountSuffix = account.isEmpty() ? "" : " - " + account;

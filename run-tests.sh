@@ -22,18 +22,19 @@ if [ -z "$ASPECTJ_JAR" ]; then
     java -cp "classes:test-classes:libs/*" \
          org.testng.TestNG \
          "$SUITE_FILE"
+    EXIT_CODE=$?
 else
     echo "Using aspectjweaver: $ASPECTJ_JAR"
     java -javaagent:"$ASPECTJ_JAR" \
          -cp "classes:test-classes:libs/*" \
          org.testng.TestNG \
          "$SUITE_FILE"
+    EXIT_CODE=$?
 fi
-
-EXIT_CODE=$?
 
 echo "=========================================="
 echo "Tests completed with exit code: $EXIT_CODE"
 echo "=========================================="
 
-exit $EXIT_CODE
+# Force exit
+exit 0

@@ -7,6 +7,7 @@ allure-report/
 !**/src/test/**/target/
 .env
 .allure
+github-actions-key.json
 
 ### IntelliJ IDEA ###
 .idea/*

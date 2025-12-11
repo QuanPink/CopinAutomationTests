@@ -292,7 +292,7 @@ public class TraderStatisticCalculator {
         if (result.avgLeverage > 25 && result.realisedMaxDrawdown < -60) {
             result.realisedStatisticLabels.add("HIGH_RISK");
             result.statisticLabels.add("HIGH_RISK");
-        } else if (result.avgLeverage < 5 && result.realisedMaxDrawdown > -30) {
+        } else if (result.avgLeverage > 0 && result.avgLeverage < 5 && result.realisedMaxDrawdown > -30) {
             result.realisedStatisticLabels.add("LOW_RISK");
             result.statisticLabels.add("LOW_RISK");
         }
