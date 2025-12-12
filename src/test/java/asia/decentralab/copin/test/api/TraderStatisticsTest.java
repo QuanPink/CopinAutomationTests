@@ -236,7 +236,7 @@ public class TraderStatisticsTest extends BaseApiTest {
 
         // Labels assertion
         List<String> expectedRealisedLabels = (List<String>) actual.get("realisedStatisticLabels");
-        assertLabels(expected.realisedStatisticLabels, expectedRealisedLabels, "Labels", account);
+        assertLabels(expected.realisedStatisticLabels, expectedRealisedLabels, "Realised Labels", account);
 
         List<String> expectedLabels = (List<String>) actual.get("statisticLabels");
         assertLabels(expected.statisticLabels, expectedLabels,"Labels", account);

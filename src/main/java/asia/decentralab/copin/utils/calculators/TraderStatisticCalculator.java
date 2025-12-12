@@ -5,6 +5,7 @@ import asia.decentralab.copin.utils.MapUtils;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -158,7 +159,7 @@ public class TraderStatisticCalculator {
         result.maxLeverage = Math.max(leverage, result.maxLeverage);
 
         result.realisedPnl += realisedPnl;
-        result.pnl += pnl;
+        result.pnl += realisedPnl - fee;
         if (realisedPnl > 0) {
             result.realisedTotalGain += realisedPnl;
             result.totalGainFee += fee;
