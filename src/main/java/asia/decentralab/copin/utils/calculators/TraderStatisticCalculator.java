@@ -278,11 +278,11 @@ public class TraderStatisticCalculator {
 
         // Trader Type
         String traderType = "POSITION_TRADER";
-        if (result.avgDuration < 3600) {
+        if (result.avgDuration > 0 && result.avgDuration < 3600) {
             traderType = "SCALPER";
-        } else if (result.avgDuration < 86400) {
+        } else if (result.avgDuration >= 3600 && result.avgDuration < 86400) {
             traderType = "DAY_TRADER";
-        } else if (result.avgDuration < 604800) {
+        } else if (result.avgDuration >= 86400 && result.avgDuration < 604800) {
             traderType = "SWING_TRADER";
         }
         result.realisedStatisticLabels.add(traderType);
