@@ -64,11 +64,11 @@ public class TraderStatisticCalculator {
             tempIsWin = isWin;
         }
 
-        fixInfinityValues(result);
-
         if (tempIsWin != null) {
             updateMaxStreak(result, tempStreak, tempIsWin);
         }
+
+        fixInfinityValues(result);
 
         if (result.totalTrade == 0) {
             return result;
@@ -278,22 +278,29 @@ public class TraderStatisticCalculator {
         result.statisticLabels.add("PNL_TIER" + (pnlTierIndex == -1 ? 8 : pnlTierIndex + 1));
 
         // Trader Type
-        String traderType = "POSITION_TRADER";
-        if (result.avgDuration > 0 && result.avgDuration < 3600) {
-            traderType = "SCALPER";
-        } else if (result.avgDuration >= 3600 && result.avgDuration < 86400) {
-            traderType = "DAY_TRADER";
-        } else if (result.avgDuration >= 86400 && result.avgDuration < 604800) {
-            traderType = "SWING_TRADER";
+        String traderType = null;
+        if (result.avgDuration > 0) {
+            if (result.avgDuration < 3600) {
+                traderType = "SCALPER";
+            } else if (result.avgDuration < 86400) {
+                traderType = "DAY_TRADER";
+            } else if (result.avgDuration < 604800) {
+                traderType = "SWING_TRADER";
+            } else {
+                traderType = "POSITION_TRADER";
+            }
         }
-        result.realisedStatisticLabels.add(traderType);
-        result.statisticLabels.add(traderType);
+
+        if (traderType != null) {
+            result.realisedStatisticLabels.add(traderType);
+            result.statisticLabels.add(traderType);
+        }
 
         // Risk Profile
-        if (result.avgLeverage > 25 && result.realisedMaxDrawdown < -60) {
+        if (result.avgLeverage >= 25 && result.realisedMaxDrawdown <= -60) {
             result.realisedStatisticLabels.add("HIGH_RISK");
             result.statisticLabels.add("HIGH_RISK");
-        } else if (result.avgLeverage > 0 && result.avgLeverage < 5 && result.realisedMaxDrawdown > -30) {
+        } else if (result.avgLeverage > 0 && result.avgLeverage <= 5 && result.realisedMaxDrawdown >= -30) {
             result.realisedStatisticLabels.add("LOW_RISK");
             result.statisticLabels.add("LOW_RISK");
         }

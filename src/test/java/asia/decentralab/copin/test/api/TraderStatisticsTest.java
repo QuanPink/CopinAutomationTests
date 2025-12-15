@@ -198,15 +198,7 @@ public class TraderStatisticsTest extends BaseApiTest {
         assertCloseToValue(expected.minDuration, getDouble(actual, "minDuration"),
                 getEquivalentTolerance(expected.minDuration), "Min duration " , account);
 
-//        // Streak assertions
-//        assertInRange(expected.winStreak, 0, 1_000, "winStreak", account);
-//        assertEquals(expected.winStreak, getInt(actual, "winStreak"),
-//                "Win streak", account);
-//
-//        assertInRange(expected.loseStreak, 0, 1_000, "loseStreak", account);
-//        assertEquals(expected.loseStreak, getInt(actual, "loseStreak"),
-//                "Lose streak", account);
-
+        // Streak assertions
         assertInRange(expected.maxWinStreak, 0, 1_000, "maxWinStreak", account);
         assertEquals(expected.maxWinStreak, getInt(actual, "maxWinStreak"),
                 "Max win streak", account);
@@ -214,6 +206,14 @@ public class TraderStatisticsTest extends BaseApiTest {
         assertInRange(expected.maxLoseStreak, 0, 1_000, "maxLoseStreak", account);
         assertEquals(expected.maxLoseStreak, getInt(actual, "maxLoseStreak"),
                 "Max lose streak", account);
+
+        assertInRange(expected.winStreak, 0, 1_000, "winStreak", account);
+        assertEquals(expected.winStreak, getInt(actual, "winStreak"),
+                "Win streak", account);
+
+        assertInRange(expected.loseStreak, 0, 1_000, "loseStreak", account);
+        assertEquals(expected.loseStreak, getInt(actual, "loseStreak"),
+                "Lose streak", account);
 
         // Advanced ratios (continued)
         if (expected.totalTrade > 1) {
