@@ -172,7 +172,9 @@ public class TraderStatisticCalculator {
         result.roi += roi;
         result.realisedMaxRoi = Math.max(realisedRoi, result.realisedMaxRoi);
         result.realisedMaxDrawdown = Math.min(realisedRoi, result.realisedMaxDrawdown);
+        result.maxDrawdown = Math.min(roi, result.maxDrawdown);
         result.realisedMaxDrawdownPnl = Math.min(realisedPnl, result.realisedMaxDrawdownPnl);
+        result.maxDrawdownPnl = Math.min(roi, result.maxDrawdownPnl);
 
         if (isLong) {
             result.totalLong++;
@@ -299,9 +301,13 @@ public class TraderStatisticCalculator {
         // Risk Profile
         if (result.avgLeverage >= 25 && result.realisedMaxDrawdown <= -60) {
             result.realisedStatisticLabels.add("HIGH_RISK");
-            result.statisticLabels.add("HIGH_RISK");
         } else if (result.avgLeverage > 0 && result.avgLeverage <= 5 && result.realisedMaxDrawdown >= -30) {
             result.realisedStatisticLabels.add("LOW_RISK");
+        }
+
+        if (result.avgLeverage >= 25 && result.maxDrawdown <= -60) {
+            result.statisticLabels.add("HIGH_RISK");
+        } else if (result.avgLeverage > 0 && result.avgLeverage <= 5 && result.maxDrawdown >= -30) {
             result.statisticLabels.add("LOW_RISK");
         }
 

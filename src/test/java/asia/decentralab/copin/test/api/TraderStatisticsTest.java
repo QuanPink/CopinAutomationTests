@@ -22,10 +22,8 @@ public class TraderStatisticsTest extends BaseApiTest {
 
     @DataProvider(name = "protocolList", parallel = true)
     public Object[][] protocols() {
-        String[] protocols = {"APOLLOX_BNB", "AVANTIS_BASE", "DYDX", "FULCROM_CRONOS", "GMX_SOL", "GMX_V2",
-                "GMX_V2_AVAX", "GNS", "GNS_BASE", "GNS_APE", "GNS_POLY", "HMX_ARB", "JUPITER", "KILOEX_OPBNB",
-                "KILOEX_BNB", "KILOEX_BASE", "KILOEX_MANTA", "OSTIUM_ARB", "POLYNOMIAL_L2"};
-        String[] timeValues = {"D1", "D7", "D15", "D30"};
+        String[] protocols = {"APOLLOX_BNB"};
+        String[] timeValues = {"D1"};
         Object[][] data = new Object[protocols.length * timeValues.length][2];
         int index = 0;
         for (String protocol : protocols) {

@@ -58,7 +58,9 @@ public class TraderStatisticCalculationResult {
     public double realisedAvgRoi = 0;
     public double realisedMaxRoi = -Double.MAX_VALUE;
     public double realisedMaxDrawdown = 0;
+    public double maxDrawdown = 0;
     public double realisedMaxDrawdownPnl = 0;
+    public double maxDrawdownPnl = 0;
 
     // Liquidation metrics
     public double totalLiquidationAmount = 0;
