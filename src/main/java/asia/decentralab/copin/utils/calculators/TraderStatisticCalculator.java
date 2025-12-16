@@ -281,7 +281,7 @@ public class TraderStatisticCalculator {
 
         // Trader Type
         String traderType = null;
-        if (result.avgDuration > 0) {
+        if (result.avgDuration >= 1) {
             if (result.avgDuration < 3600) {
                 traderType = "SCALPER";
             } else if (result.avgDuration < 86400) {
@@ -299,24 +299,24 @@ public class TraderStatisticCalculator {
         }
 
         // Risk Profile
-        if (result.avgLeverage >= 25 && result.realisedMaxDrawdown <= -60) {
+        if (result.avgLeverage >= 25 && result.realisedMaxDrawdown < -60) {
             result.realisedStatisticLabels.add("HIGH_RISK");
-        } else if (result.avgLeverage > 0 && result.avgLeverage <= 5 && result.realisedMaxDrawdown >= -30) {
+        } else if (result.avgLeverage >= 0.1 && result.avgLeverage < 5 && result.realisedMaxDrawdown >= -30) {
             result.realisedStatisticLabels.add("LOW_RISK");
         }
 
-        if (result.avgLeverage >= 25 && result.maxDrawdown <= -60) {
+        if (result.avgLeverage >= 25 && result.maxDrawdown < -60) {
             result.statisticLabels.add("HIGH_RISK");
-        } else if (result.avgLeverage > 0 && result.avgLeverage <= 5 && result.maxDrawdown >= -30) {
+        } else if (result.avgLeverage >= 0.1 && result.avgLeverage < 5 && result.maxDrawdown >= -30) {
             result.statisticLabels.add("LOW_RISK");
         }
 
         // Market Bias
-        if (result.totalTrade > 1) {
+        if (result.totalTrade >= 2) {
             if (result.longRate >= 90) {
                 result.realisedStatisticLabels.add("BULLISH");
                 result.statisticLabels.add("BULLISH");
-            } else if (result.longRate <= 10) {
+            } else if (result.longRate < 10) {
                 result.realisedStatisticLabels.add("BEARISH");
                 result.statisticLabels.add("BEARISH");
             }

@@ -1,5 +1,6 @@
 package asia.decentralab.copin.utils;
 
+import java.util.List;
 import java.util.Map;
 
 public final class MapUtils {
@@ -43,5 +44,31 @@ public final class MapUtils {
                             key, type.getSimpleName(), value.getClass().getSimpleName()));
         }
         return (T) value;
+    }
+
+    public static List<Map<String, Object>> sortPositionsByCloseTime(List<Map<String, Object>> positions) {
+        positions.sort((p1, p2) -> {
+            // Sort by closeBlockTime desc
+            String time1 = (String) p1.get("closeBlockTime");
+            String time2 = (String) p2.get("closeBlockTime");
+            if (time1 == null && time2 == null) return 0;
+            if (time1 == null) return 1;
+            if (time2 == null) return -1;
+            int timeCompare = time2.compareTo(time1);
+            if (timeCompare != 0) return timeCompare;
+
+            // Then by closeBlockNumber desc
+            long block1 = getLong(p1, "closeBlockNumber");
+            long block2 = getLong(p2, "closeBlockNumber");
+            int blockCompare = Long.compare(block2, block1);
+            if (blockCompare != 0) return blockCompare;
+
+            // Then by logId desc
+            long log1 = getLong(p1, "logId");
+            long log2 = getLong(p2, "logId");
+            return Long.compare(log2, log1);
+        });
+
+        return positions;
     }
 }
