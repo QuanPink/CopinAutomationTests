@@ -250,15 +250,17 @@ public class TraderStatisticCalculator {
         result.statisticLabels.clear();
 
         // Volume Tier
-        int volumeTierIndex = -1;
-        for (int i = 0; i < VOLUME_TIERS.length; i++) {
-            if (result.avgVolume < VOLUME_TIERS[i]) {
-                volumeTierIndex = i;
-                break;
+        if (result.avgVolume >= 1) {
+            int volumeTierIndex = -1;
+            for (int i = 0; i < VOLUME_TIERS.length; i++) {
+                if (result.avgVolume < VOLUME_TIERS[i]) {
+                    volumeTierIndex = i;
+                    break;
+                }
             }
+            result.realisedStatisticLabels.add("VOLUME_TIER" + (volumeTierIndex == -1 ? 7 : volumeTierIndex + 1));
+            result.statisticLabels.add("VOLUME_TIER" + (volumeTierIndex == -1 ? 7 : volumeTierIndex + 1));
         }
-        result.realisedStatisticLabels.add("VOLUME_TIER" + (volumeTierIndex == -1 ? 7 : volumeTierIndex + 1));
-        result.statisticLabels.add("VOLUME_TIER" + (volumeTierIndex == -1 ? 7 : volumeTierIndex + 1));
 
         // PnL Tier
         int realisedPnlTierIndex = -1;
