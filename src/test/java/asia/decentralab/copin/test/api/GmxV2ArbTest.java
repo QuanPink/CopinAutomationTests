@@ -4,9 +4,6 @@ import asia.decentralab.copin.models.PositionCalculationResult;
 import asia.decentralab.copin.test.base.BaseApiTest;
 import asia.decentralab.copin.test.utils.validators.BaseOrderValidator;
 import asia.decentralab.copin.test.utils.validators.BasePositionValidator;
-import static asia.decentralab.copin.utils.ValidationUtils.*;
-import static asia.decentralab.copin.utils.MapUtils.getDouble;
-import static asia.decentralab.copin.utils.MapUtils.getInt;
 import asia.decentralab.copin.utils.calculators.PositionCalculator;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;
@@ -17,6 +14,9 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 import java.util.Map;
+
+import static asia.decentralab.copin.utils.MapUtils.getDouble;
+import static asia.decentralab.copin.utils.ValidationUtils.*;
 
 public class GmxV2ArbTest extends BaseApiTest {
 

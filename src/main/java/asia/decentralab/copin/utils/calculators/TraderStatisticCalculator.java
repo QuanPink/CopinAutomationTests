@@ -14,6 +14,37 @@ public class TraderStatisticCalculator {
     // Thresholds for labels
     private static final double[] VOLUME_TIERS = {1000, 10000, 100000, 1000000, 10000000, 100000000};
     private static final double[] PNL_TIERS = {-1000000, -100000, -10000, 0, 10000, 100000, 1000000};
+    // Define market bias rules as constants
+    private static final MarketBiasRule[] MARKET_BIAS_RULES = {
+            new MarketBiasRule("VERY_BULLISH", 90, Double.MAX_VALUE, 2),
+            new MarketBiasRule("BULLISH", 65, 90, 2),
+            new MarketBiasRule("SLIGHTLY_BULLISH", 55, 65, 2),
+            new MarketBiasRule("NEUTRAL", 45, 55, 2),
+            new MarketBiasRule("SLIGHTLY_BEARISH", 35, 45, 2),
+            new MarketBiasRule("BEARISH", 10, 35, 2),
+            new MarketBiasRule("VERY_BEARISH", 0, 10, 2)
+    };
+
+    // Helper class for market bias rules
+    private static class MarketBiasRule {
+        final String label;
+        final double minLongRate;
+        final double maxLongRate;
+        final int minTotalTrade;
+
+        MarketBiasRule(String label, double minLongRate, double maxLongRate, int minTotalTrade) {
+            this.label = label;
+            this.minLongRate = minLongRate;
+            this.maxLongRate = maxLongRate;
+            this.minTotalTrade = minTotalTrade;
+        }
+
+        boolean matches(double longRate, int totalTrade) {
+            return totalTrade >= minTotalTrade
+                    && longRate >= minLongRate
+                    && longRate < maxLongRate;
+        }
+    }
 
     public TraderStatisticCalculationResult calculationTraderStatistic(
             List<Map<String, Object>> positions,
@@ -314,13 +345,11 @@ public class TraderStatisticCalculator {
         }
 
         // Market Bias
-        if (result.totalTrade >= 2) {
-            if (result.longRate >= 90) {
-                result.realisedStatisticLabels.add("BULLISH");
-                result.statisticLabels.add("BULLISH");
-            } else if (result.longRate < 10) {
-                result.realisedStatisticLabels.add("BEARISH");
-                result.statisticLabels.add("BEARISH");
+        for (MarketBiasRule rule : MARKET_BIAS_RULES) {
+            if (rule.matches(result.longRate, result.totalTrade)) {
+                result.realisedStatisticLabels.add(rule.label);
+                result.statisticLabels.add(rule.label);
+                break; // Only add the first matching rule
             }
         }
     }
